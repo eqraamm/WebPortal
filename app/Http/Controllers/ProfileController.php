@@ -30,8 +30,17 @@ class ProfileController extends Controller
          $data = array (
             'ID' => '',
             'OwnerID' => session('ID'),
+            'Username' => session('ID'),
+            'Password' => session('Password')
         );
         $responseSearchProfile = APIMiddleware($data, 'SearchProfile');
+
+        $data = array(
+            'Username' => session('ID'),
+            'Password' => session('Password'),
+            'ID' => session('ID')
+        );
+        $responseListMO = APIMIddleware($data,'SearchListMOByBranchUser');
 
         // dd($responseSearchProfile);
 
@@ -62,7 +71,7 @@ class ProfileController extends Controller
         session(['sidebar' => 'profile']);
 
         return view('Profile.Profile', array('data' => $responseSearchProfile, 
-        'tabname' => 'inquiry', 'responseCode' => '', 'responseMessage' => ''));
+        'tabname' => 'inquiry', 'responseCode' => '', 'responseMessage' => '', 'listmo' => $responseListMO));
         
         // return view('Profile.Profile', array('Country' => $responseCountry, 'data' => $responseSearchProfile, 
         // 'Province' => $responseProvince, 'CGroup' => $responseCGroup, 'SCGroup' => $responseSCGroup, 
@@ -124,6 +133,8 @@ class ProfileController extends Controller
     
     // api save profile 
     public function SaveProfile(Request $request){
+        // dd($request);
+        $OwnerID = ($request->input('UserOwner') == null) ? '' : $request->input('UserOwner');
         $dataprofile = array(
             'ID' => ($request->input('ProfileID') == null) ? '' : $request->input('ProfileID'),
             'RefID' => ($request->input('RefID') == null) ? '' : $request->input('RefID'),
@@ -141,7 +152,7 @@ class ProfileController extends Controller
             'Email' => ($request->input('Email') == null) ? '' : $request->input('Email'),
             'Mobile' => ($request->input('MobilePhone') == null) ? '' : $request->input('MobilePhone'),
             'Phone' => ($request->input('Phone') == null) ? '' : $request->input('Phone'),
-            'OwnerID' => ($request->input('UserOwner') == null) ? '' : $request->input('UserOwner'),
+            'OwnerID' => $OwnerID,
             'ID_No' => ($request->input('ID_Number') == null) ? '' : $request->input('ID_Number'),
             'Address_1' => ($request->input('Address1') == null) ? '' : $request->input('Address1'),
             'Address_2' => ($request->input('Address2') == null) ? '' : $request->input('Address2'),
@@ -201,7 +212,7 @@ class ProfileController extends Controller
                         'TaxID' => $dataprofile['TaxID']
                     );
                     // dd($payload);
-                    $responseSearchRefProfile = APIMiddleware($payload, 'SearchRefProfile');
+                    $responseSearchRefProfile = APIMiddleware($payload, 'SearchListRefProfile');
                     // dd($responseSearchRefProfile);
 
                     
@@ -227,7 +238,7 @@ class ProfileController extends Controller
                             //Data Profile
                             $dataprofile = array (
                                 'ID' => '',
-                                'OwnerID' => session('ID'),
+                                'OwnerID' => $OwnerID,
                             );
                             // dd($dataprofile);
                             $responseSearchProfile = APIMiddleware($dataprofile, 'SearchProfile');
@@ -240,7 +251,7 @@ class ProfileController extends Controller
                         //Data Profile
                         $data = array (
                             'ID' => '',
-                            'OwnerID' => session('ID'),
+                            'OwnerID' => $OwnerID,
                         );
                         $responseSearchProfile = APIMiddleware($data, 'SearchProfile');
 
@@ -252,7 +263,7 @@ class ProfileController extends Controller
                         'Password' => session('Password'),
                         'ID_NO' => $dataprofile['ID_No']
                     );
-                    $responseSearchRefProfile = APIMiddleware($payload, 'SearchRefProfile');
+                    $responseSearchRefProfile = APIMiddleware($payload, 'SearchListRefProfile');
                     if ($responseSearchRefProfile['code'] == '200'){
                         $html = view('tblSyncProfile',array('datasync' => $responseSearchRefProfile))->render();
                         return response()->json(['code' => '402','message'=>'Profile already created in Core, please sync profile first.','html' => $html]);
@@ -262,7 +273,7 @@ class ProfileController extends Controller
                         //Data Profile
                         $data = array (
                             'ID' => '',
-                            'OwnerID' => session('ID'),
+                            'OwnerID' => $OwnerID,
                         );
                         $responseSearchProfile = APIMiddleware($data, 'SearchProfile');
                         return response()->json(['code' => $responseSave['code'],'message'=>$responseSave['message'],'Data'=>$responseSave['Data'],'html' => '', 'listprofile' => $responseSearchProfile]);
@@ -272,14 +283,13 @@ class ProfileController extends Controller
         }else{
             $data = array (
                 'ID' => $dataprofile['ID'],
-                'OwnerID' => session('ID')
+                'OwnerID' => $OwnerID
             );
             $searchprofilebyid = APIMiddleware($data, 'SearchProfile');
 
             if ($searchprofilebyid['code'] == '200'){
                 $dataprofile['RefID'] = $searchprofilebyid['Data'][0]['RefID'];
                 $dataprofile['RefName'] = $searchprofilebyid['Data'][0]['RefName'];
-                // dd($dataprofile);
                 $responseSave  = APIMiddleware($dataprofile, 'UpdateProfile');
             }else{
                 $responseSave  = APIMiddleware($dataprofile, 'SaveProfile');
@@ -290,7 +300,7 @@ class ProfileController extends Controller
             //Data Profile
             $data = array (
                 'ID' => '',
-                'OwnerID' => session('ID'),
+                'OwnerID' => $OwnerID,
             );
             $responseSearchProfile = APIMiddleware($data, 'SearchProfile');
 
@@ -300,6 +310,8 @@ class ProfileController extends Controller
 
     public function historyProfile($id){
         $data = array(
+            'UserName' => session('ID'),
+            'Password' => session('Password'),
             'ID' => $id,
             'OwnerID' => session('ID')
         );
@@ -325,7 +337,7 @@ class ProfileController extends Controller
             'MobileNo' => ($request->input('Mobile') == null) ? '' : $request->input('Mobile'),
             'TaxID' => ($request->input('TaxID') == null) ? '' : $request->input('TaxID'),
         );
-        $responseSync = APIMiddleware($data, "SearchRefProfile");
+        $responseSync = APIMiddleware($data, "SearchListRefProfile");
 
         // dd($responseSync);
 
@@ -468,19 +480,43 @@ class ProfileController extends Controller
         $email = $request->get('email');
         $id_no = $request->get('id_no');
         $mobile = $request->get('mobile');
+        $ownerid = $request->get('OwnerID');
         
          //Data
          $data = array (
             'ID' => $ID,
-            'OwnerID' => session('ID'),
+            'OwnerID' => $ownerid == 'All' ? session('ID') : $ownerid,
             'Name' => $name,
             'Email' => $email,
             'ID_No' => $id_no,
-            'Mobile' => $mobile
+            'Mobile' => $mobile,
+            'Username' => $ownerid == 'All' ? session('ID') : '',
+            'Password' => $ownerid == 'All' ? session('Password') : '',
         );
         // dd($data);
         $responseSearchProfile = APIMiddleware($data, 'SearchProfile');
 
         return $responseSearchProfile;
+    }
+
+    public function GetRefProfile(Request $request){
+        // dd($request);
+        $data = array(
+            'UserName' => session('ID'),
+            'Password' => session('Password'),
+            'ID' => ($request->get('ID') == null) ? '' : $request->get('ID'),
+        );
+
+        return APIMiddleware($data, "SearchRefProfile");
+    }
+
+    public function getProfileByID(Request $request){
+        $data = array(
+            'ID' => ($request->get('ID') == null) ? '' : $request->get('ID'),
+            'OwnerID' => session('ID')
+        );
+        $responseProfile = APIMiddleware($data, 'SearchProfileByID');
+
+        return $responseProfile;
     }
 } 

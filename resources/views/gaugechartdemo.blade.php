@@ -102,7 +102,8 @@
   <section cass="content">
     <div class="container-fluid">
       <!-- <input class="form-control" id="test-input2" type="text"> -->
-      <input class="form-control" id="test-input" type="text">
+      <input class="form-control test-input" id="test-input" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onkeyup="onhange_number_format($(this));">
+      <input class="form-control test-input" id="test-input" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onchange="onchange_number(this);">
       <div class="valid-feedback">
         Looks good!
       </div>
@@ -112,64 +113,17 @@
       <button type="button" id="test-button">test</button>
       <form id='form-1'>
         <table id="example1" class="table table-striped dt-responsive nowrap" width="100%">
-          <thead>
-            <tr>
-              <th></th>
-              <th>No</th>
-              <th>Profile ID</th>
-              <th>Name</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <input type="checkbox" name="cbx[]" value="ekram"></input>
-              </td>
-              <td>1</td>
-              <td>ekram</td>
-              <td>Ekram Ganteng</td>
-            </tr>
-            <tr>
-              <td>
-                <input type="checkbox" name="cbx[]" value="fitri"></input>
-              </td>
-              <td>2</td>
-              <td>fitri</td>
-              <td>Fitri Andre Ina</td>
-            </tr>
-            <tr>
-              <td>
-                <input type="checkbox" name="cbx[]" value="Alesha"></input>
-              </td>
-              <td>3</td>
-              <td>Alesha</td>
-              <td>Alesha Chayrah Azzahra</td>
-            </tr>
-            <tr>
-              <td>
-                <input type="checkbox" name="cbx[]" value="fitrialesha"></input>
-              </td>
-              <td>4</td>
-              <td>fitrialesha</td>
-              <td>futri Alesha Chayrah Azzahra</td>
-            </tr>
-            <tr>
-              <td>
-                <input type="checkbox" name="cbx[]" value="Aleshachay"></input>
-              </td>
-              <td>5</td>
-              <td>Aleshachay</td>
-              <td>Alesha Chayrah Azzahra</td>
-            </tr>
-            <tr>
-              <td>
-                <input type="checkbox" name="cbx[]" value="abrisam"></input>
-              </td>
-              <td>6</td>
-              <td>abrisam</td>
-              <td>abrisam</td>
-            </tr>
-          </tbody>
+        <thead>
+                          <tr>
+                            <th>No</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                            <th>ID Number</th>
+                            <th>Birth Date</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
         </table>
         <input type="hidden" id="test" name="test" />
         <input type="hidden" id="test1" name="test1" />
@@ -224,6 +178,26 @@
     <button id="btn-loop" type="button">btn loop get data by PID</button>
     <button id="btn-ajax" type="button">btn get data by ajax</button>
     <input type="checkbox" id="test-disable"></input>
+    <button id="btn-sign" type="button">Button Signature</button>
+
+    <div id="canvas"><canvas class="" id="newSignature" style="border:1px solid #c4caac; max-width:100%; max-height:100%"></canvas></div>
+    <div class="form-group">
+      <button class="btn btn-default" type="button">
+        <i class="fa-solid fa-info"></i>
+      </button>
+    </div>
+    <div class="form-group">
+      <label>Date masks:</label>
+
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+        </div>
+        <input type="text" id="datemask" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="hh:mm:ss" data-mask>
+      </div>
+      <!-- /.input group -->
+    </div>
+    
   </section>
 </div>
 
@@ -236,7 +210,15 @@
   <!-- General For Web Portal MW -->
   <!-- <script src="{{asset('dist/js/pages/webportal.js')}}"></script> -->
 @section('scriptpage')
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
   <script>
+    $('#datemask').inputmask("hh:mm:ss", {
+        placeholder: "HH:MM:SS", 
+        insertMode: false, 
+        showMaskOnHover: false,
+        hourFormat: 24
+      }
+   );
     $('.js-data-example-ajax').select2({
       ajax: {
         url: 'http://localhost/api/MiddlewareApi/GetProvince',
@@ -256,6 +238,32 @@
 
     console.log($('#test-disable').attr("disabled"));
 
+    function onhange_number_format(_obj){
+      var num = getNumber(_obj.val());
+      if(num==0){
+        _obj.val('0');
+      }else{
+        _obj.val(num.toLocaleString());
+      }
+    }
+
+    function onchange_number(element){
+      element.value = number_format(element.value,2,',','.');
+    }
+
+    function getNumber(_str){
+      var arr = _str.split('')
+      var out = new Array();
+      for(var cnt=0;cnt<arr.length;cnt++){
+        // console.log(isNaN(arr[cnt])==false || arr[cnt] == '.');
+        if(isNaN(arr[cnt])==false || arr[cnt] == '.'){
+          out.push(arr[cnt]);
+        }
+      }
+      // console.log(out);
+      // return Number(out.join(''));
+      return parseFloat(out.join('')).toFixed(2);
+    }
 
     $('.select2bs4').select2({
         theme: 'bootstrap4',
@@ -348,45 +356,86 @@
     //   $("#modal-overlay").modal('show');
     // })
     $('#test-find').on('click',function(){
-      var key = 'test1';
-      var x = document.querySelectorAll('#' + key);
-      console.log(x);
+      // var key = 'test1';
+      // var x = document.querySelectorAll('#' + key);
+      // console.log(x);
       // $('#test1').val('haha');
       // for (i = 0; i < x.length; i++) {
       //   x[i].value = "red";
       // }
+      var num = parseFloat('15.00').toFixed(2)
+      console.log(num);
+      console.log(num.toLocaleString());
     });
+
     var basedata = [
       {
-        RefID : "asd",
+        ID : "asd",
         Name : "ekram",
         Email : "ekram@care.co.id",
         Mobile : "02929292",
         ID_No : "8391832",
         BirthDate : "<input type='text'></input>",
-        ID : "ekk",
-
       },
       {
-        RefID : "asd",
+        ID : "asd",
         Name : "ekram",
         Email : "ekram@care.co.id",
         Mobile : "02929292",
         ID_No : "8391832",
         BirthDate : "<input type='text'></input>",
-        ID : "ekk",
-
       }
     ];
     console.log(basedata);
 
     var tblProfile = $('#example1').DataTable({
-        columnDefs: [{
-            orderable: false,
-            targets: [1,2,3]
-        }],
+        "data": basedata,
+        "columns": [
+          {
+            "defaultContent" : "",
+            "data":"ID"
+          },
+          {
+            "defaultContent" : "",
+            "data":"Name"
+          },
+          {
+            "defaultContent" : "",
+            "data":"Email"
+          },
+          {
+            "defaultContent" : "",
+            "data":"Mobile"
+          },
+          {
+            "defaultContent" : "",
+            "data":"ID_No"
+          },
+          {
+            "defaultContent" : "",
+            "data":"BirthDate"
+          },
+          {
+            "defaultContent": "",
+            render: function(data, type, row, meta) {
+              // console.log(data);
+              // console.log(type);
+              // console.log(row);
+              // console.log(meta['row']);
+              var fn = "dropDoc('"+ meta['row'] + "')"
+              return '<img src="'+ row['ID'] +'" width="25" height="25" type="button" title="Detail Profile" onclick="' + fn + '">';
+            }
+          }
+        ],
         "pageLength": 5,
     });
+
+    function dropDoc(index){
+      // console.log(index);
+      basedata.splice(index,1);
+      tblProfile.clear().draw();
+      tblProfile.rows.add(basedata).draw();
+    }
  
     $('#form-1').submit(function (event){
       event.preventDefault();
@@ -399,10 +448,12 @@
     });
 
     $('#refresh').on('click',function(){
-      console.log('haha');
+      // const index = basedata.indexOf(0);
+      // basedata.splice(0, 1);
+      // // console.log(index);
+      // console.log(basedata);
       var arr = {
-        RefID : "asd",
-        Name : "ekram",
+        base64 : "ekram",
         Email : "ekram@care.co.id",
         Mobile : "02929292",
         ID_No : "8391832",
@@ -420,9 +471,11 @@
     })
     // var globalvar = 'ekram';
     $('#test-button').on('click', function(){
-      var num = '12,000,000.00';
-      $('#test-input').val(Math.round(num.replace(/\,/g, '')));
+      // var num = '12,000,000.00';
+      // $('#test-input').val(Math.round(num.replace(/\,/g, '')));
       // $('#test-input').val(Math.round(num));
+      $('.test-input').val('asd');
+
     });
     $('#test-input').on('keyup',function(){
       console.log($(this).val());
@@ -548,5 +601,55 @@
     //   height: 500,
     //   width: '100%'
     // });
+    $(window).bind('resize', function () {
+      resizeCanvas();
+      console.log('resize : ' + $(this).width());
+    });
+    var wrapper = document.getElementById("canvas");
+    var canvasasli = wrapper.querySelector("canvas");
+    var signaturePad = new SignaturePad(canvasasli, {
+        backgroundColor: 'transparent',
+    });
+    function resizeCanvas() {
+      canvasasli.width = wrapper.offsetWidth - 2;
+      canvasasli.height = canvasasli.width * (3/5);
+      
+      signaturePad.clear();
+    }
+
+    function signatureCapture(){
+      signaturePad = new SignaturePad(document.getElementById('newSignature'), {
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        penColor: 'rgb(0, 0, 0)'
+      });
+    }
+
+    $('#btn-sign').on('click',function(){
+      $('#class-modal-dialog').attr('class','modal-dialog modal-md');
+    
+      $('#modaltitle').text('Signature');
+
+      var urlimg = "{{ asset('dist/img/company_logo.png')}}";
+      console.log(urlimg);
+
+      var canvas = '<img id="img-bos" src='+ urlimg +'></img><div id="canvas"><canvas class="" id="newSignature" style="border:1px solid #c4caac; max-width:100%; max-height:100%"></canvas></div><br><div><input id="namattd" name="namattd" style="text-align:center"></div><br><div><button onclick="clearSign()" type="button">Clear</button></div>'
+      
+      $('#modalbody').html(canvas);
+
+      $('#modalfooter').empty();
+      
+      $('#modal-general').modal({
+        keyboard: false,
+        backdrop: 'static',
+        show: true
+      })
+      // signatureCapture();
+      // var imgbos = document.getElementById('img-bos');
+      var canvasasli = document.getElementById('newSignature');
+      // // var context = canvasasli.getContext('2d');
+      // // context.drawImage(imgbos, 0, 0, canvasasli.width, canvasasli.height);
+      signatureCapture();
+    });
+    // signatureCapture();
   </script>
 @endsection

@@ -18,7 +18,7 @@
     <div class="row">
         <div class="col-sm-4">
             <label for="FixedMin">By Amount</label>
-            <input type="text" class="form-control" id="FixedMin" name="FixedMin" onkeyup="onhange_number_format($(this));" readonly></input> 
+            <input type="text" class="form-control" id="FixedMin" name="FixedMin" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onchange="onchange_number(this);"" readonly></input> 
         </div>
         <div class="col-sm-4">
             <label for="PCTTSI">By % of TSI</label>

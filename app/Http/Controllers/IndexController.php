@@ -11,10 +11,13 @@ class IndexController extends Controller
 
     public function index(){
         $data =array(
+            'Username' => session('ID'),
+            'Password' => session('Password'),
             'ID' => session('ID'),
             'RefNo' => '',
             'PStatus' => '',
-            'Insured' => ''
+            'Insured' => '',
+            'ASource' => session('ASource')
         );
 
         session(['sidebar' => 'dashboard']);
@@ -22,17 +25,24 @@ class IndexController extends Controller
         $responseSearchPolicy = APIMiddleware($data, 'SearchPolicy');
         //  dd($responseSearchPolicy);
 
-        $data = array(
-            'ID' => session('ID')
-        );
-        $responseSearchStoredData_GWP = APIMiddleware($data, 'SearchStoredData_GWP');
-        $responseSearchStoredData_LossRatio = APIMiddleware($data, 'SearchStoredData_LossRatio');
-        // dd($responseSearchStoredData_GWP);
-        // return view('dashboard')->with('data', $responseSearchPolicy); 
         if (session('Role') == 'AGENT'){
-            return view('dashboard.dashboardAgent')->with(array('data_gwp' => $responseSearchStoredData_GWP,'data_lossratio' => $responseSearchStoredData_LossRatio)); 
+            // $data = array(
+            //     'ID' => session('ID')
+            // );
+            // $responseSearchStoredData_GWP = APIMiddleware($data, 'SearchStoredData_GWP');
+            // $responseSearchStoredData_LossRatio = APIMiddleware($data, 'SearchStoredData_LossRatio');
+            // return view('dashboard.dashboardAgent')->with(array('data_gwp' => $responseSearchStoredData_GWP,'data_lossratio' => $responseSearchStoredData_LossRatio)); 
+            return view('dashboard.dashboardMitra');
         }else{
-            return view('dashboard')->with('data', $responseSearchPolicy); 
+            $data = array(
+                'Username' => session('ID'),
+                'Password' => session('Password'),
+                'ID' => session('ID')
+            );
+            $responseListMO = APIMIddleware($data,'SearchListMOByBranchUser');
+            // dd($responseListMO);
+            return view('dashboard',array('data'=> $responseSearchPolicy,'listmo' => $responseListMO)); 
+            // return view('dashboard')->with('data', $responseSearchPolicy);
         }
     }
 
@@ -113,6 +123,18 @@ class IndexController extends Controller
         $responseStoredData = APIMiddleware($data, 'AsyncSearchStoredData');
 
         return $responseStoredData;
+    }
+
+    public function getListPolicy(Request $request){
+        $data = array(
+            'ID' => $request->get('ID') == 'All' ? session('ID') : $request->get('ID'),
+            'Username' => $request->get('ID') == 'All' ? session('ID') : '',
+            'Password' => $request->get('ID') == 'All' ? session('Password') : '',
+            'ASource' => session('ASource')
+        );
+        $responseSearchPolicy = APIMiddleware($data, 'SearchPolicy');
+
+        return $responseSearchPolicy;
     }
 }
 

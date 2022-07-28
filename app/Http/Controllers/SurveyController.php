@@ -12,10 +12,13 @@ class SurveyController extends Controller
 
     public function showsurvey(){
         $data =array(
+            'Username' => session('ID'),
+            'Password' => session('Password'),
             'ID' => session('ID'),
             'RefNo' => '',
             'PStatus' => '',
-            'Insured' => ''
+            'Insured' => '',
+            'ASource' => session('ASource')
         );
 
         session(['sidebar' => 'survey']);
@@ -32,7 +35,6 @@ class SurveyController extends Controller
             'SurveyDate' => date_format(date_create($request->input('SurveyDate')),"Y-m-d"),
             'SurveyTime' => $request->input('SurveyTime')
         );
-        // dd($datasurvey);
         
         $responseSendSurvey = APIMiddleware($datasurvey, 'SubmitSurvey');
         // dd($responseSendSurvey);
@@ -40,12 +42,32 @@ class SurveyController extends Controller
         return response()->json(['code' => $responseSendSurvey['code'],'message'=>$responseSendSurvey['message'],'data' => $responseSendSurvey['Data']]);
     }
 
-    public function SurveyOnline(){
-        return view('Survey.VideoCall');
+    public function CopyLinkSurvey(Request $request){
+        $datasurvey = array(
+            "PID" => $request->input('PID'),
+            "URLType" => $request->input('URLType')
+        );
+        
+        $responseSendSurvey = APIMiddleware($datasurvey, 'GenerateURLS');
+        
+        return response()->json(['code' => $responseSendSurvey['code'],'message'=>$responseSendSurvey['message'],'data' => $responseSendSurvey['Data']]);
+    }
+
+    public function SurveyOnline(Request $request){
+        $dataPolicy = array(
+            "PID"=> $request->get('id')
+        );
+        $resposeFlagSurvey = APIMiddleware($dataPolicy, 'SearchPolicyByPID');
+        $flagsurvey = $resposeFlagSurvey['Data'][0]['SurveyF'];
+        if ($flagsurvey != true){
+            return view('Survey.VideoCall');
+        } else {
+            echo "<script>alert('You Cant Access This URL');</script>";
+            echo "<script>window.close();</script>";
+        }
     }
 
     public function SaveSurveyDocument(Request $request){
-        //dd($request);
         $policypic = $request->input('PolicyPIC');
 
         $datapic = array(

@@ -1,3 +1,4 @@
+
 @extends('layout/mainDocSPPA')
 @section('scriptpage')
 <!-- jQuery -->
@@ -8,6 +9,8 @@
 <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
     <script>
+      
+      
       console.log(@json($payload));
       var payload = @json($payload);
       $.ajaxSetup({
@@ -15,8 +18,21 @@
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
           }
       });
-      // signatureCapture();
       var signaturePad;
+
+      $(document).ready ( function(){
+        if (payload['EsignF']){
+          Swal.fire({
+            title: "SPPA has been Sign.",
+            icon: 'success',
+            allowOutsideClick: false
+          }).then((result) => {
+            if (result.isConfirmed){
+              window.location.href = "https://www.aca.co.id";  
+            }
+          })
+        }
+      });
 
       $('#btnSubmit').click(function(event){
         event.preventDefault();
@@ -316,6 +332,22 @@
         signaturePad.clear();
         $('#namattd').val('')
       }
+
+      $('#btnCancel').on('click',function(event){
+        event.preventDefault();
+        Swal.fire({
+          title: 'Are You Sure ?',
+          showCancelButton: false,
+          confirmButtonText: 'Yes',
+          denyButtonText: 'No',
+          showDenyButton: true,
+        }).then((result) => {
+          console.log(result);
+          if (result.isConfirmed){
+            window.location.href = "http://www.aca.co.id";
+          }
+        });
+      });
     </script>
     
     <!-- SweetAlert2 -->

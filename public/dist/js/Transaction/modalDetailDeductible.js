@@ -32,7 +32,7 @@ $('.btn-save').on('click',async function(){
     // console.log(fixedmin)
     // console.log(Math.floor(fixedmin));
 
-    var url = urlGetDeductibleRemarks + "?topro=" + $('#CoverageID').val() + "&dcode=" + data['dcode'] + "&fixedmin=" + fixedmin + "&pcttsi=" + pcttsi + "&pctcl=" + pctcl + "&fixedmax=" + fixedmax;
+    var url = urlGetDeductibleRemarks + "?topro=" + data['reftopro'] + "&dcode=" + data['dcode'] + "&fixedmin=" + fixedmin + "&pcttsi=" + pcttsi + "&pctcl=" + pctcl + "&fixedmax=" + fixedmax;
     // console.log(url);
     
     var response = await getDataNew(url,true);
@@ -47,8 +47,5 @@ $('.btn-save').on('click',async function(){
     }else{
         toastMessage('400',response.message);
     }
-
-    
-
     // $("#modal-general").modal("hide");
 });

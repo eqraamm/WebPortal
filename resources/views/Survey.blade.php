@@ -60,15 +60,25 @@
                 <div class="form-group row">
                   <input type="hidden" id="PID"/>
                   <label for="TxtName" class="col-sm-4 col-form-label">Survey Schedule</label>
-                  <div class="input-group date col-sm-6" id="TxtSurveyDate" data-target-input="nearest">
+                  <div class="input-group date col-sm-8" id="TxtSurveyDate" data-target-input="nearest">
                       <input type="text" id="SurveyDate" data-format="yyyy-MM-dd hh:mm:ss" name="TxtSurveyDate" class="form-control datetimepicker-input" data-target="#TxtSurveyDate" required />
                       <div class="input-group-append" data-target="#TxtSurveyDate" data-toggle="datetimepicker">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
                   </div>
                 </div>
-                <div class="col-sm-3">
-                    <button type="button" onclick="SubmitSurvey()" id="btn_send" class="btn btn-block btn-outline-primary">Send Survey</button>
+                <div class="form-group row">
+                <div class="input-group date col-sm-12">
+                      <input type="text" id="Clipboard" class="form-control" readonly/>
+                </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-block btn-outline-primary" onclick="SubmitSurvey()" title="Send Survey">Send Survey</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" id="btn_copy" class="btn btn-block btn-outline-success" onclick="CopyLink()" title="Copy Link">Copy Link</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -172,8 +182,9 @@
                         // return '<button class="btn send_survey" style="overflow:hidden; color: #5EFA66;" data-toggle="tooltip" data-placement="top" title="Send Survey"><i class="fas fa-share-alt fa-lg"></i></button> <span style="color: #437FFF;"><i class="far fa-clock fa-lg" type="button"></i></span>  <span style="color: red;"><i class="fas fa-times-circle fa-lg" type="button"></i></span>';
                         var fn_sendSurvey = "sendSurvey('"+ row['PID'] +"')"
                         var fn_JoinSurvey = "joinSurvey('"+ row['PID'] +"')"
+                        var fn_SingleSurvey = "singlesurvey('"+ row['PID'] +"')"
                         var SurveyF = (row['SurveyF'] === true) ? "disabled" : false;
-                        return '<button class="btn send_survey" onclick="'+ fn_sendSurvey +'" style="overflow:hidden; color: #5EFA66;" data-toggle="tooltip" data-placement="top" title="Send Survey" '+ SurveyF +'><i class="fas fa-share-alt fa-lg"></i></button><button class="btn send_survey" onclick="'+ fn_JoinSurvey +'" style="overflow:hidden; color: #3d85c6;" data-toggle="tooltip" data-placement="top" title="Join Survey" '+ SurveyF +'><i class="fas fa-sign-in-alt fa-lg"></i></button>';
+                        return '<button class="btn send_survey" onclick="'+ fn_sendSurvey +'" style="overflow:hidden; color: #5EFA66;"data-toggle="tooltip" data-placement="top" title="Send Survey" '+ SurveyF +'><i class="fas fa-share-alt fa-lg"></i></button><button class="btn send_survey" onclick="'+ fn_JoinSurvey +'"style="overflow:hidden; color: #3d85c6;" data-toggle="tooltip" data-placement="top" title="Join Survey" '+ SurveyF +'><i class="fas fa-sign-in-alt fa-lg"></i></button><button class="btn send_survey" onclick="'+ fn_SingleSurvey +'"style="overflow:hidden; color: #8d9e9e;" data-toggle="tooltip" data-placement="top"title="Onsite Survey" '+ SurveyF +'><i class="fas fa-map-marked-alt fa-lg"></i></button>';
                     }
                 },
             ],
@@ -237,16 +248,41 @@
       event.preventDefault();
       // console.log(PID);
       $('#PID').val(PID);
-      $("#modal-survey").modal('show');
+      $('#loadMe').modal('show');
+      var urltype = "SURVEY";
+      let _token = $('meta[name="csrf-token"]').attr('content');
+      $.ajax({
+            type: "POST",
+            url: "{{ route('survey.copylink') }}",
+            data: {
+                PID: PID,
+                URLType : urltype,
+                _token: _token
+            },
+        }).done(function(response) {
+            if (response.code == "200") {
+                $('#loadMe').modal('hide');
+                $('#Clipboard').val(response.data[0].URL);
+                $("#modal-survey").modal('show');
+            }
+        }).fail(function(xhr, status, error) {
+            $('#div-overlay').empty();
+            toastMessage('400', error);
+        });
     }
 
     $(".send_survey").click(function(event) {
         event.preventDefault();
         //var a_href = $(this).attr('href');
-        console.log('haha');
         $('#loadMe').modal('show');
         $("#modal-survey").modal('show');
     });
+
+    function CopyLink(){
+        event.preventDefault();
+        navigator.clipboard.writeText(document.getElementById("Clipboard").value);
+        toastMessage("200", "Copy Link Successfully");
+    }
 
     function SubmitSurvey() {
         event.preventDefault();
@@ -290,7 +326,16 @@
 
     function joinSurvey(PID){
         event.preventDefault();
+        // var URL = '{{ route("VideoSurvey") }}'+'?'+(btoa('id='+PID+'&userid=mo'));
         var URL = '{{ route("VideoSurvey") }}' + '?id=' + PID + '&userid=mo';
+        // console.log(URL);
+        openInNewTab(URL);
+    }
+
+    function singlesurvey(PID){
+        event.preventDefault();
+        // var URL = '{{ route("VideoSurvey") }}'+'?'+(btoa('id='+PID+'&userid=mo'));
+        var URL = '{{ route("VideoSurvey") }}' + '?id=' + PID + '&userid=mo&sos=1';
         // console.log(URL);
         openInNewTab(URL);
     }

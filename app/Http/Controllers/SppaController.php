@@ -13,7 +13,14 @@ class SppaController extends Controller
 {
     public function showFormPolicy(){
         session(['sidebar' => 'sppa']);
-        return view('Transaction.policy');
+
+        $data = array(
+            'Username' => session('ID'),
+            'Password' => session('Password'),
+            'ID' => session('ID')
+        );
+        $responseListMO = APIMIddleware($data,'SearchListMOByBranchUser');
+        return view('Transaction.policy', array('listmo' => $responseListMO));
     }
 
     public function getlistMo(){
@@ -85,7 +92,8 @@ class SppaController extends Controller
         $dataAgent = array(
             'ID' => '',
             'UserName' => session('ID'),
-            'Password' => session('Password')
+            'Password' => session('Password'),
+            'ASource' => session('ASource')
         );
         $responseAgent = APIMiddleware($dataAgent, 'SearchAgentProfile');
 
@@ -119,12 +127,21 @@ class SppaController extends Controller
             'Asource' => session('ASource'),
             'UserName' => session('ID'),
             'Password' => session('Password'),
-            'FLDID' => config('app.FLDID'),
-            'ValueID' => config('app.ValueID')
         );
         $fixarrProduct = APIMiddleware($dataProductgendtab, 'SearchGENDTABByProduct');
 
         return $fixarrProduct;
+    }
+
+    public function getlistBSTYPE(){
+        $data = array(
+            'UserName' => session('ID'),
+            'Password' => session('Password'),
+            'BSTYPE' => ''
+        );
+        $response = APIMiddleware($data, 'SearchMasterBSTYPE');
+
+        return $response;
     }
 
     public function PremiumSimulation(Request $request)
@@ -151,7 +168,13 @@ class SppaController extends Controller
         $responseProduct = APIMiddleware($dataProduct, 'ProductGENHTAB');
         for ($i = 1; $i <= 15; ++$i) {
             $dataPremiumSimulation['FLDID'.$i] = $responseProduct['Data'][0]['FLDID'. $i];
-            $dataPremiumSimulation['ValueID'.$i] = ($request->input('FLDID'.$i) == null) ? '' : $request->input('FLDID'.$i);
+            // $dataPremiumSimulation['ValueID'.$i] = ($request->input('FLDID'.$i) == null) ? '' : $request->input('FLDID'.$i);
+            if ($responseProduct['Data'][0]['FLDTAB'. $i] == true){
+                $dataPremiumSimulation['ValueID'.$i] = ($request->input('FLDID'.$i) == null) ? '' : $request->input('FLDID'.$i);   
+                $dataPremiumSimulation['ValueDesc'.$i] = ($request->input('ValueDesc'.$i) == null) ? '' : strtoupper($request->input('ValueDesc'.$i));
+            }else{
+                $dataPremiumSimulation['ValueDesc'.$i] = ($request->input('FLDID'.$i) == null) ? '' : strtoupper($request->input('FLDID'.$i));   
+            }
         }
         $IncludeExtCovF = ($request->input('IncludeExtCoverF') == null) ? false : true;
         // return $IncludeExtCovF;
@@ -328,18 +351,8 @@ class SppaController extends Controller
             'SType' => ($request->input('LstSType') == null) ? '' : $request->input('LstSType'),
             'PolicyNo' => ($request->input('TxtPolicyNo') == null) ? '' : $request->input('TxtPolicyNo'),
             'CertificateNo' => '',
-            'TRANSHIPMENT' => ($request->input('CbxTranshipment') == null) ? false : true,
-            'ATANDFROM' => ($request->input('TxtTransAtAndFrom') == null) ? '' : $request->input('TxtTransAtAndFrom'),
-            'TRANSTO' => ($request->input('TRANSTO') == null) ? '' : $request->input('TRANSTO'),
-            'CONVEYANCE' => ($request->input('TxtTransConveyence') == null) ? '' : $request->input('TxtTransConveyence'),
-            'DEPARTDATE' => ($request->input('TxtDepartDate') == null) ? '' : $request->input('TxtDepartDate'),
-            'VESSEL' => '',
-            'VOYAGEFROM' => ($request->input('TxtVoyageFromID') == null) ? '' : $request->input('TxtVoyageFromID'),
-            'VOYAGETO' => ($request->input('TxtVoyageToID') == null) ? '' : $request->input('TxtVoyageToID'),
             'Attention' => '',
             'Email' => '',
-            'TRANSDATE' => '',
-            'ARRIVALDATE' => '',
             'NotApplyRateLoadingF' => ($request->input('CbxNotApplyRateLoading') == null) ? false : true,
             'NCDATE' => '',
             'Payment_IRate' => 0,
@@ -357,6 +370,21 @@ class SppaController extends Controller
             'InforceF' => ($request->input('CbxAutoInforce') == null) ? false : true,
             'Payment_Term' => ($request->input('LstPayment_Term') == null) ? 0 : $request->input('LstPayment_Term'),
             'Payment_Tenor' => ($request->input('TxtPayment_Tenor') == null) ? 0 : $request->input('TxtPayment_Tenor'),
+            'DEPARTDATE' => ($request->input('DEPARTDATE') == null) ? '' : date_format(date_create($request->input("DEPARTDATE")),"Y-m-d"),
+            'ARRIVALDATE' => ($request->input('ARRIVALDATE') == null) ? '' : date_format(date_create($request->input("ARRIVALDATE")),"Y-m-d"),
+            'VoyageFromID' => ($request->input('VoyageFromID') == null) ? '' : $request->input('VoyageFromID'),
+            'VOYAGEFROM' => ($request->input('VOYAGEFROM') == null) ? '' : $request->input('VOYAGEFROM'),
+            'PortFromID' => ($request->input('PortFromID') == null) ? '' : $request->input('PortFromID'),
+            'PORTFROM' => ($request->input('PORTFROM') == null) ? '' : $request->input('PORTFROM'),
+            'VoyageToID' => ($request->input('VoyageToID') == null) ? '' : $request->input('VoyageToID'),
+            'VOYAGETO' => ($request->input('VOYAGETO') == null) ? '' : $request->input('VOYAGETO'),
+            'TRANSHIPMENT' => ($request->input('TRANSHIPMENT') == null) ? false : true,
+            'TRANSDATE' => ($request->input('TRANSDATE') == null) ? '' : date_format(date_create($request->input("TRANSDATE")),"Y-m-d"),
+            'ATANDFROM' => ($request->input('ATANDFROM') == null) ? '' : $request->input('ATANDFROM'),
+            'TRANSTO' => ($request->input('TRANSTO') == null) ? '' : $request->input('TRANSTO'),
+            'CONVEYANCE' => ($request->input('CONVEYANCE') == null) ? '' : $request->input('CONVEYANCE'),
+            'CONSIGNEE' => ($request->input('CONSIGNEE') == null) ? '' : $request->input('CONSIGNEE'),
+            'CADDRESS' => ($request->input('CADDRESS') == null) ? '' : $request->input('CADDRESS'),
         );
 
         $CommBy = $request->input('CommBy');
@@ -452,8 +480,8 @@ class SppaController extends Controller
         //CalculateF & ValidateF
         $CalculateF = config('app.CALCULATEF');
         $ValidateF = config('app.VALIDATEF');
-        $datapolicy['CalculateF'] = $CalculateF;
-        $datapolicy['ValidateF'] = $ValidateF;
+        // $datapolicy['CalculateF'] = $CalculateF;
+        // $datapolicy['ValidateF'] = $ValidateF;
 
         // dd($datapolicy);
 
@@ -462,25 +490,37 @@ class SppaController extends Controller
         // dd($responsePolicy);
 
         if ($responsePolicy['code'] == '200'){
-            if (!$ValidateF){
+            $dataPolicy = array(
+                'UserName' => session('ID'),
+                'Password' => session('Password'),
+                'PID' => $responsePolicy['Data'][0]['PID']
+            );
+
+            $responseCode = $responsePolicy['code'];
+            $responseMessage = $responsePolicy['message'];
+                
+            $responseValidate = APIMiddleware($dataPolicy, 'ValidatePolicy');
+            // dd($responseValidate);
+            if ($responseValidate['code'] == '400'){
+                $responseCode = $responseValidate['code'];
+                $responseMessage = $responseValidate['message'];
+                // return response()->json(['code' => $responseValidate['code'],'message'=>$responseValidate['message'],'data' => []]);
+            }
+            
+            $listpolicy = APIMiddleware($dataPolicy, 'SearchPolicyByPID');
+    
+            return response()->json(['code' => $responseCode,'message'=>$responseMessage,'data' => $responsePolicy['Data'], 'listpolicy' => $listpolicy]);
+        }else{
+            $listpolicy;
+            if (count($responsePolicy['Data']) > 0){
                 $dataPolicy = array(
                     'UserName' => session('ID'),
                     'Password' => session('Password'),
                     'PID' => $responsePolicy['Data'][0]['PID']
                 );
-                
-                $responseValidate = APIMiddleware($dataPolicy, 'ValidatePolicy');
-                // dd($responseValidate);
-                if ($responseValidate['code'] == '400'){
-                    return response()->json(['code' => $responseValidate['code'],'message'=>$responseValidate['message'],'data' => []]);
-                }
+                $listpolicy = APIMiddleware($dataPolicy, 'SearchPolicyByPID');
             }
-            
-            $listpolicy = APIMiddleware($dataPolicy, 'SearchPolicyByPID');
-    
             return response()->json(['code' => $responsePolicy['code'],'message'=>$responsePolicy['message'],'data' => $responsePolicy['Data'], 'listpolicy' => $listpolicy]);
-        }else{
-            return response()->json(['code' => $responsePolicy['code'],'message'=>$responsePolicy['message'],'data' => $responsePolicy['Data']]);
         }
     }
 
@@ -522,10 +562,13 @@ class SppaController extends Controller
 
         if ($responseDropPolicy['code'] == '200'){
             $dataPolicy = array(
+                'Username' => session('ID'),
+                'Password' => session('Password'),
                 'ID' => session('ID'),
                 'RefNo' => '',
                 'PStatus' => '',
                 'Insured' => '',
+                'ASource' => session('ASource')
             );  
             $listpolicy = APIMiddleware($dataPolicy, 'SearchPolicy');
     
@@ -537,10 +580,13 @@ class SppaController extends Controller
 
     public function showListPolicy(){
         $dataPolicy = array(
+            'Username' => session('ID'),
+            'Password' => session('Password'),
             'ID' => session('ID'),
             'RefNo' => '',
             'PStatus' => '',
             'Insured' => '',
+            'ASource' => session('ASource')
         );  
 
         $responsePolicy = APIMiddleware($dataPolicy, 'SearchPolicy');
@@ -579,7 +625,9 @@ class SppaController extends Controller
         //Object Info
         for ($i = 1; $i <= 15; ++$i) {
             $dataPremiumSimulation['FLDID'.$i] = $dataPolicy[0]['FLDID'. $i];
-            $dataPremiumSimulation['ValueID'.$i] = ($dataPolicy[0]['ValueID'.$i] == '') ? $dataPolicy[0]['ValueDesc'.$i] : $dataPolicy[0]['ValueID'.$i];
+            // $dataPremiumSimulation['ValueID'.$i] = ($dataPolicy[0]['ValueID'.$i] == '') ? $dataPolicy[0]['ValueDesc'.$i] : $dataPolicy[0]['ValueID'.$i];
+            $dataPremiumSimulation['ValueID'.$i] = $dataPolicy[0]['ValueID'.$i];
+            $dataPremiumSimulation['ValueDesc'.$i] = $dataPolicy[0]['ValueDesc'.$i];
         }
 
         // if (!$IncludeExtCovF){
@@ -620,10 +668,13 @@ class SppaController extends Controller
 
         if ($responseSubmitPolicy['code'] == '200'){
             $dataPolicy = array(
+                'Username' => session('ID'),
+                'Password' => session('Password'),
                 'ID' => session('ID'),
                 'RefNo' => '',
                 'PStatus' => '',
                 'Insured' => '',
+                'ASource' => session('ASource')
             );  
             $listpolicy = APIMiddleware($dataPolicy, 'SearchPolicy');
     
@@ -689,7 +740,8 @@ class SppaController extends Controller
 
         $datapolicy = array(
             "PID" => ($PID == null) ? '' : $PID,
-            "UrlESign" => $url
+            "UrlESign" => $url,
+            "EmailF" => $request->input('EmailF') == null ? false : $request->input('EmailF')
         );
 
         // $builder = new \AshAllenDesign\ShortURL\Classes\Builder();
@@ -736,13 +788,19 @@ class SppaController extends Controller
         }else{
             $payload['SubmitDateF'] = false;
         }
+        if ($payload['EsignF'] == 'true'){
+            $payload['EsignF'] = true;
+        }else{
+            $payload['EsignF'] = false;
+        }
         // dd($payload);
         $html = view('Transaction.PolicyDocSppaPDF')
             ->with([
                 'payload' => $payload
             ])->render();
+        
             
-            // return $html;
+        // dd($html);
 
         $dataPrintSPPA = array(
             'URLDoc' => $html,
@@ -754,6 +812,7 @@ class SppaController extends Controller
         );
 
         $responseDocSppa = APIMiddleware($dataPrintSPPA, 'ConvertWebPageToPDF');
+        // return $responseDocSppa;
         if ($responseDocSppa['code'] == '200' && $request->input('alreadySign') == 'true'){
             $PID = $request->input('payload')['PID'];
 
@@ -792,26 +851,19 @@ class SppaController extends Controller
         
     }
 
-    public function sppadocold(){
-        $dataPolicy = array(
-            'ID' => 'aca_mo_3',
-            'RefNo' => '15-DEMO210800034',
-            'PStatus' => '',
-            'Insured' => '',
-        ); 
-
-        $responsePolicy = APIMiddleware($dataPolicy, 'SearchPolicy');
-        // dd($responsePolicy);
-        return view('Transaction.backupdocsppa')->with(['Policy'=>$responsePolicy['Data']]);
-    }
-
     public function getPolicyDoc(Request $request){
         // dd($request);
         $requestGet = $request->get('data');
         
         // $PID = $requestGet['PID'];
         
-        $payload = $this->create_payload($requestGet, false);
+        if (array_key_exists('PreviewF',$requestGet)){
+            $previewF = $requestGet['PreviewF'] == null ? false : true;
+        }else{
+            $previewF = false;
+        }
+
+        $payload = $this->create_payload($requestGet, $previewF);
 
         // dd($payload);
 
@@ -943,7 +995,10 @@ class SppaController extends Controller
             'StampDuty' => $responsePolicy['Data'][0]['StampDuty'],
             'AID' => $responsePolicy['Data'][0]['AID'],
             'SubmitDateF' => $responsePolicy['Data'][0]['SubmitDateF'],
-            'periodDays' => $period_days->format('%a')
+            'periodDays' => $period_days->format('%a'),
+            'Discount' => $responsePolicy['Data'][0]['Discount'],
+            'DiscPCT' => $responsePolicy['Data'][0]['DiscPCT'],
+            'EsignF' => $responsePolicy['Data'][0]['EsignF']
         );
         for ($i = 1; $i <= 30; $i++) {
            $payload['FLDTAG'.$i] = $responseProduct['Data'][0]['FLDTAG'.($i)];
@@ -977,7 +1032,7 @@ class SppaController extends Controller
                     $data = array(
                         'UserName' => $request['ID'],
                         'Password' => $request['Password'],
-                        'TOPRO' => $deductible['CoverageID'],
+                        'TOPRO' => $responseCoverage['Data'][0]['RefTOPRO'],
                         'DCODE' => $deductible['RefCode'],
                         'PCTTSI' => $responsePolicy['Data'][0]['DEDPCTTSI'.$deductible['OrderNo']],
                         'PCTCL' => $responsePolicy['Data'][0]['DEDPCTCL'.$deductible['OrderNo']],
@@ -1070,11 +1125,13 @@ class SppaController extends Controller
                 $PCT = number_format(round($PCT,2),13,'.',',');
             }
         }
+        
+        dump($PCT);
 
         $data = array();
 
         for ($i=1; $i <= $maxrows; $i++){
-            $rowPCT;
+            $rowPCT;    
             $sdate = date_create($request->get('sdate'));
             date_add($sdate,date_interval_create_from_date_string(($i - 1) * $payment_term . " months"));
             if ($i < $maxrows){
@@ -1125,6 +1182,7 @@ class SppaController extends Controller
 
     public function showModalDeductible(Request $request){
         $data = array(
+            'reftopro' => $request->get('reftopro'),
             'dcode' => $request->get('dcode'),
             'remarks' => $request->get('remarks'),
             'orderno' => $request->get('orderno'),
@@ -1154,6 +1212,26 @@ class SppaController extends Controller
 
         return response()->json($responseDeductibleRemarks);
         // dd($responseDeductibleRemarks);
+    }
+
+    public function getURLConfirmation(Request $request){
+        $parameters = array(
+            'ID' => $request->get('ID') == null ? '' : $request->get('ID'),
+            'Password' => $request->get('Password') == null ? '' : $request->get('Password'),
+            'RefNo' => ($request->get('RefNo') == null) ? '' : $request->get('RefNo'),
+            'PID' => ($request->get('PID') == null ? '' : $request->get('PID')),
+            'imagettd' => '',
+            'name' => '',
+            'option_sengketa' => '',
+            'kondisi_kendaraan' => '',
+            'tempat_survey' => '',
+        );
+        // return $parameters;
+        // dd($parameters);
+
+        // $encryptParam= Crypt::encrypt($parameters);
+        $url = route('sppadoc', ['data' => $parameters]);
+        return $url;
     }
 
 }

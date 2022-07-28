@@ -12,12 +12,15 @@
     }
 
 </style>
-@section('title','ACA INSURANCE | dashboard')
+@section('title')
+{{config('app.COMPANYNAME')}} INSURANCE | Dashboard
+@endsection
+
 
 @section('head-linkrel')
 <script nonce="undefined" src="https://cdn.zingchart.com/zingchart.min.js"></script>
 <style>
-  html,
+  /* html, */
   /* body {
     height: 100%;
     width: 100%;
@@ -26,7 +29,7 @@
   /* #myChart {
     height: 100%;
     width: 100%;
-    /* min-height: 150px; */
+    min-height: 150px;
   } */
 
   .zc-ref {
@@ -48,6 +51,13 @@
   <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
+      <!-- <div class="form-group row">
+        <p class="col-sm-2 col-form-label">Marketing Officer</p>
+        <div class="col-sm-2">
+          <select class="form-control select2bs4" id="MO" name="MO" required>
+          </select>
+        </div>
+      </div> -->
       <div class="row">
         <div class="col-md-12">
           <div class="card card-primary">
@@ -242,37 +252,40 @@
         </div>
       </div>
 
-          <!-- bagian datatable -->
-      <div class="row">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Dashboard Marketing</h3>
+      <!-- bagian datatable -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Dashboard Marketing</h3>
+        </div>
+        <div class="card-body">
+          @if (session('Role') == 'MARKETING OFFICER')
+          <div class="form-group row">
+            <p class="col-sm-2 col-form-label">Marketing Officer</p>
+            <div class="col-sm-2">
+              <select class="form-control select2bs4" id="MO" name="MO" required>
+              </select>
             </div>
-            <div class="card-body">
-              <div class="col-md-12">
-                <div class="form-group row">
-                  <label for="TxtName" class="col-sm-3 col-form-label">TaskDue</label>
-                  <div class="input-group date col-sm-2" id="sdate" data-target-input="nearest">
-                    <input type="text" id="InceptionDate" name="TxtSDate" class="form-control datetimepicker-input" data-target="#sdate" required />
-                    <div class="input-group-append" data-target="#sdate" data-toggle="datetimepicker">
-                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                  </div>_
-                  <div class="input-group date col-sm-2" id="edate" data-target-input="nearest">
-                    <input type="text" id="ExpiryDate" name="TxtEDate" class="form-control datetimepicker-input" data-target="#edate" required />
-                    <div class="input-group-append" data-target="#edate" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <div class="col-md-12">
-                    <table id="dashboard" class="table table-bordered table-striped dt-responsive nowrap" width="100%">
-                    </table>
-                  </div>
-                </div>
+          </div>
+          @endif
+          <div class="form-group row">
+            <label for="TxtName" class="col-sm-2 col-form-label">Task Due</label>
+            <div class="input-group date col-sm-2" id="sdate" data-target-input="nearest">
+              <input type="text" id="InceptionDate" name="TxtSDate" class="form-control datetimepicker-input" data-target="#sdate" required />
+              <div class="input-group-append" data-target="#sdate" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
               </div>
+            </div>_
+            <div class="input-group date col-sm-2" id="edate" data-target-input="nearest">
+              <input type="text" id="ExpiryDate" name="TxtEDate" class="form-control datetimepicker-input" data-target="#edate" required />
+              <div class="input-group-append" data-target="#edate" data-toggle="datetimepicker">
+                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-12">
+              <table id="dashboard" class="table table-bordered table-striped dt-responsive nowrap" width="100%">
+              </table>
             </div>
           </div>
         </div>
@@ -287,8 +300,24 @@
   // refreshGaugeChart(90);
   let tblWidget;
   let status;
-  var arrPolicy = @json($data['Data']);
-  console.log(arrPolicy);
+  let listmo;
+  
+  var reponsePolicy = @json($data['Data']);
+  var arrPolicy = [];
+  if (responsePolicy['code'] == '200'){
+    arrPolicy = responsePolicy['Data'];
+  }
+  var responselistmo = @json($listmo);
+  if (responselistmo['code'] == '200'){
+    listmo = responselistmo['Data'];
+  }else{
+    listmo = [];
+  }
+  addOptionItem(MO,listmo,'ID','Name',false, false, false,'',true);
+  $('.select2bs4').select2({
+    theme: 'bootstrap4',
+    // placeholder: "Retrive Data..."
+  });
   
   var tempwait = arrPolicy.filter(dashboard => dashboard.PStatus != 'P');
   const waiting = tempwait.filter(dashboard => dashboard.PStatus != 'C');
@@ -309,295 +338,6 @@
   var Submit = temp_submit.filter(dashboard => dashboard.Job_PolicyNo == '');
   //Decline
   var Decline = arrPolicy.filter(dashboard => dashboard.PStatus == 'C');
-
-  function dropDownClick(status){
-    var val = 0;
-    switch(status){
-      case 'Waiting':
-        val = waiting.length;
-        break;
-      case 'Approve':
-        val = Approved.length;
-        break;
-      case 'Submit':
-        val = Submit.length;
-        break;
-      case 'Cancel':
-        val = Decline.length;
-        break;
-      default:
-        val = 0;  
-    }
-    refreshGaugeChart(val,status);
-    // $('.premium-title').html('Premium Perfomance - ' + status);
-  }
-  function refreshGaugeChart(val, title){
-    var myConfig = {
-      gui: {
-        behaviors: [
-          {
-            id: 'DownloadPDF',
-            enabled: 'none'
-          },
-          {
-            id: 'Reload',
-            enabled: 'none'
-          },
-          {
-            id: 'SaveAsImagePNG',
-            enabled: 'none'
-          },
-          {
-            id: 'SaveAsImagePNG',
-            enabled: 'none'
-          },
-          {
-            id: 'DownloadCSV',
-            enabled: 'none'
-          },
-          {
-            id: 'DownloadSVG',
-            enabled: 'none'
-          },
-          {
-            id: 'DownloadXLS',
-            enabled: 'none'
-          },
-          {
-            id: 'Print',
-            enabled: 'none'
-          },
-          {
-            id: 'ViewSource',
-            enabled: 'none'
-          }
-        ]
-      },
-      "type": "gauge",
-      "title":{
-        "text": title,
-        "font-size": 15
-      },
-      "scale-r": {
-        "aperture": 200,
-        // "values": "0:500000000:100000000",
-        minValue: 0,
-        maxValue: 500000000,
-        step: 100000000,
-        "center": {
-          "size": 5,
-          "background-color": "#66CCFF #FFCCFF",
-          "border-color": "none"
-        },
-        "ring": {
-          "size": 30,
-          "rules": [{
-              "rule": "%v >= 0 && %v <= 100000000",
-              "background-color": "red",
-              "text": "Poor"
-            },
-            {
-              "rule": "%v >= 100000000 && %v <= 150000000",
-              "background-color": "orange"
-            },
-            {
-              "rule": "%v >= 150000000 && %v <= 300000000",
-              "background-color": "yellow"
-            },
-            {
-              "rule": "%v >= 300000000 && %v <= 400000000",
-              "background-color": "green"
-            },
-            {
-              "rule": "%v >= 400000000 && %v <= 500000000",
-              "background-color": "blue"
-            }
-          ]
-        },
-        "labels": ["", "Poor", "Fair", "Good", "Great", ""], //Scale Labels
-        "item": { //Scale Label Styling
-          "font-color": "purple",
-          "font-family": "Georgia, serif",
-          "font-size": 12,
-          "font-weight": "bold", //or "normal"
-          "font-style": "normal", //or "italic"
-          "offset-r": 0,
-          "angle": "auto"
-        }
-      },
-      "scale": {
-        "size-factor": "160%" //Modify your gauge chart size.
-      },
-      plotarea: {
-        marginTop: 110
-      },
-      "plot": {
-        "csize": "5%",
-        "size": "100%",
-        "background-color": "#000000",
-        // valueBox: {
-        //   placement: 'center',
-        //   text: '%v', //default
-        //   // fontSize: 20,
-        //   // rules: [{
-        //   //     rule: '%v >= 700',
-        //   //     text: '%v<br>EXCELLENT'
-        //   //   },
-        //   //   {
-        //   //     rule: '%v < 700 && %v > 640',
-        //   //     text: '%v<br>Good'
-        //   //   },
-        //   //   {
-        //   //     rule: '%v < 640 && %v > 580',
-        //   //     text: '%v<br>Fair'
-        //   //   },
-        //   //   {
-        //   //     rule: '%v <  580',
-        //   //     text: '%v<br>Bad'
-        //   //   }
-        //   // ]
-        // }
-      },
-      // "plotarea": {
-      //   "marginTop": 50
-      // },
-      "series": [{
-        "values": [200000000],
-        "animation": {
-          "effect": 2,
-          "method": 1,
-          "sequence": 4,
-          "speed": 900
-        },
-      }]
-    };
-
-    // zingchart.render({
-    //   id: 'myChart',
-    //   data: myConfig,
-    //   height: 240,
-    //   width: '100%'
-    // });
-  }
-
-  dropDownClick('Waiting');
-  
-
-  // zingchart.render({
-  //   id: 'myChart2',
-  //   data: myConfig,
-  //   height: 200,
-  //   width: '100%'
-  // });
-
-  // zingchart.render({
-  //   id: 'myChart3',
-  //   data: myConfig,
-  //   height: 200,
-  //   width: '100%'
-  // });
-
-  // zingchart.render({
-  //   id: 'myChart4',
-  //   data: myConfig,
-  //   height: 200,
-  //   width: '100%'
-  // });
-  // zingchart.render({
-  //   id: 'myChart2',
-  //   data: myConfig,
-  //   height: 200,
-  //   width: '100%'
-  // });
-  // zingchart.render({
-  //   id: 'myChart3',
-  //   data: myConfig,
-  //   height: 200,
-  //   width: '100%'
-  // });
-  // zingchart.render({
-  //   id: 'myChart4',
-  //   data: myConfig,
-  //   height: 200,
-  //   width: '100%'
-  // });
-
-  // document.getElementById("waiting").innerHTML = waiting.length;
-  // document.getElementById("approve").innerHTML = Approved.length;
-  // document.getElementById("submit").innerHTML = Submit.length;
-  // document.getElementById("cancel").innerHTML = Decline.length;
-
-  // var areaChartData = {
-  //   labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December'],
-  //   datasets: [
-  //     {
-  //       label               : 'Waiting',
-  //       backgroundColor     : '#f39c12',
-  //       borderColor         : '#f39c12',
-  //       pointRadius          : false,
-  //       pointColor          : '#3b8bba',
-  //       pointStrokeColor    : 'rgba(60,141,188,1)',
-  //       pointHighlightFill  : '#fff',
-  //       pointHighlightStroke: 'rgba(60,141,188,1)',
-  //       data                : [28, 48, 40, 19, 86, 27, 90,500,333,500,230,101]
-  //     },
-  //     {
-  //       label               : 'Approve',
-  //       backgroundColor     : '#00a65a',
-  //       borderColor         : '#00a65a',
-  //       pointRadius         : false,
-  //       pointColor          : 'rgba(210, 214, 222, 1)',
-  //       pointStrokeColor    : '#c1c7d1',
-  //       pointHighlightFill  : '#fff',
-  //       pointHighlightStroke: 'rgba(220,220,220,1)',
-  //       data                : [65, 59, 80, 81, 56, 55, 40,400,232,124,534,333]
-  //     },
-  //     {
-  //       label               : 'Submit',
-  //       backgroundColor     : '#00c0ef',
-  //       borderColor         : '#00c0ef',
-  //       pointRadius         : false,
-  //       pointColor          : 'rgba(210, 214, 222, 1)',
-  //       pointStrokeColor    : '#c1c7d1',
-  //       pointHighlightFill  : '#fff',
-  //       pointHighlightStroke: 'rgba(220,220,220,1)',
-  //       data                : [64, 535, 323, 434, 535, 343, 232,121,434,232,434,434]
-  //     },
-  //     {
-  //       label               : 'Cancel',
-  //       backgroundColor     : '#f56954',
-  //       borderColor         : '#f56954',
-  //       pointRadius         : false,
-  //       pointColor          : 'rgba(210, 214, 222, 1)',
-  //       pointStrokeColor    : '#c1c7d1',
-  //       pointHighlightFill  : '#fff',
-  //       pointHighlightStroke: 'rgba(220,220,220,1)',
-  //       data                : [323, 434, 554, 443, 323, 434, 535,434,121,232,123,321]
-  //     },
-  //   ]
-  // }
-
-  //-------------
-  //- BAR CHART -
-  //-------------
-  // var barChartCanvas = $('#barChart').get(0).getContext('2d')
-  // var barChartData = $.extend(true, {}, areaChartData)
-  // // var temp0 = areaChartData.datasets[0]
-  // // var temp1 = areaChartData.datasets[1]
-  // // barChartData.datasets[0] = temp1
-  // // barChartData.datasets[1] = temp0
-
-  // var barChartOptions = {
-  //   responsive              : true,
-  //   maintainAspectRatio     : false,
-  //   datasetFill             : false
-  // }
-
-  // new Chart(barChartCanvas, {
-  //   type: 'bar',
-  //   data: barChartData,
-  //   options: barChartOptions
-  // })
 
   var transactionData = {
     labels: [
@@ -625,80 +365,44 @@
   }
   //Create pie or douhnut chart
   // You can switch between pie and douhnut using the method below.
-  new Chart(pieChartTransactionCanvas, {
+  const chartTransaction = new Chart(pieChartTransactionCanvas, {
     type: 'pie',
     data: pieDataTransaction,
     options: pieTransactionOptions
-  })
-
-  $(".knob").knob({
-    readOnly: true,
   });
 
-  /* jQueryKnob */
-
-  // $('.knob').knob({
-  //   readonly: true
-  // });
-    /*change : function (value) {
-      //console.log("change : " + value);
-      },
-      release : function (value) {
-      console.log("release : " + value);
-      },
-      cancel : function () {
-      console.log("cancel : " + this.value);
-      },*/
-  //   draw: function () {
-
-  //     // "tron" case
-  //     // if (this.$.data('skin') == 'tron') {
-
-  //     //   var a   = this.angle(this.cv)  // Angle
-  //     //     ,
-  //     //       sa  = this.startAngle          // Previous start angle
-  //     //     ,
-  //     //       sat = this.startAngle         // Start angle
-  //     //     ,
-  //     //       ea                            // Previous end angle
-  //     //     ,
-  //     //       eat = sat + a                 // End angle
-  //     //     ,
-  //     //       r   = true
-
-  //     //   this.g.lineWidth = this.lineWidth
-
-  //     //   this.o.cursor
-  //     //   && (sat = eat - 0.3)
-  //     //   && (eat = eat + 0.3)
-
-  //     //   if (this.o.displayPrevious) {
-  //     //     ea = this.startAngle + this.angle(this.value)
-  //     //     this.o.cursor
-  //     //     && (sa = ea - 0.3)
-  //     //     && (ea = ea + 0.3)
-  //     //     this.g.beginPath()
-  //     //     this.g.strokeStyle = this.previousColor
-  //     //     this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sa, ea, false)
-  //     //     this.g.stroke()
-  //     //   }
-
-  //     //   this.g.beginPath()
-  //     //   this.g.strokeStyle = r ? this.o.fgColor : this.fgColor
-  //     //   this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sat, eat, false)
-  //     //   this.g.stroke()
-
-  //     //   this.g.lineWidth = 2
-  //     //   this.g.beginPath()
-  //     //   this.g.strokeStyle = this.o.fgColor
-  //     //   this.g.arc(this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false)
-  //     //   this.g.stroke()
-
-  //     //   return false
-  //     // }
-  //   }
-  // })
-  /* END JQUERY KNOB */
+  $("#MO").on("select2:select", async function () {
+    var mo = $(this).val();
+    var url = "{{route('Dashboard.getlistpolicy')}}?ID=" + mo;
+    // console.log(url);
+    var response = await getDataNew(url);
+    if (response['code'] == '200'){
+      console.log(response);
+      var datas = response['Data'];
+      var waiting = datas.filter(data => data.PStatus != 'P' && data.PStatus != 'C');
+      var approved = datas.filter(data => data.PStatus == 'P' && data.Job_PolicyNo != '');
+      var submit = datas.filter(data => data.PStatus == 'P' && data.Job_PolicyNo == '');
+      var decline = datas.filter(data => data.PStatus == 'C');
+      var dataChart = [waiting.length,approved.length,submit.length,decline.length];
+      for (i=0; i < 4; i++){
+        chartTransaction.data.datasets[0].data[i] = dataChart[i];
+      }
+      chartTransaction.update();
+      var dataTaskDue = datas.filter(data => data.NeedSurveyF && !data.SurveyF);
+      t.clear().rows.add(dataTaskDue).draw();
+      // await sleep(500);
+      t.columns.adjust().draw();
+    }else{
+      var datas = [];
+      for (i=0; i < 4; i++){
+        chartTransaction.data.datasets[0].data[i] = 0;
+      }
+      chartTransaction.update();
+      t.clear().rows.add(datas).draw();
+      // await sleep(500);
+      t.columns.adjust().draw();
+    }
+  });
 
   var filter = {
     NeedSurveyF: true,
@@ -980,6 +684,366 @@
       toastMessage('400','Something wrong, please contact your Administrator.');
     }
   }
+
+  // function dropDownClick(status){
+  //   var val = 0;
+  //   switch(status){
+  //     case 'Waiting':
+  //       val = waiting.length;
+  //       break;
+  //     case 'Approve':
+  //       val = Approved.length;
+  //       break;
+  //     case 'Submit':
+  //       val = Submit.length;
+  //       break;
+  //     case 'Cancel':
+  //       val = Decline.length;
+  //       break;
+  //     default:
+  //       val = 0;  
+  //   }
+  //   refreshGaugeChart(val,status);
+  //   // $('.premium-title').html('Premium Perfomance - ' + status);
+  // }
+  // function refreshGaugeChart(val, title){
+  //   var myConfig = {
+  //     gui: {
+  //       behaviors: [
+  //         {
+  //           id: 'DownloadPDF',
+  //           enabled: 'none'
+  //         },
+  //         {
+  //           id: 'Reload',
+  //           enabled: 'none'
+  //         },
+  //         {
+  //           id: 'SaveAsImagePNG',
+  //           enabled: 'none'
+  //         },
+  //         {
+  //           id: 'SaveAsImagePNG',
+  //           enabled: 'none'
+  //         },
+  //         {
+  //           id: 'DownloadCSV',
+  //           enabled: 'none'
+  //         },
+  //         {
+  //           id: 'DownloadSVG',
+  //           enabled: 'none'
+  //         },
+  //         {
+  //           id: 'DownloadXLS',
+  //           enabled: 'none'
+  //         },
+  //         {
+  //           id: 'Print',
+  //           enabled: 'none'
+  //         },
+  //         {
+  //           id: 'ViewSource',
+  //           enabled: 'none'
+  //         }
+  //       ]
+  //     },
+  //     "type": "gauge",
+  //     "title":{
+  //       "text": title,
+  //       "font-size": 15
+  //     },
+  //     "scale-r": {
+  //       "aperture": 200,
+  //       // "values": "0:500000000:100000000",
+  //       minValue: 0,
+  //       maxValue: 500000000,
+  //       step: 100000000,
+  //       "center": {
+  //         "size": 5,
+  //         "background-color": "#66CCFF #FFCCFF",
+  //         "border-color": "none"
+  //       },
+  //       "ring": {
+  //         "size": 30,
+  //         "rules": [{
+  //             "rule": "%v >= 0 && %v <= 100000000",
+  //             "background-color": "red",
+  //             "text": "Poor"
+  //           },
+  //           {
+  //             "rule": "%v >= 100000000 && %v <= 150000000",
+  //             "background-color": "orange"
+  //           },
+  //           {
+  //             "rule": "%v >= 150000000 && %v <= 300000000",
+  //             "background-color": "yellow"
+  //           },
+  //           {
+  //             "rule": "%v >= 300000000 && %v <= 400000000",
+  //             "background-color": "green"
+  //           },
+  //           {
+  //             "rule": "%v >= 400000000 && %v <= 500000000",
+  //             "background-color": "blue"
+  //           }
+  //         ]
+  //       },
+  //       "labels": ["", "Poor", "Fair", "Good", "Great", ""], //Scale Labels
+  //       "item": { //Scale Label Styling
+  //         "font-color": "purple",
+  //         "font-family": "Georgia, serif",
+  //         "font-size": 12,
+  //         "font-weight": "bold", //or "normal"
+  //         "font-style": "normal", //or "italic"
+  //         "offset-r": 0,
+  //         "angle": "auto"
+  //       }
+  //     },
+  //     "scale": {
+  //       "size-factor": "160%" //Modify your gauge chart size.
+  //     },
+  //     plotarea: {
+  //       marginTop: 110
+  //     },
+  //     "plot": {
+  //       "csize": "5%",
+  //       "size": "100%",
+  //       "background-color": "#000000",
+  //       // valueBox: {
+  //       //   placement: 'center',
+  //       //   text: '%v', //default
+  //       //   // fontSize: 20,
+  //       //   // rules: [{
+  //       //   //     rule: '%v >= 700',
+  //       //   //     text: '%v<br>EXCELLENT'
+  //       //   //   },
+  //       //   //   {
+  //       //   //     rule: '%v < 700 && %v > 640',
+  //       //   //     text: '%v<br>Good'
+  //       //   //   },
+  //       //   //   {
+  //       //   //     rule: '%v < 640 && %v > 580',
+  //       //   //     text: '%v<br>Fair'
+  //       //   //   },
+  //       //   //   {
+  //       //   //     rule: '%v <  580',
+  //       //   //     text: '%v<br>Bad'
+  //       //   //   }
+  //       //   // ]
+  //       // }
+  //     },
+  //     // "plotarea": {
+  //     //   "marginTop": 50
+  //     // },
+  //     "series": [{
+  //       "values": [200000000],
+  //       "animation": {
+  //         "effect": 2,
+  //         "method": 1,
+  //         "sequence": 4,
+  //         "speed": 900
+  //       },
+  //     }]
+  //   };
+
+  //   // zingchart.render({
+  //   //   id: 'myChart',
+  //   //   data: myConfig,
+  //   //   height: 240,
+  //   //   width: '100%'
+  //   // });
+  // }
+
+  // dropDownClick('Waiting');
+  
+
+  // zingchart.render({
+  //   id: 'myChart2',
+  //   data: myConfig,
+  //   height: 200,
+  //   width: '100%'
+  // });
+
+  // zingchart.render({
+  //   id: 'myChart3',
+  //   data: myConfig,
+  //   height: 200,
+  //   width: '100%'
+  // });
+
+  // zingchart.render({
+  //   id: 'myChart4',
+  //   data: myConfig,
+  //   height: 200,
+  //   width: '100%'
+  // });
+  // zingchart.render({
+  //   id: 'myChart2',
+  //   data: myConfig,
+  //   height: 200,
+  //   width: '100%'
+  // });
+  // zingchart.render({
+  //   id: 'myChart3',
+  //   data: myConfig,
+  //   height: 200,
+  //   width: '100%'
+  // });
+  // zingchart.render({
+  //   id: 'myChart4',
+  //   data: myConfig,
+  //   height: 200,
+  //   width: '100%'
+  // });
+
+  // document.getElementById("waiting").innerHTML = waiting.length;
+  // document.getElementById("approve").innerHTML = Approved.length;
+  // document.getElementById("submit").innerHTML = Submit.length;
+  // document.getElementById("cancel").innerHTML = Decline.length;
+
+  // var areaChartData = {
+  //   labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December'],
+  //   datasets: [
+  //     {
+  //       label               : 'Waiting',
+  //       backgroundColor     : '#f39c12',
+  //       borderColor         : '#f39c12',
+  //       pointRadius          : false,
+  //       pointColor          : '#3b8bba',
+  //       pointStrokeColor    : 'rgba(60,141,188,1)',
+  //       pointHighlightFill  : '#fff',
+  //       pointHighlightStroke: 'rgba(60,141,188,1)',
+  //       data                : [28, 48, 40, 19, 86, 27, 90,500,333,500,230,101]
+  //     },
+  //     {
+  //       label               : 'Approve',
+  //       backgroundColor     : '#00a65a',
+  //       borderColor         : '#00a65a',
+  //       pointRadius         : false,
+  //       pointColor          : 'rgba(210, 214, 222, 1)',
+  //       pointStrokeColor    : '#c1c7d1',
+  //       pointHighlightFill  : '#fff',
+  //       pointHighlightStroke: 'rgba(220,220,220,1)',
+  //       data                : [65, 59, 80, 81, 56, 55, 40,400,232,124,534,333]
+  //     },
+  //     {
+  //       label               : 'Submit',
+  //       backgroundColor     : '#00c0ef',
+  //       borderColor         : '#00c0ef',
+  //       pointRadius         : false,
+  //       pointColor          : 'rgba(210, 214, 222, 1)',
+  //       pointStrokeColor    : '#c1c7d1',
+  //       pointHighlightFill  : '#fff',
+  //       pointHighlightStroke: 'rgba(220,220,220,1)',
+  //       data                : [64, 535, 323, 434, 535, 343, 232,121,434,232,434,434]
+  //     },
+  //     {
+  //       label               : 'Cancel',
+  //       backgroundColor     : '#f56954',
+  //       borderColor         : '#f56954',
+  //       pointRadius         : false,
+  //       pointColor          : 'rgba(210, 214, 222, 1)',
+  //       pointStrokeColor    : '#c1c7d1',
+  //       pointHighlightFill  : '#fff',
+  //       pointHighlightStroke: 'rgba(220,220,220,1)',
+  //       data                : [323, 434, 554, 443, 323, 434, 535,434,121,232,123,321]
+  //     },
+  //   ]
+  // }
+
+  //-------------
+  //- BAR CHART -
+  //-------------
+  // var barChartCanvas = $('#barChart').get(0).getContext('2d')
+  // var barChartData = $.extend(true, {}, areaChartData)
+  // // var temp0 = areaChartData.datasets[0]
+  // // var temp1 = areaChartData.datasets[1]
+  // // barChartData.datasets[0] = temp1
+  // // barChartData.datasets[1] = temp0
+
+  // var barChartOptions = {
+  //   responsive              : true,
+  //   maintainAspectRatio     : false,
+  //   datasetFill             : false
+  // }
+
+  // new Chart(barChartCanvas, {
+  //   type: 'bar',
+  //   data: barChartData,
+  //   options: barChartOptions
+  // })
+
+  // $(".knob").knob({
+  //   readOnly: true,
+  // });
+
+  /* jQueryKnob */
+
+  // $('.knob').knob({
+  //   readonly: true
+  // });
+    /*change : function (value) {
+      //console.log("change : " + value);
+      },
+      release : function (value) {
+      console.log("release : " + value);
+      },
+      cancel : function () {
+      console.log("cancel : " + this.value);
+      },*/
+  //   draw: function () {
+
+  //     // "tron" case
+  //     // if (this.$.data('skin') == 'tron') {
+
+  //     //   var a   = this.angle(this.cv)  // Angle
+  //     //     ,
+  //     //       sa  = this.startAngle          // Previous start angle
+  //     //     ,
+  //     //       sat = this.startAngle         // Start angle
+  //     //     ,
+  //     //       ea                            // Previous end angle
+  //     //     ,
+  //     //       eat = sat + a                 // End angle
+  //     //     ,
+  //     //       r   = true
+
+  //     //   this.g.lineWidth = this.lineWidth
+
+  //     //   this.o.cursor
+  //     //   && (sat = eat - 0.3)
+  //     //   && (eat = eat + 0.3)
+
+  //     //   if (this.o.displayPrevious) {
+  //     //     ea = this.startAngle + this.angle(this.value)
+  //     //     this.o.cursor
+  //     //     && (sa = ea - 0.3)
+  //     //     && (ea = ea + 0.3)
+  //     //     this.g.beginPath()
+  //     //     this.g.strokeStyle = this.previousColor
+  //     //     this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sa, ea, false)
+  //     //     this.g.stroke()
+  //     //   }
+
+  //     //   this.g.beginPath()
+  //     //   this.g.strokeStyle = r ? this.o.fgColor : this.fgColor
+  //     //   this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sat, eat, false)
+  //     //   this.g.stroke()
+
+  //     //   this.g.lineWidth = 2
+  //     //   this.g.beginPath()
+  //     //   this.g.strokeStyle = this.o.fgColor
+  //     //   this.g.arc(this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false)
+  //     //   this.g.stroke()
+
+  //     //   return false
+  //     // }
+  //   }
+  // })
+  /* END JQUERY KNOB */
+
+  
 
   // $(function () {
   //     var filter = {

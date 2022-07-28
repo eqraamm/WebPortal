@@ -22,7 +22,6 @@ Route::get('/login', 'AuthController@showFormLogin')->name('login');
 Route::post('/login', 'AuthController@login');
 Route::get('/logout', 'AuthController@logout')->name('logout');
 
-
 Route::group(['middleware' => 'CekLogin'], function(){
     // view dashboard
     Route::get('/dashboard', 'IndexController@index')->name('dashboard');
@@ -32,6 +31,7 @@ Route::group(['middleware' => 'CekLogin'], function(){
     Route::get('/dashboard/getdatagwp', 'IndexController@getDataGWP')->name('Dashboard.getGWP');
     Route::get('/dashboard/getdatalossratio', 'IndexController@getDataLossRatio')->name('Dashboard.getLossRatio');
     Route::get('/dashboard/getstoreddata', 'IndexController@refreshStoredData')->name('Dashboard.getStoredData');
+    Route::get('/dashboard/getlistpolicy', 'IndexController@getListPolicy')->name('Dashboard.getlistpolicy');
 
     // Index Profile
     Route::get('/profile', 'ProfileController@index')->name('profile');
@@ -52,6 +52,8 @@ Route::group(['middleware' => 'CekLogin'], function(){
         return Route::input('id');
     })->name("profile.getsync");
 
+    Route::get('/profile/refprofile', 'ProfileController@GetRefProfile')->name('profile.GetRefProfile');
+
     Route::get('/getlistprofile', 'ProfileController@getlistProfile')->name('listprofile');
     Route::get('/getlistcountry', 'ProfileController@getlistcountry')->name('listcountry');
     Route::get('/getlistProvince', 'ProfileController@getlistProvince')->name('listprovince');
@@ -66,6 +68,7 @@ Route::group(['middleware' => 'CekLogin'], function(){
 
     // Search Profile
     Route::get('/profile/search', 'ProfileController@SearchProfile')->name('profile.search');
+    Route::get('/profile/getprofilebyid', 'ProfileController@getProfileByID')->name('profile.getprofile');
 
      // Index Transaction
     Route::get('/transaction', 'SppaController@showFormPolicy')->name('policy.transaction');
@@ -96,6 +99,7 @@ Route::group(['middleware' => 'CekLogin'], function(){
     Route::get('/getlistcoverage', 'SppaController@getlistcoverage')->name('listcoverage');
     Route::get('/getlistgendtab', 'SppaController@getlistgendtab')->name('listgendtab');
     Route::get('/getprivileges', 'SppaController@getprivileges')->name('getprivileges');
+    Route::get('/getbstype', 'SppaController@getlistBSTYPE')->name('getbstype');
 
     Route::post('/docpreview', 'SppaController@getDocumentPreview')->name('docpreview');
     Route::get('/getdetailpolicy', 'SppaController@getDetailPolicy')->name('policy.getdetail');
@@ -110,6 +114,7 @@ Route::group(['middleware' => 'CekLogin'], function(){
     // Index Survey
     Route::get('/survey', 'SurveyController@showsurvey')->name('survey');
     Route::post('/emailsurvey', 'SurveyController@SubmitSurvey')->name('survey.submitsurvey');
+    Route::POST('/copylinksurvey', 'SurveyController@CopyLinkSurvey')->name('survey.copylink');
 
     // index report
     Route::get('/report', 'ReportController@Retrive')->name('retrive');
@@ -120,6 +125,29 @@ Route::group(['middleware' => 'CekLogin'], function(){
     Route::get('/modalrisk', 'SppaController@showModalRisk')->name('policy.modalrisk');
     Route::get('/modaldeductible', 'SppaController@showModalDeductible')->name('policy.modaldeductible');
     Route::get('/getdeductibleremarks', 'SppaController@getDeductibleRemarks')->name('policy.getDeductibleRemarks');
+
+    //Stored Data
+    Route::get('/liststoredpolicy', 'StoredDataController@ShowStoredPolicy')->name('storeddata.showpolicy');
+    Route::get('/liststoreddocument', 'StoredDataController@ShowStoredDocument')->name('storeddata.showdocument');
+    Route::post('/searchstoredpolicy', 'StoredDataController@SearchStoredPolicy')->name('storeddata.searchstoredpolicy');
+    Route::get('/getpolicyprintlogdocument', 'StoredDataController@GetPolicyPrintLogDocument')->name('storeddata.getpolicyprintlogdocument');
+
+    //Master - SysUser
+    Route::get('/master/sysuser', 'SysUserController@ShowFormSysUSer')->name('master.ShowSysUser');
+    Route::get('/master/addsysuser', 'SysUserController@ShowFormAddSysUSer')->name('master.ShowAddSysUser');
+    Route::get('/myprofile', 'SysUserController@ShowMyProfile')->name('myprofile');
+
+    //Change Password
+    Route::get('/changepassword', 'AuthController@ShowChangePassword')->name('showchangepassword');
+    Route::post('/changepassword', 'AuthController@ChangePassword')->name('changepassword');
+
+    //FAQ
+    Route::get('/faqlist', 'FAQController@index')->name('faqlist');
+});
+
+Route::group(['middleware' => 'RedirectResetPassword'], function(){
+    Route::get('/resetpassword', 'AuthController@ShowChangePassword')->name('showresetPassword');
+    Route::post('/resetpassword', 'AuthController@ChangePassword')->name('resetpassword');
 });
 
 //demo gaude chart
@@ -133,6 +161,7 @@ Route::get('/figma', function () {
 // Route::get('/sppadoc/{data}', 'SppaController@getPolicyDoc')->name('sppadoc');
 Route::get('/sppadoc', 'SppaController@getPolicyDoc')->name('sppadoc');
 Route::POST('/submitsppadoc', 'SppaController@SubmitPolicyDocSPPA')->name('submitsppadoc');
+
 // Route::view('/sppadoc', 'Transaction.PolicyDocSPPA');
 Route::get('/sppadocold/{data}', 'SppaController@getPolicyDoc')->name('sppadocold');
 // Route::view('/sppadocold', 'Transaction.backupdocsppa');
@@ -140,3 +169,5 @@ Route::get('/sppadocold/{data}', 'SppaController@getPolicyDoc')->name('sppadocol
 Route::get('/onlinesurvey', 'SurveyController@SurveyOnline')->name('VideoSurvey');
 Route::POST('/onlinesurvey/SaveSurveyDocument', 'SurveyController@SaveSurveyDocument')->name('SaveSurveyDocument');
 Route::POST('/onlinesurvey/FinishSurvey', 'SurveyController@FinishSurvey')->name('FinishSurvey');
+
+Route::get('/geturlconfirm', 'SppaController@getURLConfirmation')->name('urlconfirmation');

@@ -15,16 +15,16 @@
     </style>
   </head>
   <body>
-    <div class="form-group">
+    <div class="form-group div-hide-agent">
       <div class="row justify-content-center">
         <div class="col-sm-12">
           <label for="Title">Title</label>
+          @if (session('Role') == 'MARKETING OFFICER')
             <select class="form-control document-select" id="Title">
-              <!-- <option value=""></option>
-              <option value="Identitas">Identitas</option>
-              <option value="Bagian Depan">Bagian Depan</option>
-              <option value="Bagian Belakang">Bagian Belakang</option> -->
             </select>
+          @else
+            <input type="text" class="form-control" id="Title" name="Title"></input>
+          @endif
         </div>
       </div>
     </div>
@@ -139,8 +139,9 @@
       dropzone.style.display = "none";
       cardPreview.style.display = "block";
       document.querySelector(".btn-upload").onclick = function() { 
-        $('#div-overlay-modal').empty();
-	      $('#div-overlay-modal').append('<div style="position:absolute;" class="overlay"><i style="position:absolute; left:50%; top:50%; margin-top:-25px; margin-left:-25px;" class="fas fa-2x fa-sync fa-spin"></i></div>');
+        // $('#div-overlay-modal').empty();
+	      // $('#div-overlay-modal').append('<div style="position:absolute;" class="overlay"><i style="position:absolute; left:50%; top:50%; margin-top:-25px; margin-left:-25px;" class="fas fa-2x fa-sync fa-spin"></i></div>');
+        $('#div-overlay-modal').removeAttr('style');
         myDropzone.enqueueFile(file);
       };
       document.querySelector(".btn-remove").onclick = function(){
@@ -195,7 +196,8 @@
       console.log(response);
       // console.log(file.previewElement);
       // console.log(file);
-      $('#div-overlay-modal').empty();
+      // $('#div-overlay-modal').empty();
+      $('#div-overlay-modal').css('display','none');
       if (response.code == '200'){
         drawDataTablePolDoc(response.listpolicydoc.Data);
         // var tblDoc = $('#tblPolDocUpload').DataTable();
@@ -217,75 +219,78 @@
       }
     });
     // console.log($('#ProductID').val());
-    var datas;
-    if ($('#ProductID').val() == '0202'){
-      datas = [
-        {
-          id : "Identitas",
-          text : "Identitas"
-        },
-        {
-          id : "Bagian Depan",
-          text : "Bagian Depan"
-        },
-        {
-          id : "Bagian Belakang",
-          text : "Bagian Belakang"
-        },
-        {
-          id : "Bagian Kanan",
-          text : "Bagian Kanan"
-        },
-        {
-          id : "Bagian Kiri",
-          text : "Bagian Kiri"
-        },
-        {
-          id : "Rangka/Mesin",
-          text : "Rangka/Mesin"
-        },
-        {
-          id : "Ruang Mesin",
-          text : "Ruang Mesin"
-        },
-        {
-          id : "Lain-lain",
-          text : "Lain-lain"
-        }
-      ];
-    }else{
-      datas = [
-        {
-          id : "Identitas",
-          text : "Identitas"
-        },
-        {
-          id : "Bagian Depan",
-          text : "Bagian Depan"
-        },
-        {
-          id : "Bagian Dalam",
-          text : "Bagian Dalam"
-        },
-        {
-          id : "Bagian Kanan",
-          text : "Bagian Kanan"
-        },
-        {
-          id : "Bagian Kiri",
-          text : "Bagian Kiri"
-        },
-        {
-          id : "Lain-lain",
-          text : "Lain-lain"
-        }
-      ];
-    }
     
-    datas.forEach(function (data) {
-      var newOption = new Option(data.text, data.id, false, false);
-      $('.document-select').append(newOption).trigger('change');
-    });
+    if ("{{ session('Role') }}" == 'MARKETING OFFICER'){
+      var datas;
+      if ($('#ProductID').val() == '0202M'){
+        datas = [
+          {
+            id : "Identitas",
+            text : "Identitas"
+          },
+          {
+            id : "Bagian Depan",
+            text : "Bagian Depan"
+          },
+          {
+            id : "Bagian Belakang",
+            text : "Bagian Belakang"
+          },
+          {
+            id : "Bagian Kanan",
+            text : "Bagian Kanan"
+          },
+          {
+            id : "Bagian Kiri",
+            text : "Bagian Kiri"
+          },
+          {
+            id : "Rangka/Mesin",
+            text : "Rangka/Mesin"
+          },
+          {
+            id : "Ruang Mesin",
+            text : "Ruang Mesin"
+          },
+          {
+            id : "Lain-lain",
+            text : "Lain-lain"
+          }
+        ];
+      }else{
+        datas = [
+          {
+            id : "Identitas",
+            text : "Identitas"
+          },
+          {
+            id : "Bagian Depan",
+            text : "Bagian Depan"
+          },
+          {
+            id : "Bagian Dalam",
+            text : "Bagian Dalam"
+          },
+          {
+            id : "Bagian Kanan",
+            text : "Bagian Kanan"
+          },
+          {
+            id : "Bagian Kiri",
+            text : "Bagian Kiri"
+          },
+          {
+            id : "Lain-lain",
+            text : "Lain-lain"
+          }
+        ];
+      }
+      
+      datas.forEach(function (data) {
+        var newOption = new Option(data.text, data.id, false, false);
+        $('.document-select').append(newOption).trigger('change');
+      });
+    }
     
   </script>
 </html>

@@ -6,6 +6,8 @@ function APIMiddleware($array_plaintext, $path){
     $url = config('app.URLAPIMIDDLEWARE') . $path;
     $data = json_encode($array_plaintext);
 
+    // dump($data);
+
     //Padding for Triple DES ECB
     $blockSize = 8;
     $len = strlen($data);
@@ -17,6 +19,8 @@ function APIMiddleware($array_plaintext, $path){
     $method = 'des-ede3'; //TRIPLE DES ECB
     $ciphertext = openssl_encrypt($data, $method, $privatekey, OPENSSL_NO_PADDING);
     $ciphertext = base64_encode($ciphertext);
+
+    // dd($ciphertext);
 
     $response = Http::post($url, [
         'data' => $ciphertext,

@@ -13,7 +13,7 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{asset('plugins/fontawesome-free/css/all.min.css')}}">
+  <!-- <link rel="stylesheet" href="{{asset('plugins/fontawesome-free/css/all.min.css')}}"> -->
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="{{asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
   <!-- Theme style -->
@@ -41,47 +41,54 @@
   <link rel="stylesheet" href="{{asset('plugins/select2/css/select2.min.css')}}">
   <link rel="stylesheet" href="{{asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
 
+  <script src="https://kit.fontawesome.com/98c7930b81.js" crossorigin="anonymous"></script>
   @yield('head-linkrel')
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<!-- <body class="hold-transition layout-top-nav layout-fixed text-sm"> -->
+<body class="{{ (Session::get('sidebar') == 'top-nav') ? 'hold-transition layout-top-nav layout-fixed text-s' : 'hold-transition sidebar-mini layout-fixed text-s' }}">
 <!-- Site wrapper -->
 <div class="wrapper">
+
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-    <!-- Left navbar links -->
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-      </li>
-    </ul>
-    <ul class="navbar-nav ml-auto mr-0 mr-md-3 my-2 my-md-0">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <!-- <a class="dropdown-item" href="#">Settings</a>
-                        <a class="dropdown-item" href="#">Activity Log</a>
-                        <div class="dropdown-divider"></div> -->
-                        <a class="dropdown-item" href=" {{route('logout')}} ">Logout</a>
-                    </div>
-                </li>
-            </ul>
+    <div class="{{session('sidebar') == 'top-nav' ? 'container' : 'container-fluid'}}">
+      @if (session('sidebar') == 'top-nav')
+      <a href="#" class="navbar-brand">
+         <img src="{{asset('dist/img/company_logo.png')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+         <span class="brand-text font-weight-light">{{config('app.COMPANYNAME')}}</span>
+      </a>
+      @else
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+      </ul>
+      @endif
+      <ul class="navbar-nav ml-auto mr-0 mr-md-3 my-2 my-md-0">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+              <a class="dropdown-item" href="{{route('faqlist')}}">FAQ</a>
+              <a class="dropdown-item" href="{{route('showchangepassword')}}">Change Password</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{route('logout')}}">Logout</a>
+            </div>
+        </li>
+      </ul>
+    </div>
   </nav>
-
-  
-    <!-- Right navbar links -->
-    <!-- Navbar Search -->
-    <!-- Messages Dropdown Menu -->
-<!-- /.navbar -->
+  <!-- /.navbar -->
       
 
 
   <!-- Main Sidebar Container -->
+  @if (Session('sidebar') != 'top-nav')
   <aside class="main-sidebar sidebar-light-primary elevation-4">
     <!-- Brand Logo -->
     <a href="#" class="brand-link">
       <img src="{{asset('dist/img/company_logo.png')}}" alt="Company Logo" class="brand-image" style="opacity: .8">
-      <!-- <span class="brand-text font-weight-dark">{{config('app.COMPANYNAME')}}</span> -->
-      <span class="brand-text font-weight-dark">ACA INSURANCE</span>
+      <span class="brand-text font-weight-dark">{{config('app.COMPANYNAME')}}</span>
+      <!-- <span class="brand-text font-weight-dark">ACA INSURANCE</span> -->
     </a>
 
     <!-- Sidebar -->
@@ -92,7 +99,7 @@
           <img src="{{asset('dist/img/user.png')}}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info text-wrap">
-          <a href="#" class="d-block">{{ Session::get('Name')}}</a>
+          <a href="{{route('myprofile')}}" class="d-block">{{ Session::get('Name')}}</a>
         </div>
       </div>
 
@@ -105,7 +112,26 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="{{ Session::get('sidebar') == 'dashboard' ? 'nav-link menu-open' : 'nav-link' }}">
+          @if (session('Role') == 'MARKETING OFFICER')
+            <li class="{{ (Session::get('sidebar') == 'master') ? 'nav-item menu-is-opening menu-open' : 'nav-item' }}">
+              <a href="#" class="{{ (Session::get('sidebar') == 'master') ? 'nav-link active' : 'nav-link' }}">
+                <i class="nav-icon fas fa-cog"></i>
+                <p>
+                  Master
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{ route('master.ShowSysUser')}}" class="{{ (Session::get('sidebar') == 'master' && Session::get('sidebar-tree') == 'sysuser') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="fas fa-users nav-icon"></i>
+                    <p>{{ (Session::get('Role') == 'ADMIN') ? 'User' : 'Business Source'}}</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          @endif
+          <li class="{{ Session::get('sidebar') == 'dashboard' ? 'nav-item menu-open' : 'nav-item' }}">
             <a href="{{ route('dashboard')}}" class="{{ Session::get('sidebar') == 'dashboard' ? 'nav-link active' : 'nav-link' }}">
             <!-- <a href="{{ route('dashboard')}}" class="{{ Session::get('sidebar') == 'dashboard' ? 'nav-link active' : 'nav-link' }}"> -->
               <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -114,7 +140,7 @@
               </p>
             </a>
           </li>
-          <li class="{{ Session::get('sidebar') == 'profile' ? 'nav-link menu-open' : 'nav-link' }}">
+          <li class="{{ Session::get('sidebar') == 'profile' ? 'nav-item menu-open' : 'nav-item' }}">
             <a href="{{ route('profile')}}" class="{{ Session::get('sidebar') == 'profile' ? 'nav-link active' : 'nav-link' }}">
               <i class="nav-icon fas fa-th"></i>
               <p>
@@ -122,7 +148,7 @@
               </p>
             </a>
           </li>
-          <li class="{{ Session::get('sidebar') == 'sppa' ? 'nav-link menu-open' : 'nav-link' }}">
+          <li class="{{ Session::get('sidebar') == 'sppa' ? 'nav-item menu-open' : 'nav-item' }}">
             <a href="{{ route('policy.transaction')}}" class="{{ Session::get('sidebar') == 'sppa' ? 'nav-link active' : 'nav-link' }}">
               <i class="nav-icon fas fa-copy"></i>
               <p>
@@ -131,13 +157,39 @@
             </a>
           </li>
           @if (session('Role') == 'MARKETING OFFICER')
-            <li class="{{ Session::get('sidebar') == 'survey' ? 'nav-link menu-open' : 'nav-link' }}">
+            <li class="{{ Session::get('sidebar') == 'survey' ? 'nav-item menu-open' : 'nav-item' }}">
               <a href="survey" class="{{ Session::get('sidebar') == 'survey' ? 'nav-link active' : 'nav-link' }}">
-                <i class="nav-icon fas fa-tree"></i>
+                <i class="nav-icon fas fa-video"></i>
                 <p>
                   Survey
                 </p>
               </a>
+            </li>
+          @endif
+          
+          @if (config('app.ShowStoredData'))
+            <li class="{{ (Session::get('sidebar') == 'stored-data' && (Session::get('sidebar-tree') == 'stored-policy' || Session::get('sidebar-tree') == 'stored-document')) ? 'nav-item menu-is-opening menu-open' : 'nav-item' }}">
+              <a href="#" class="{{ (Session::get('sidebar') == 'stored-data' && (Session::get('sidebar-tree') == 'stored-policy' || Session::get('sidebar-tree') == 'stored-document')) ? 'nav-link active' : 'nav-link' }}">
+                <i class="nav-icon fas fa-chart-pie"></i>
+                <p>
+                  Stored Data
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{ route('storeddata.showpolicy')}}" class="{{ (Session::get('sidebar') == 'stored-data' && Session::get('sidebar-tree') == 'stored-policy') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Policy</p>
+                  </a>
+                </li>
+                <!-- <li class="nav-item">
+                  <a href="{{ route('storeddata.showdocument')}}" class="{{ (Session::get('sidebar') == 'stored-data' && Session::get('sidebar-tree') == 'stored-document') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Document</p>
+                  </a>
+                </li> -->
+              </ul>
             </li>
           @endif
           <!-- <li class="{{ Session::get('sidebar') == 'report' ? 'nav-link menu-open' : 'nav-link' }}">
@@ -153,6 +205,8 @@
     </div>
     <!-- /.sidebar -->
   </aside>
+  @endif
+
   
   <!-- Loading -->
   <div class="modal" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel" data-backdrop="static" data-keyboard="false" tabindex="-1">
@@ -195,7 +249,7 @@
     <!-- </div> -->
   </div>
 
-    @yield('maincontent')
+  @yield('maincontent')
 
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
@@ -225,9 +279,9 @@
 <script src="{{asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
-<script src="{{asset('plugins/jszip/jszip.min.js')}}"></script>
-<script src="{{asset('plugins/pdfmake/pdfmake.min.js')}}"></script>
-<script src="{{asset('plugins/pdfmake/vfs_fonts.js')}}"></script>
+<!-- <script src="{{asset('plugins/jszip/jszip.min.js')}}"></script> -->
+<!-- <script src="{{asset('plugins/pdfmake/pdfmake.min.js')}}"></script> -->
+<!-- <script src="{{asset('plugins/pdfmake/vfs_fonts.js')}}"></script> -->
 <script src="{{asset('plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
@@ -261,7 +315,7 @@
 <script src="{{asset('plugins/jquery-knob/jquery.knob.min.js')}}"></script>
 
 <!-- General For Web Portal MW -->
-<script src="{{asset('dist/js/pages/webportal.js')}}"></script>
+<script src="{{asset('dist/js/pages/webportal.js')}}?1"></script>
 @yield('scriptpage')
 </body>
 </html>

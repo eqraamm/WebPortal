@@ -123,6 +123,7 @@
     </style>
   </head>
   <body style="{{ $payload['option_sengketa'] == '' ? 'background-color:#eee;' : '' }}">
+  @if (!$payload['EsignF'])
     <form id="form-sppadoc">
       @csrf
       <table style="width:100%; height:100%">
@@ -130,6 +131,35 @@
           <tr>
             <td align="{{ $payload['option_sengketa'] == '' ? 'center' : 'left' }}">
               <div class="templateContainer">
+                <table style="width:100%; height:100%;">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <table class="tblContentRow" style="table-layout:fixed;margin-top:20px;">
+                          <tbody>
+                            <tr>
+                              <td class="tdLabel">
+                                <span>
+                                  <img src="{{asset('dist/img/company_logo.png')}}" alt="Company Logo" class="brand-image" style="opacity: .8; width:25%; height:25%">
+                                </span>
+                              </td>
+                              <!-- <td class="tdDot">
+                                <span>
+                                  :
+                                </span>
+                              </td>
+                              <td class="tdValue">
+                                <span id="span-sppano">
+                                  {{$payload['RefNo']}}
+                                </span>
+                              </td> -->
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
                 <table align="center">
                   <tr>
                     <td style="padding-top:30px;">
@@ -347,16 +377,6 @@
                                     {{ $payload['periodDays'] }} hari
                                   </span>
                                 </td>
-                                <!-- <td class="tdLabel">
-                                  <span>
-                                    sampai dengan
-                                  </span>
-                                </td>
-                                <td class="tdValue">
-                                  <span id="span-edate">
-                                  {{ $payload['dateExpiry'] }}
-                                  </span>
-                                </td> -->
                               </tr>
                             </tbody>
                           </table>
@@ -416,7 +436,7 @@
                       <td>
                         <table border="0" class="rowDetailObjInfo">
                           <tbody id="tblObjectInfo">
-                            @for ($i = 1; $i <= 15; $i++)
+                            @for ($i=0; $i < 15; $i++)
                               @if ($payload['FLDTAG'.($i + 1)] != '')
                                 <tr>
                                   <td class="tdTab">
@@ -667,34 +687,98 @@
                             </tr>
                             <!-- End Total Premium -->
 
-                            <!-- Biaya Administrasi -->
-                            <tr>
-                              <td class="tdTab">
-                                <span>
-                                </span>
-                              </td>
-                              <td class="strip">
-                                <span>
-                                  
-                                </span>
-                              </td>
-                              <td class="tdLabelObjectInfo" style="text-align:right; width:63%;">
-                                <span>
-                                  <b>Biaya Administrasi</b>
-                                </span>
-                              </td>
-                              <td class="tdLabelObjectInfo" style="text-align:center; width:7%;">
-                                <span class="span-currency">
-                                 {{ $payload['Currency'] }}
-                                </span>
-                              </td>
-                              <td class="tdLabelObjectInfo" style="text-align:right;">
-                                <span id="span-admfee_stampduty">
-                                  {{ number_format($payload['ADMFee'] + $payload['StampDuty'],2) }}
-                                </span>
-                              </td>
-                            </tr>
-                            <!-- End Biaya Administrasi -->
+                            @if ($payload['ADMFee'] != 0)
+                              <!-- Biaya Administrasi -->
+                              <tr>
+                                <td class="tdTab">
+                                  <span>
+                                  </span>
+                                </td>
+                                <td class="strip">
+                                  <span>
+                                    
+                                  </span>
+                                </td>
+                                <td class="tdLabelObjectInfo" style="text-align:right; width:63%;">
+                                  <span>
+                                    <b>Biaya Administrasi</b>
+                                  </span>
+                                </td>
+                                <td class="tdLabelObjectInfo" style="text-align:center; width:7%;">
+                                  <span class="span-currency">
+                                  {{ $payload['Currency'] }}
+                                  </span>
+                                </td>
+                                <td class="tdLabelObjectInfo" style="text-align:right;">
+                                  <span id="span-admfee_stampduty">
+                                    {{ number_format($payload['ADMFee'],2) }}
+                                  </span>
+                                </td>
+                              </tr>
+                              <!-- End Biaya Administrasi -->
+                            @endif
+
+                            @if ($payload['StampDuty'] != 0)
+                            <!-- Biaya Stamp Duty -->
+                              <tr>
+                                <td class="tdTab">
+                                  <span>
+                                  </span>
+                                </td>
+                                <td class="strip">
+                                  <span>
+                                    
+                                  </span>
+                                </td>
+                                <td class="tdLabelObjectInfo" style="text-align:right; width:63%;">
+                                  <span>
+                                    <b>Biaya Stamp Duty</b>
+                                  </span>
+                                </td>
+                                <td class="tdLabelObjectInfo" style="text-align:center; width:7%;">
+                                  <span class="span-currency">
+                                  {{ $payload['Currency'] }}
+                                  </span>
+                                </td>
+                                <td class="tdLabelObjectInfo" style="text-align:right;">
+                                  <span id="span-admfee_stampduty">
+                                    {{ number_format($payload['StampDuty'],2) }}
+                                  </span>
+                                </td>
+                              </tr>
+                              <!-- End Biaya Stamp Duty -->
+                            @endif
+
+                            @if ($payload['Discount'] != 0)
+                              <!-- Discount -->
+                              <tr>
+                                <td class="tdTab">
+                                  <span>
+                                  </span>
+                                </td>
+                                <td class="strip">
+                                  <span>
+                                    
+                                  </span>
+                                </td>
+                                <td class="tdLabelObjectInfo" style="text-align:right; width:63%;">
+                                  <span>
+                                    <b>Discount</b>
+                                  </span>
+                                </td>
+                                <td class="tdLabelObjectInfo" style="text-align:center; width:7%;">
+                                  <span class="span-currency">
+                                  {{ $payload['Currency'] }}
+                                  </span>
+                                </td>
+                                <td class="tdLabelObjectInfo" style="text-align:right;">
+                                  <span id="span-admfee_stampduty">
+                                    - {{ number_format($payload['Discount'],2) }}
+                                  </span>
+                                </td>
+                              </tr>
+                              <!-- Discount -->
+                            @endif
                           </tbody>
                         </table>
                       </td>
@@ -749,7 +833,7 @@
                               </td>
                               <td class="tdLabelObjectInfo" style="text-align:right;">
                                 <span id="span-totalpremium">
-                                {{ number_format($payload['Premium'] + $payload['ADMFee'] + $payload['StampDuty'],2) }}
+                                {{ number_format($payload['Premium'] + $payload['ADMFee'] + $payload['StampDuty'] - $payload['Discount'],2) }}
                                 </span>
                               </td>
                             </tr>
@@ -1211,6 +1295,7 @@
         </tbody>
       </table>
     </form>
+  @endif
     @yield('scriptpage')
   </body>
 </html>

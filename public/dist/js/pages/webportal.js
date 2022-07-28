@@ -30,7 +30,7 @@ function toastMessage(responseCode, responseMessage){
 }
 
 function popupToast(inputtype, inputLabel, inputPlaceholder,elementID, readonly, regex, fldtag){
-    console.log(regex);
+    // console.log(regex);
     var attributes = new Array();
     if (readonly){
         attributes = {
@@ -230,23 +230,56 @@ function refreshDataTable(table, data){
     table.rows.add(data).draw(); // Add new data
 }
 
-function addOptionItem(selectElement, data, LblValue, LblDescription, withBlankItem = true, descriptionWithID = false){
+function addOptionItem(selectElement, data, LblValue, LblDescription, withBlankItem = true, descriptionWithID = false, districtF = false, LblDescription_1 = '', withAllItem = false){
     if (withBlankItem){
-      var option = document.createElement("OPTION");
-      option.value = '';
-      option.innerHTML = '';
-      selectElement.appendChild(option);
-    }
-    for (j = 0; j < data.length; j++) {
         var option = document.createElement("OPTION");
-        option.value = data[j][LblValue];
-        if (descriptionWithID){
-          option.innerHTML = data[j][LblValue] + ' - ' + data[j][LblDescription];
-        }else{
-          option.innerHTML = data[j][LblDescription];
-        }
+        option.value = '';
+        option.innerHTML = '';
         selectElement.appendChild(option);
+    }
+    if (withAllItem){
+        var option = document.createElement("OPTION");
+        option.value = 'All';
+        option.innerHTML = 'All';
+        selectElement.appendChild(option);
+    }
+    if (data != undefined){
+        for (j = 0; j < data.length; j++) {
+            var option = document.createElement("OPTION");
+            option.value = data[j][LblValue];
+            if (descriptionWithID){
+              option.innerHTML = data[j][LblValue] + ' - ' + data[j][LblDescription];
+            }else if (districtF && LblDescription_1 != ''){
+                option.innerHTML = data[j][LblDescription] + ' , ' + data[j][LblDescription_1];
+            }else{
+              option.innerHTML = data[j][LblDescription];
+            }
+            selectElement.appendChild(option);
+        }
     }
 }
 
 $('.number-format').attr('oninput',"this.value = this.value.replace(/[^0-9.]/g, '');");
+
+function PostData(ajaxurl, dataPost) { 
+    return $.ajax({
+        url: ajaxurl,
+        type: 'POST',
+        data: dataPost,
+        beforeSend: function() { $('#loadMe').modal('show'); },
+        complete: function() { $('#loadMe').modal('hide'); }
+    });
+};
+
+async function drawDataTable(table,data){
+    table.clear().draw();
+    table.rows.add(data);
+    table.columns.adjust().draw();
+    // await sleep(1);
+    table.columns.adjust().draw(); 
+  }
+
+function openInNewTab(url, target) {
+    // console.log(url);
+    window.open(url, target);
+}

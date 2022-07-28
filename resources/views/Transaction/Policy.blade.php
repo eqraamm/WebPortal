@@ -1,5 +1,7 @@
 @extends('layout/main')
-@section('title','ACA INSURANCE | Transaction')
+@section('title')
+{{config('app.COMPANYNAME')}} INSURANCE | SPPA
+@endsection
 @section('head-linkrel')
 <!-- <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" /> -->
 <link rel="stylesheet" href="{{asset('dist/css/transaction.css')}}">
@@ -81,6 +83,15 @@
                   </div>
                   <!-- /.card-header -->
                   <div class="card-body">
+                    @if (session('Role') == 'MARKETING OFFICER')
+                    <div class="form-group row">
+                      <p class="col-sm-2 col-form-label">Marketing Officer</p>
+                      <div class="col-sm-2">
+                        <select class="form-control select2bs4" id="listMo" name="listMo" required>
+                        </select>
+                      </div>
+                    </div>
+                    @endif
                     <div class="table-responsive">
                       <!-- <button id="btntest">button test</button> -->
                       <!-- <table id="tblInquiryPolicy" class="table table-condensed responsive table-striped display nowrap" width="100%" > -->
@@ -139,6 +150,9 @@
                         <button id="img-btn-send" href="#" class="btn" style="overflow:hidden; color: Dodgerblue;" data-toggle="tooltip" data-placement="top" title="Send Confirmation">
                           <i class="far fa-paper-plane fa-2x"></i>
                         </button>
+                        <button id="img-btn-sign" href="#" class="btn" style="overflow:hidden; color: Dodgerblue;" data-toggle="tooltip" data-placement="top" title="Sign SPPA">
+                          <i class="fas fa-file-signature fa-2x"></i>
+                        </button>
                         <button id="img-btn-revise" href="#" class="btn" style="overflow:hidden; color: #ffac54;" data-toggle="tooltip" data-placement="top" title="Revise">
                           <i class="fas fa-edit fa-2x"></i>
                         </button>
@@ -172,17 +186,19 @@
                               <span class="bs-stepper-label">Risk</span>
                             </button>
                           </div>
-                          <div class="line"></div>
-                          <div class="step" data-target="#payor-part">
-                            <button type="button" class="step-trigger" role="tab" aria-controls="payor-part" id="payor-part-trigger">
-                              <span class="bs-stepper-circle">4</span>
-                              <span class="bs-stepper-label">Payor</span>
-                            </button>
-                          </div>
+                          @if (session('Role') == 'MARKETING OFFICER')
+                            <div class="line"></div>
+                            <div class="step" data-target="#payor-part">
+                              <button type="button" class="step-trigger" role="tab" aria-controls="payor-part" id="payor-part-trigger">
+                                <span class="bs-stepper-circle">4</span>
+                                <span class="bs-stepper-label">Payor</span>
+                              </button>
+                            </div>
+                          @endif
                           <div class="line"></div>
                           <div class="step" data-target="#others-part">
                             <button type="button" class="step-trigger" role="tab" aria-controls="others-part" id="others-part-trigger">
-                              <span class="bs-stepper-circle">5</span>
+                              <span class="bs-stepper-circle">{{ session('Role') == 'MARKETING OFFICER' ? 5 : 4 }}</span>
                               <span class="bs-stepper-label">Others</span>
                             </button>
                           </div>
@@ -232,7 +248,7 @@
                                 <div class="form-group row">
                                   <label for="SType" class="col-sm-2 col-form-label">Policy Type</label>
                                   <div class="col-sm-3">
-                                    <select class="form-control select2bs4" id="SType" name="LstSType">
+                                    <select class="form-control select2bs4" id="SType" name="LstSType" disabled>
                                       <!-- <option value="" selected></option> -->
                                       <!-- <option value="S" selected>Individual</option> -->
                                       <!-- <option value="M">Master Policy</option>
@@ -272,7 +288,7 @@
                                     </div>
                                   </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row" style="display:none">
                                   <p for="TxtQuotationNo" class="col-sm-3 col-form-label">Quotation No</p>
                                   <div class="col-sm-4">
                                     <input class="form-control" id="CREFNO" name="TxtQuotationNo" type="text">
@@ -284,8 +300,8 @@
                                     <input class="form-control" id="RefNo" name="TxtRefNo" type="text">
                                   </div>
                                 </div>
-                                <div class="form-group row">
-                                  @if (config('app.MANDATORYBRANCH'))
+                                <div class="form-group row div-hide-agent">
+                                  @if (config('app.MANDATORYSEGMENT'))
                                     <label for="Segment" class="col-sm-3 col-form-label">Segment</label>
                                   @else
                                     <p class="col-sm-3 col-form-label">Segment</p>
@@ -298,14 +314,14 @@
                                     </div>
                                   </div>
                                 </div>
-                                <div class="form-group row" id="divLstMO">
+                                <div class="form-group row div-hide-agent" id="divLstMO">
                                   <p class="col-sm-3 col-form-label">Marketing Officer  </p>
                                   <div class="col-sm-4">
                                     <select class="form-control select2bs4 select2bs4-getapi" id="MO" name="LstMO">
                                     </select>
                                   </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row div-hide-agent">
                                   @if (config('app.MANDATORYBRANCH'))
                                     <label for="Branch" class="col-sm-3 col-form-label">Branch</label>
                                   @else
@@ -319,7 +335,7 @@
                                     </div>
                                   </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row div-hide-agent">
                                   <p class="col-sm-3 col-form-label">Profit Cost Center</p>
                                   <div class="col-sm-4">
                                     <select class="form-control select2bs4 select2bs4-getapi" id="CT" name="LstCT">
@@ -404,7 +420,7 @@
                                     <label class="form-check-label" for="SubmitDateF">Submit Date</label>
                                   </div> -->
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row div-hide-agent">
                                   <p class="col-sm-3 col-form-label">Prorata Period</p>
                                   <div class="col-sm-4">
                                     <select class="form-control select2bs4" id="PPeriod" name="LstPPeriod">
@@ -419,104 +435,6 @@
                                   </div> -->
                                 </div>
                                 <!-- <input type="checkbox" class="form-check-input col-sm-1" id="SubmitDateF" name="CbxSubmitDate"> -->
-                                <div style="display:none;">
-                                  <div class="form-group row">
-                                    <p class="col-sm-3 col-form-label">Voyage :</p>
-                                    <div class="col-form-label">
-                                      <input type="checkbox" class="form-check-input col-sm-1" id="CbxVoyage" name="CbxVoyage">
-                                    </div>
-                                  </div>
-                                  <div class="form-group row">
-                                    <p for="TxtDepartDate" class="col-sm-3 col-form-label">Estimate Time Depature </p>
-                                    <div class="input-group date col-sm-4" id="TxtDepartDate" data-target-input="nearest">
-                                      <input type="date" class="form-control" id="TxtDepartDate" name="TxtDepartDate" />
-                                    </div>
-                                  </div>
-                                  <div class="form-group row">
-                                    <p for="TxtArrivalDate" class="col-sm-3 col-form-label">Estimate Time Arrival</p>
-                                    <div class="input-group date col-sm-4" id="TxtArrivalDate" data-target-input="nearest">
-                                      <input type="date" class="form-control" id="TxtArrivalDate" name="TxtArrivalDate" />
-                                    </div>
-                                  </div>
-                                  <div class="form-group row">
-                                    <p class="col-sm-3 col-form-label">Voyage From </p>
-                                    <div class="col-sm-4">
-                                      <input class="form-control" id="TxtVoyageFromID" name="TxtVoyageFromID" type="text">
-                                    </div>
-                                    <div class="col-sm-2">
-                                      <input class="form-control" id="TxtVoyageFromDesc" name="TxtVoyageFromDesc" type="text" disabled>
-                                    </div>
-                                  </div>
-                                  <div class="form-group row">
-                                    <p class="col-sm-3 col-form-label">Port From </p>
-                                    <div class="col-sm-4">
-                                      <input class="form-control" id="TxtPortFromID" name="TxtPortFromID" type="text">
-                                    </div>
-                                    <div class="col-sm-2">
-                                      <input class="form-control" id="TxtPortFromDesc" name="TxtPortFromDesc" type="text" disabled>
-                                    </div>
-                                  </div>
-                                  <div class="form-group row">
-                                    <p class="col-sm-3 col-form-label">Voyage To </p>
-                                    <div class="col-sm-4">
-                                      <input class="form-control" id="TxtVoyageToID" name="TxtVoyageToID" type="text">
-                                    </div>
-                                    <div class="col-sm-2">
-                                      <input class="form-control" id="TxtVoyageToDesc" name="TxtVoyageToDesc" type="text" disabled>
-                                    </div>
-                                  </div>
-                                  <div class="form-group row">
-                                    <p class="col-sm-3 col-form-label">Port To </p>
-                                    <div class="col-sm-4">
-                                      <input class="form-control" id="TxtPortToID" name="TxtPortToID" type="text">
-                                    </div>
-                                    <div class="col-sm-2">
-                                      <input class="form-control" id="TxtPortToDesc" name="TxtPortToDesc" type="text" disabled>
-                                    </div>
-                                  </div>
-                                  <div class="form-group row">
-                                    <p class="col-sm-3 col-form-label">Consignee Name </p>
-                                    <div class="col-sm-4">
-                                      <input class="form-control" id="TxtConsigneeName" name="TxtConsigneeName" type="text">
-                                    </div>
-                                  </div>
-                                  <div class="form-group row">
-                                    <p class="col-sm-3 col-form-label">Consignee Address </p>
-                                    <div class="col-sm-4">
-                                      <input class="form-control" id="TxtConsigneeAddress" name="TxtConsigneeAddress" type="text">
-                                    </div>
-                                  </div>
-                                  <div class="form-group row">
-                                    <p class="col-sm-3 col-form-label">Transhipment </p>
-                                    <div class="col-form-label">
-                                      <input type="checkbox" class="form-check-input col-sm-1" id="CbxTranshipment" name="CbxTranshipment">
-                                    </div>
-                                  </div>
-                                  <div class="form-group row">
-                                    <p for="TxtTransDate" class="col-sm-3 col-form-label">Transhipment Date </p>
-                                    <div class="input-group date col-sm-4" id="TxtTransDate" data-target-input="nearest">
-                                      <input type="date" class="form-control" id="TxtTransDate" name="TxtTransDate" />
-                                    </div>
-                                  </div>
-                                  <div class="form-group row">
-                                    <p class="col-sm-3 col-form-label">At and From </p>
-                                    <div class="col-sm-4">
-                                      <input class="form-control" id="TxtTransAtAndFrom" name="TxtTransAtAndFrom" type="text">
-                                    </div>
-                                  </div>
-                                  <div class="form-group row">
-                                    <p class="col-sm-3 col-form-label">To </p>
-                                    <div class="col-sm-4">
-                                      <input class="form-control" id="TxtTransTo" name="TxtTransTo" type="text">
-                                    </div>
-                                  </div>
-                                  <div class="form-group row">
-                                    <p class="col-sm-3 col-form-label">Conveyance </p>
-                                    <div class="col-sm-4">
-                                      <input class="form-control" id="TxtTransConveyence" name="TxtTransConveyence" type="text">
-                                    </div>
-                                  </div>
-                                </div>
                               </div>
                             </div>
                             <button class="btn btn-primary btn-next-form">Next</button>
@@ -564,7 +482,7 @@
                               <h2 class="card-header">Premium Simulation</h2>
                               <div class="card-body">
                               @if (config('app.SHOWNOTAPPLYRATELOADING'))
-                                <div class="form-group row">
+                                <div class="form-group row div-hide-agent">
                                   <p class="col-sm-3 col-form-label">Not Apply Rate Loading :</p>
                                   <div class="col-sm-4">
                                     <input type="checkbox" class="form-check-input col-sm-1" id="NotApplyRateLoadingF" name="CbxNotApplyRateLoading" value="true" onclick="NotApplyRateLoading_Checked()"/>
@@ -575,11 +493,12 @@
                                 <div class="form-group row">
                                   <p class="col-sm-3 col-form-label">Discount :</p>
                                   <div class="col-sm-2">
-                                    <input class="form-control num-format" id="Discount" name="TxtDiscount" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onkeyup="onhange_number_format($(this));">
+                                    <!-- <input class="form-control num-format" id="Discount" name="TxtDiscount" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onkeyup="onhange_number_format($(this));"> -->
+                                    <input class="form-control num-format" id="Discount" name="TxtDiscount" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onchange="onchange_number(this);">
                                   </div>
                                   <div class="col-sm-2">
                                     <div class="input-group mb-3">
-                                      <input class="form-control" id="DiscPCT" name="TxtDiscountPCT" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
+                                      <input class="form-control" id="DiscPCT" name="TxtDiscountPCT" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onchange="onchange_number(this);">
                                       <div class="input-group-append">
                                         <span class="input-group-text">%</span>
                                       </div>
@@ -592,19 +511,22 @@
                                 <div class="form-group row">
                                   <p class="col-sm-3 col-form-label">Premium :</p>
                                   <div class="col-sm-4">
-                                    <input class="form-control num-format" id="Premium" name="TxtPremium" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onkeyup="onhange_number_format($(this));"> 
+                                    <!-- <input class="form-control num-format" id="Premium" name="TxtPremium" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onkeyup="onhange_number_format($(this));">  -->
+                                    <input class="form-control num-format" id="Premium" name="TxtPremium" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onchange="onchange_number(this);"> 
                                   </div>
                                 </div>
                                 <div class="form-group row">
                                   <p class="col-sm-3 col-form-label">Administration Fee :</p>
                                   <div class="col-sm-4">
-                                    <input class="form-control" id="ADMFee" name="TxtAdmFee" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onkeyup="onhange_number_format($(this));">
+                                    <!-- <input class="form-control num-format" id="ADMFee" name="TxtAdmFee" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onkeyup="onhange_number_format($(this));"> -->
+                                    <input class="form-control num-format" id="ADMFee" name="TxtAdmFee" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onchange="onchange_number(this);">
                                   </div>
                                 </div>
                                 <div class="form-group row">
                                   <p class="col-sm-3 col-form-label">Stamp Duty :</p>
                                   <div class="col-sm-4">
-                                    <input class="form-control" id="StampDuty" name="TxtStampDuty" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onkeyup="onhange_number_format($(this));">
+                                  <!-- <input class="form-control num-format" id="StampDuty" name="TxtStampDuty" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onkeyup="onhange_number_format($(this));"> -->
+                                    <input class="form-control num-format" id="StampDuty" name="TxtStampDuty" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" onchange="onchange_number(this);">
                                   </div>
                                 </div>
                                 <div class="form-group row">
@@ -624,122 +546,111 @@
                             <button class="btn btn-primary btn-prev-form">Previous</button>
                             <button class="btn btn-primary btn-next-form">Next</button>
                           </div>
-                          <div id="payor-part" class="bs-stepper-pane fade" role="tabpanel" aria-labelledby="payor-part-trigger">
-                            <div class="card">
-                              <h2 class="card-header">Payor</h2>
-                              <div class="card-body" id="cbPayor">
-                              <div class="form-group row">
-                                  <p class="col-sm-3 col-form-label">Payor : </p>
-                                  <div class="col-sm-4">
-                                    <select class="form-control select2bs4" id="DefaultPayor" name="LstPayor">
-                                      <option value="PHOLDER">Policy Holder</option>
-                                      <option value="SOURCE">Source</option>
-                                      <option value="INSURED">Insured</option>
-                                    </select>
-                                  </div>
-                                </div>
-                                <!-- <div class="form-group row">
-                                  <p class="col-sm-3 col-form-label">Warranty Premium Clause : </p>
-                                  <div class="col-sm-2">
-                                    <input class="form-control" id="WPC" name="TxtWPC" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
-                                  </div>
-                                </div>
+                          @if (session('Role') == 'MARKETING OFFICER')
+                            <div id="payor-part" class="bs-stepper-pane fade" role="tabpanel" aria-labelledby="payor-part-trigger">
+                              <div class="card">
+                                <h2 class="card-header">Payor</h2>
+                                <div class="card-body" id="cbPayor">
                                 <div class="form-group row">
-                                  <p class="col-sm-3 col-form-label">Grace Period : </p>
-                                  <div class="col-sm-2">
-                                    <input class="form-control" id="Grace" name="TxtGrace" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
-                                  </div>
-                                </div> -->
-                                @if (config('app.SHOWBILLINGBYPOLICYYEAR'))
-                                  <div class="form-group row">
-                                    <p class="col-sm-3 col-form-label">Billing by Policy Year</p>
-                                    <div class="col-form-label">
-                                      <input type="checkbox" class="form-check-input col-sm-1" id="PolicyYearF" name="cbxPolicyYearF">
+                                    <p class="col-sm-3 col-form-label">Payor : </p>
+                                    <div class="col-sm-4">
+                                      <select class="form-control select2bs4" id="DefaultPayor" name="LstPayor">
+                                        <option value="PHOLDER">Policy Holder</option>
+                                        <option value="SOURCE">Source</option>
+                                        <option value="INSURED">Insured</option>
+                                      </select>
                                     </div>
                                   </div>
-                                @endif
-                                <div class="form-group row">
-                                  <p class="col-sm-3 col-form-label">Policy Holder's Address :</p>
-                                  <div class="col-form-label">
-                                    <input type="checkbox" class="form-check-input col-sm-1" id="CbxPHolderAddressF" name="CbxPHolderAddressF">
+                                  @if (config('app.SHOWBILLINGBYPOLICYYEAR'))
+                                    <div class="form-group row">
+                                      <p class="col-sm-3 col-form-label">Billing by Policy Year</p>
+                                      <div class="col-form-label">
+                                        <input type="checkbox" class="form-check-input col-sm-1" id="PolicyYearF" name="cbxPolicyYearF">
+                                      </div>
+                                    </div>
+                                  @endif
+                                  <div class="form-group row">
+                                    <p class="col-sm-3 col-form-label">Policy Holder's Address :</p>
+                                    <div class="col-form-label">
+                                      <input type="checkbox" class="form-check-input col-sm-1" id="CbxPHolderAddressF" name="CbxPHolderAddressF">
+                                    </div>
                                   </div>
-                                </div>
-                                <div class="form-group row">
-                                  <p class="col-sm-3 col-form-label">Correspondence Name :</p>
-                                  <div class="col-sm-4">
-                                    <input class="form-control" id="Correspondence_Attention" name="TxtAttention" type="text">
+                                  <div class="form-group row">
+                                    <p class="col-sm-3 col-form-label">Correspondence Name :</p>
+                                    <div class="col-sm-4">
+                                      <input class="form-control" id="Correspondence_Attention" name="TxtAttention" type="text">
+                                    </div>
                                   </div>
-                                </div>
-                                <div class="form-group row">
-                                  <p class="col-sm-3 col-form-label">Correspondence Address :</p>
-                                  <div class="col-sm-4">
-                                    <input class="form-control" id="Correspondence_Address" name="TxtCorAddress" type="text">
+                                  <div class="form-group row">
+                                    <p class="col-sm-3 col-form-label">Correspondence Address :</p>
+                                    <div class="col-sm-4">
+                                      <input class="form-control" id="Correspondence_Address" name="TxtCorAddress" type="text">
+                                    </div>
                                   </div>
-                                </div>
-                                <div class="form-group row">
-                                  <p class="col-sm-3 col-form-label">Correspondence Email :</p>
-                                  <div class="col-sm-4">
-                                    <input class="form-control" id="Correspondence_Email" name="TxtCorEmail" type="text">
+                                  <div class="form-group row">
+                                    <p class="col-sm-3 col-form-label">Correspondence Email :</p>
+                                    <div class="col-sm-4">
+                                      <input class="form-control" id="Correspondence_Email" name="TxtCorEmail" type="text">
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                            <div class="card">
-                              <h2 class="card-header">Premium Payment Procedure</h2>
-                              <div class="card-body" id="cbInstallment">
-                                <div class="form-group row">
-                                  <p class="col-sm-3 col-form-label">Grace Period : </p>
-                                  <div class="col-sm-2">
-                                    <input class="form-control" id="Grace" name="TxtGrace" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
-                                  </div>
-                                </div>
-                                <div class="form-group row">
-                                  <p class="col-sm-3 col-form-label">Warranty Premium Clause : </p>
-                                  <div class="col-sm-2">
-                                    <input class="form-control" id="WPC" name="TxtWPC" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
-                                  </div>
-                                </div>
-                                <div class="form-group row">
-                                  <p class="col-sm-3 col-form-label">Period Term : </p>
-                                  <div class="col-sm-2">
-                                    <select class="form-control select2bs4" id="Payment_Term" name="LstPayment_Term">
-                                      <option value="0">Daily</option>
-                                      <option value="1">Monthly</option>
-                                      <option value="3">Quarterly</option>
-                                      <option value="6">Half Yearly</option>
-                                      <option value="12">Annualy</option>
-                                    </select>
-                                  </div>
-                                </div>
-                                <div class="form-group row">
-                                  <p class="col-sm-3 col-form-label">Payment Tenor : </p>
-                                  <div class="col-sm-2">
-                                    <input class="form-control" id="Payment_Tenor" name="TxtPayment_Tenor" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
-                                  </div>
-                                  <div class="col-sm-2">
-                                    <button id="detailInstallment" type="button" class="btn btn-default btn-block" disabled>
-                                      <i class="fas fa-calculator"></i>
-                                      Simulation
-                                    </button>
-                                  </div>
-                                  <!-- <a href='' id="detailInstallment" style="margin-top: 8px;">View Detail Installment</a> -->
-                                </div>
-                                <div class="form-group row">
-                                  
-                                </div>
-                                @if (config('app.SHOWBILLINGBYPOLICYYEAR'))
+                              <div class="card">
+                                <h2 class="card-header">Premium Payment Procedure</h2>
+                                <div class="card-body" id="cbInstallment">
                                   <div class="form-group row">
-                                    <p class="col-sm-3 col-form-label">Billing by Policy Year</p>
-                                    <div class="col-form-label">
-                                      <input type="checkbox" class="form-check-input col-sm-1" id="PolicyYearF" name="cbxPolicyYearF">
+                                    <p class="col-sm-3 col-form-label">Grace Period : </p>
+                                    <div class="col-sm-2">
+                                      <input class="form-control" id="Grace" name="TxtGrace" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
                                     </div>
                                   </div>
-                                @endif
+                                  <div class="form-group row">
+                                    <p class="col-sm-3 col-form-label">Warranty Premium Clause : </p>
+                                    <div class="col-sm-2">
+                                      <input class="form-control" id="WPC" name="TxtWPC" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
+                                    </div>
+                                  </div>
+                                  <div class="form-group row">
+                                    <p class="col-sm-3 col-form-label">Period Term : </p>
+                                    <div class="col-sm-2">
+                                      <select class="form-control select2bs4" id="Payment_Term" name="LstPayment_Term">
+                                        <option value="0">Daily</option>
+                                        <option value="1">Monthly</option>
+                                        <option value="3">Quarterly</option>
+                                        <option value="6">Half Yearly</option>
+                                        <option value="12">Annualy</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                  <div class="form-group row">
+                                    <p class="col-sm-3 col-form-label">Payment Tenor : </p>
+                                    <div class="col-sm-2">
+                                      <input class="form-control" id="Payment_Tenor" name="TxtPayment_Tenor" type="text" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
+                                    </div>
+                                    <div class="col-sm-2">
+                                      <button id="detailInstallment" type="button" class="btn btn-default btn-block" disabled>
+                                        <i class="fas fa-calculator"></i>
+                                        Simulation
+                                      </button>
+                                    </div>
+                                  </div>
+                                  <div class="form-group row">
+                                    
+                                  </div>
+                                  @if (config('app.SHOWBILLINGBYPOLICYYEAR'))
+                                    <div class="form-group row">
+                                      <p class="col-sm-3 col-form-label">Billing by Policy Year</p>
+                                      <div class="col-form-label">
+                                        <input type="checkbox" class="form-check-input col-sm-1" id="PolicyYearF" name="cbxPolicyYearF">
+                                      </div>
+                                    </div>
+                                  @endif
+                                </div>
                               </div>
+                              <button class="btn btn-primary btn-prev-form">Previous</button>
+                              <button class="btn btn-primary btn-next-form">Next</button>
                             </div>
-                            <button class="btn btn-primary btn-prev-form">Previous</button>
-                            <button class="btn btn-primary btn-next-form">Next</button>
-                          </div>
+                          @endif
                           <div id="others-part" class="bs-stepper-pane fade" role="tabpanel" aria-labelledby="others-part-trigger">
                             <div class="card" id="card-business-source">
                               <h3 class="card-header">Business Source</h3>
@@ -752,11 +663,7 @@
                                     </div>
                                     <div class="col-sm-2">
                                       <select class="form-control select2bs4" id="BSTYPE_1" name="LstBSType_1">
-                                        <option value="" selected></option>
-                                        <option value="A">Agent</option>
-                                        <option value="B">Brokerage</option>
-                                        <option value="D">Direct</option>
-                                        <option value="O">Others</option>
+                                        
                                       </select>
                                     </div>
                                   </div>
@@ -878,19 +785,149 @@
                               <div class="card-body">
                               </div>
                             </div>
-                            <div class="card">
-                              <h2 class="card-header">Default Term & Conditions</h2>
+                            <div class="card div-voyage">
+                              <div class="card-header">
+                                <h3>Voyage</h3>
+                              </div>
+                              <div class="card-body">
+                                <!-- <div class="form-group row">
+                                  <p class="col-sm-3 col-form-label">Voyage</p>
+                                  <div class="col-form-label">
+                                    <input type="checkbox" class="form-check-input col-sm-1" id="CbxVoyage" name="CbxVoyage">
+                                  </div>
+                                </div> -->
+                                <div class="form-group row">
+                                  <p for="DEPARTDATE" class="col-sm-3 col-form-label">Estimate Time Depature </p>
+                                  <div class="input-group date col-sm-3" id="departDate" data-target-input="nearest">
+                                    <input type="text" id="DEPARTDATE" name="DEPARTDATE" class="form-control datetimepicker-input" data-target="#departDate" placeholder="mm/dd/yyyy"/>
+                                    <div class="input-group-append" data-target="#departDate" data-toggle="datetimepicker">
+                                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <p for="ARRIVALDATE" class="col-sm-3 col-form-label">Estimate Time Arrival</p>
+                                  <div class="input-group date col-sm-3" id="arrivalDate" data-target-input="nearest">
+                                    <input type="text" id="ARRIVALDATE" name="ARRIVALDATE" class="form-control datetimepicker-input" data-target="#arrivalDate" placeholder="mm/dd/yyyy"/>
+                                    <div class="input-group-append" data-target="#arrivalDate" data-toggle="datetimepicker">
+                                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <p class="col-sm-3 col-form-label">Voyage From</p>
+                                  <div class="col-sm-3">
+                                    <select class="form-control select2bs4" id="VoyageFromID" name="VoyageFromID">
+                                    </select>
+                                  </div>
+                                  <div class="col-sm-2">
+                                    <input class="form-control" id="VOYAGEFROM" name="VOYAGEFROM" type="text" style="display:none" readonly>
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <p class="col-sm-3 col-form-label">Port From</p>
+                                  <div class="col-sm-3">
+                                    <select class="form-control select2bs4" id="PortFromID" name="PortFromID">
+                                    </select>
+                                  </div>
+                                  <div class="col-sm-2">
+                                    <input class="form-control" id="PORTFROM" name="PORTFROM" type="text" style="display:none" readonly>
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <p class="col-sm-3 col-form-label">Voyage To</p>
+                                  <div class="col-sm-3">
+                                    <select class="form-control select2bs4" id="VoyageToID" name="VoyageToID">
+                                    </select>
+                                  </div>
+                                  <div class="col-sm-2">
+                                    <input class="form-control" id="VOYAGETO" name="VOYAGETO" type="text" style="display:none" readonly>
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <p class="col-sm-3 col-form-label">Port To</p>
+                                  <div class="col-sm-3">
+                                    <select class="form-control select2bs4" id="PortToID" name="PortToID">
+                                    </select>
+                                  </div>
+                                  <div class="col-sm-2">
+                                    <input class="form-control" id="PORTTO" name="PORTTO" type="text" style="display:none" readonly>
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <p class="col-sm-3 col-form-label">Transhipment</p>
+                                  <div class="col-form-label">
+                                    <input type="checkbox" class="form-check-input col-sm-1" id="TRANSHIPMENT" name="TRANSHIPMENT" value="true">
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <p for="TRANSDATE" class="col-sm-3 col-form-label">Transhipment Date</p>
+                                  <div class="input-group date col-sm-3" id="transDate" data-target-input="nearest">
+                                    <input type="text" id="TRANSDATE" name="TRANSDATE" class="form-control datetimepicker-input transhipment" data-target="#transDate" placeholder="mm/dd/yyyy" readonly/>
+                                    <div class="input-group-append" data-target="#transDate" data-toggle="datetimepicker">
+                                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <p class="col-sm-3 col-form-label">At and From </p>
+                                  <div class="col-sm-3">
+                                    <input class="form-control transhipment" id="ATANDFROM" name="ATANDFROM" type="text" readonly>
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <p class="col-sm-3 col-form-label">To</p>
+                                  <div class="col-sm-3">
+                                    <input class="form-control transhipment" id="TRANSTO" name="TRANSTO" type="text" readonly >
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <p class="col-sm-3 col-form-label">Conveyance/Vessel</p>
+                                  <div class="col-sm-3">
+                                    <input class="form-control transhipment" id="CONVEYANCE" name="CONVEYANCE" type="text" readonly>
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <p class="col-sm-3 col-form-label">Consignee Name</p>
+                                  <div class="col-sm-3">
+                                    <input class="form-control transhipment" id="CONSIGNEE" name="CONSIGNEE" type="text" readonly>
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <p class="col-sm-3 col-form-label">Consignee Address</p>
+                                  <div class="col-sm-3">
+                                    <input class="form-control transhipment" id="CADDRESS" name="CADDRESS" type="text" readonly>
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <div class="col-md-12">
+                                    <button class="btn btn-block btn-outline-primary col-sm-3 float-right btn-transdet" style="display:none">
+                                      <i class="fas fa-plus"></i>
+                                      Add Transhipment Detail
+                                    </button>
+                                  </div>
+                                </div>
+                                <div class="form-group row div-tblTransDet" style="display:none">
+                                  <div class="col-md-12">
+                                    <table id="tbl_TransDet" class="table table-striped dt-responsive nowrap" width="100%">
+                                      
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="card div-hide-agent">
+                              <h3 class="card-header">Default Term & Conditions</h3>
                               <div class="card-body" id="cbClausula">
                                 <table id="tbl_covClausula" class="table table-condensed responsive table-striped">
 
                                 </table>
                               </div>
                             </div>
-                            <div class="card">
-                              <h2 class="card-header">Default Deductible</h2>
+                            <div class="card div-hide-agent">
+                              <h3 class="card-header">Default Deductible</h3>
                               <div class="card-body" id="cbDeductible">
                                 <table id="tbl_covDeductible" class="table table-condensed responsive table-striped">
-
                                 </table>
                                 <div id="div-deductible"></div>
                               </div>
@@ -899,13 +936,13 @@
                               <div class="card-header container-fluid">
                                 <div class="row">
                                   <div class="col-md-7">
-                                    <h2>Photo/Document List</h2>
-                                    <button class="btn btn-primary btn-upload">
+                                    <h3>Photo/Document List</h3>
+                                    <!-- <button class="btn btn-primary btn-upload">
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
                                       <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
                                     </svg>
                                       Upload
-                                    </button>
+                                    </button> -->
                                   </div>
                                   <!-- <div class="col-md-5">
                                     <button class="btn btn-primary btn-upload">
@@ -918,23 +955,40 @@
                                 </div>
                               </div>
                               <div class="card-body">
-                                <table id="tblPolDocUpload" class="table table-condensed responsive table-striped">
-                                  <thead>
-                                    <tr>
-                                        <th>No.</th>
-                                        <th></th>
-                                        <th>FileType</th>
-                                        <th>Title</th>
-                                        <th>Remarks</th>
-                                        <th>Action</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody id="tblPolDocUpload-body">
-                                  </tbody>
-                                </table>
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="form-group">
+                                      <button class="btn btn-block btn-outline-primary col-sm-1 float-right btn-upload">
+                                        <i class="fas fa-plus"></i>
+                                        Upload
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row"><br></div>
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="form-group">
+                                      <table id="tblPolDocUpload" class="table table-striped dt-responsive nowrap" width="100%">
+                                        <thead>
+                                          <tr>
+                                            <th>No.</th>
+                                            <th></th>
+                                            <th>FileType</th>
+                                            <th>Title</th>
+                                            <th>Remarks</th>
+                                            <th>Action</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody id="tblPolDocUpload-body">
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                            <div class="card">
+                            <div class="card div-hide-agent">
                               <h2 class="card-header">Submission</h2>
                               <div class="card-body">
                                 <div style="display:none;" class="form-group row">
@@ -1045,6 +1099,7 @@
 @section('scriptpage')
 <script>
   let arrCurrency,arrCoverage,arrProduct,arrGendtab, cbProduct, cbCoverage, cbGendtab, arrProfile, privilegesByPassESign, callback_PID;
+  let arrAgentProfile, arrBSTYPE, arrCountry;
   let arrPolicy = [];
   let getMasterDataF = false;
   let masterDataF = false;
@@ -1054,6 +1109,10 @@
   let tblClausula;
   let tblRC;
   let Role = '{{session("Role")}}';
+  let ListBranch = @json(Session::get("ListBranch"));
+  let ListSegment = @json(Session::get("ListSegment"));
+  let listMO = @json($listmo);
+  let refTOPRO;
   
 
   async function getDataMaster(url) {
@@ -1092,18 +1151,14 @@
       getDataMaster('{{ route("listsegment") }}'),
       getDataMaster('{{ route("listct") }}'),
       getDataMaster('{{ route("listagent") }}'),
-      getDataMaster('{{ route("getprivileges") }}?FName=ALLOWPASSESIGN')
+      getDataMaster('{{ route("getprivileges") }}?FName=ALLOWPASSESIGN'),
+      getDataMaster('{{ route("getbstype") }}'),
+      getDataMaster('{{ route("listcountry") }}')
     ]);
 
+    // console.log(resArray);
+
     getMasterDataF = false;
-    
-    if (resArray[10].code == '200'){
-      privilegesByPassESign = true;
-      checkPrivilegesByPassESign();
-    }else{
-      privilegesByPassESign = false;
-      checkPrivilegesByPassESign();
-    }
     
     //Product
     if (resArray[0].code == '200'){
@@ -1159,20 +1214,41 @@
 
     //Agent
     if (resArray[9].code == '200'){
+      arrAgentProfile = resArray[9]['Data'];
       // const faAgent = resArray[9].Data.filter(base => base.Restrictedf === false);
       // console.log(faAgent);
       var listbox = document.getElementById("AID_1");
       addOptionItem(listbox, resArray[9].Data,'ID','Name',true,true);
     }
+
+    //Priviledge Esign
+    if (resArray[10].code == '200'){
+      privilegesByPassESign = true;
+      checkPrivilegesByPassESign();
+    }else{
+      privilegesByPassESign = false;
+      checkPrivilegesByPassESign();
+    }
+
+    //BSTYPE
+    if (resArray[11].code == '200'){
+      arrBSTYPE = resArray[11].Data;
+      var listbox = document.getElementById("BSTYPE_1");
+      addOptionItem(listbox,arrBSTYPE,'BSTYPE','Description',true);
+    }
+
+    //Country
+    if (resArray[12].code == '200'){
+      arrCountry = resArray[12].Data;
+      var listbox = document.getElementById("VoyageFromID");
+      addOptionItem(listbox,arrCountry,'Country','Description',true);
+      var listbox = document.getElementById("VoyageToID");
+      addOptionItem(listbox,arrCountry,'Country','Description',true);
+    }
+
     masterDataF = true;
     
     console.timeEnd('main')
-    // console.log(callback_PID);
-    // if (callback_PID != ''  && callback_PID != undefined){
-    //   console.log('callback');
-    // }else{
-    //   console.log('not callback');
-    // }
   }
   
   // main();
@@ -1181,7 +1257,9 @@
     var SENDCONFIRMATIONF = "{{ config('app.SENDCONFIRMATIONF') }}";
     if (!SENDCONFIRMATIONF) {
       $('#img-btn-send').attr('style','display:none');
+      $('#img-btn-sign').attr('style','display:none');
       $('#img-btn-revise').attr('style','display:none');
+      $('#img-btn-preview').attr('style','display:none');
       $('#div-esign').attr('style','display:none');
     }
     if (Role == 'MARKETING OFFICER'){
@@ -1189,6 +1267,10 @@
     }else if (Role == 'AGENT'){
       $('#card-business-source').attr('style','display:none;');
       $('#div-survey').attr('style','display:none;');
+      $('.div-hide-agent').css('display','none');
+      $('#Premium').attr('readonly','readonly');
+      $('#ADMFee').attr('readonly','readonly');
+      $('#StampDuty').attr('readonly','readonly');
     }
     $('#RegDate').val(getformatedDate());
     if ($('#PStatus').val() == ''){
@@ -1226,7 +1308,15 @@
     $('#edate').datetimepicker({
       format: 'L'
     });
-
+    $('#departDate').datetimepicker({
+      format: 'L'
+    });
+    $('#arrivalDate').datetimepicker({
+      format: 'L'
+    });
+    $('#transDate').datetimepicker({
+      format: 'L'
+    });
     // $('#sdate').on('dp.change', function(e){ console.log(e.date); })
 
     var tblBeneficiaries = $("#tblBeneficiaries").DataTable({
@@ -1246,6 +1336,65 @@
     var sdate = new Date();
     $('#InceptionDate').val(format_date(sdate));
     $('#ExpiryDate').val(format_date(dateAdd('year',1,sdate)));
+    var TransDet = [];
+    $("#tbl_TransDet").DataTable({
+      "data": TransDet,
+      "columns": [
+        {
+          "title": "Date",
+          "defaultContent": "",
+        },
+        {
+          "title": "Voyage / Flight No",
+          "defaultContent": ""
+        },
+        {
+          "title": "Vessel Block",
+          "defaultContent": ""
+        },
+        {
+          "title": "Conveyance/Vessel",
+          "defaultContent": ""
+        },
+        {
+          "title": "At and From/Origin",
+          "defaultContent": ""
+        },
+        {
+          "title": "To",
+          "defaultContent": ""
+        },
+        {
+          "defaultContent":"",
+          render: function(data,type,row){
+            var fn = "detailRisk('"+ row['RefCode'] +"','"+ row['Description'] +"','"+ row['OrderNo'] +"')"
+            return '<img src="{{asset("dist/img/edit.svg")}}" width="30" height="30" type="button" value="detail" onclick="'+ fn +'">'
+          }
+        }
+      ],
+      "columnDefs": [
+        // {
+        //   "width":"4.5%",
+        //   "targets": [0] 
+        // }
+      ],
+      "pageLength": 10,
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": false,
+      "info": false,
+      "autoWidth": false,
+      "responsive": true,
+      "destroy": true,
+    });
+
+    var responselistmo = @json($listmo);
+    var listmo = [];
+    if (responselistmo['code'] == '200'){
+      listmo = responselistmo['Data'];
+    }
+    addOptionItem(listMo,listmo,'ID','Name',false, false, false,'',true);
     
   });
 
@@ -1351,7 +1500,7 @@
       },
       { "defaultContent": "",
         render: function(data, type, row) {
-          if (row['ProductID'] == '0114'){
+          if (row['ProductID'] == '0114M'){
             return row['Currency'] + ' ' + 
             // number_format(row['SI_1'] + row['SI_2'] + row['SI_3'] + row['SI_4'] + row['SI_5'],2,',','.');
             number_format(row['SI_1'] + row['SI_2'],2,',','.');
@@ -1386,6 +1535,10 @@
     "responsive": true,
     "autoWidth": false,
   });
+
+  function onchange_type(index, value){
+    basedata[index]['typevalue'] = value
+  }
 
   $('#btntest').click(function (event){
     event.preventDefault();
@@ -1533,6 +1686,7 @@
   function setSI_RC(Coverage) {
     var bsCoverage = arrCoverage['Data'];
     const faCoverageDet = bsCoverage.filter(coveragedet => coveragedet.CoverageID == Coverage);
+    refTOPRO = faCoverageDet[0]['RefTOPRO'];
     var bsCurrency = arrCurrency;
     var aStatus = faCoverageDet[0]['AStatus'];
     var cbxInforceF = document.getElementById('InforceF');
@@ -1819,8 +1973,8 @@
           txt.name = "SI" + (i + 1);
           txt.value = number_format(SIDefault[i],0,',','.');
           txt.setAttribute('oninput',"this.value = this.value.replace(/[^0-9.]/g, '');");
-          txt.setAttribute('onkeyup',"onhange_number_format($(this));")
-          // txt.setAttribute('onchange',"onchange_number(this)");
+          // txt.setAttribute('onkeyup',"onhange_number_format($(this));")
+          txt.setAttribute('onchange',"onchange_number(this)");
           // //Div untuk listbox currency
           // var divList = document.createElement("div");
           // divList.className = "col-sm-3";
@@ -1888,15 +2042,17 @@
           var defPCTCL = dsDeductible[i]['PCTCL'];
           var defFixedMax = dsDeductible[i]['FixedMax'];
 
-          $('#Deductible' + orderno).val(arrPolicy[0]['Deductible' + orderno]);
-          $('#DEDPCTTSI' + orderno).val(arrPolicy[0]['DEDPCTTSI' + orderno]);
-          $('#DEDPCTCL' + orderno).val(arrPolicy[0]['DEDPCTCL' + orderno]);
+          if (Coverage == arrPolicy[0]['CoverageID']){
+            $('#Deductible' + orderno).val(arrPolicy[0]['Deductible' + orderno]);
+            $('#DEDPCTTSI' + orderno).val(arrPolicy[0]['DEDPCTTSI' + orderno]);
+            $('#DEDPCTCL' + orderno).val(arrPolicy[0]['DEDPCTCL' + orderno]); 
+          }
           
           var FixedMin = $('#Deductible' + orderno).val();
           var PCTTSI = $('#DEDPCTTSI' + orderno).val();
           var PCTCL = $('#DEDPCTCL' + orderno).val();
           if (defFixedMin != FixedMin || defPCTTSI != PCTTSI || defPCTCL != PCTCL){
-            var url = "{{ route('policy.getDeductibleRemarks') }}?topro=" + $('#CoverageID').val() + "&dcode=" + dsDeductible[i]['RefCode'] + "&fixedmin=" + FixedMin + "&pcttsi=" + PCTTSI + "&pctcl=" + PCTCL + "&fixedmax=" + defFixedMax;
+            var url = "{{ route('policy.getDeductibleRemarks') }}?topro=" + refTOPRO + "&dcode=" + dsDeductible[i]['RefCode'] + "&fixedmin=" + FixedMin + "&pcttsi=" + PCTTSI + "&pctcl=" + PCTCL + "&fixedmax=" + defFixedMax;
             var response = await getData(url);
             if (response.code == '200'){
               $('#deductible-remarks' + orderno).html(response.Data[0]['Deductibles']);
@@ -1967,10 +2123,12 @@
   }
 
   function spreadObjInfo(ValueID, FLDID, ProductID, rowno){
+    // console.log(ValueID);
     if (ValueID != ''){
       var listValueID = [];
       var bsProduct = arrProduct['Data'];
       var gendtabs = arrGendtab['Data'];
+      // console.log(gendtabs);
       const faProduct = bsProduct.filter(i => i.ProductID == ProductID);
       const ObjInfo = createArrFLDTAG(faProduct);
       if (ObjInfo.arSLFLDID[parseInt(rowno) + 1] == FLDID){
@@ -2052,7 +2210,7 @@
     const faCoverage = bsCoverage.filter(asd => asd.ProductID == Product);
     const faProduct = bsProduct.filter(i => i.ProductID == Product);
     //hardcode sementara default grace
-    if (Product == '0114'){
+    if (Product == '0114M'){
       $('#Grace').val('30');
     }else{
       $('#Grace').val('14');
@@ -2061,20 +2219,29 @@
     var listBox = document.getElementById("CoverageID");
     addOptionItem(listBox,faCoverage, 'CoverageID','Description', false);
     // console.log(faProduct);
-    $('#WPC').val(faProduct[0]['WPC']);
+    if (faProduct.length > 0){
+      $('#WPC').val(faProduct[0]['WPC']); 
+    }
     // $('#CoverageID').trigger('change');
     var divGrp = document.getElementById("cbObjectInfo");
     var divGrpSI = document.getElementById("cbSI");
 
     //Initialize Policy Status, di hardcode sementara, kedepannya akan dibuat settingan per Product nya
     var dataPStatus = new Array();
-    if (Product == '0114'){
+    if (Product == '0114M'){
       dataPStatus = [
         {
           "Value":"S",
           "Description":"Individual Policy"
         }
       ];
+    }else if (Product.substring(0,2) == '03'){
+      dataPStatus = [
+        {
+          "Value":"O",
+          "Description":"Open Cover Policy"
+        }
+      ]
     }else{
       dataPStatus = [
         {
@@ -2091,6 +2258,14 @@
         }
       ];
     }
+
+    //show voyage for only productid start with 03
+    if (Product.substring(0,2) == '03'){
+      $('.div-voyage').removeAttr('style');
+    }else{
+      $('.div-voyage').css('display','none');
+    }
+
     $('#SType').empty();
     var STye_elemnt = document.getElementById('SType');
     addOptionItem(STye_elemnt,dataPStatus, 'Value','Description', false);
@@ -2114,6 +2289,8 @@
       let arrSLFLDID = ObjInfo.arSLFLDID;
       let arrFLDTYPE = ObjInfo.arFLDTYPE;
       let arrFLDREGEX = ObjInfo.arFLDREGEX;
+      let arrFLDCHGINF = ObjInfo.arFLDCHGINF;
+      let arrFLDEDITABLEF = ObjInfo.arFLDEDITABLEF;
       for (i = 0; i < arrFLDTAG.length; i++) {
         if (arrFLDTAG[i] != '') {
           var divGrp = document.getElementById("cbObjectInfo");
@@ -2143,7 +2320,12 @@
             // console.log($('#PStatus').val());
             // btnPopUPDesc.setAttribute("onclick","popupToast('textarea','Description','Type description here...','ValueDesc" + (i + 1) +"', ("+ $('#PStatus').val() +" == '-1' ? '' : 'readonly'))");
             btnPopUPDesc.setAttribute("onclick","popupToast('textarea','Description','Type description here...','ValueDesc" + (i + 1) +"', ('"+ $('#PStatus').val() +"' == 'Request' ? '' : 'readonly'), '" + arrFLDREGEX[i] + "', '"+ arrFLDTAG[i] +"')");
+            btnPopUPDesc.setAttribute("data-toggle","tooltip");
+            btnPopUPDesc.setAttribute("data-placement","top");
+            btnPopUPDesc.setAttribute("title","Click here to change description");
             btnPopUPDesc.innerHTML = "..."
+
+            // data-toggle="tooltip" data-placement="top" title="Save"
 
             var objValueDesc = document.createElement("INPUT");
             objValueDesc.setAttribute("id","ValueDesc" + (i + 1));
@@ -2188,7 +2370,7 @@
                 var objinfoValue = document.createElement("INPUT");
                 objinfoValue.setAttribute("id", "ValueDesc" + (i + 1));
                 objinfoValue.setAttribute("name", "FLDID" + (i + 1));
-                objinfoValue.setAttribute("class", "form-control FLDID" + (i + 1) + " onkeyup_regex");
+                objinfoValue.setAttribute("class", "form-control FLDID" + (i + 1));
                 objinfoValue.setAttribute("style","text-transform:uppercase");
                 var divInvalid = document.createElement("div");
                 if (arrFLDREGEX[i] != ''){
@@ -2213,32 +2395,86 @@
           divFrm.appendChild(label);
           divFrm.appendChild(divTxt);
 
-          //hardcode sementara
-          if (arrFLDID[i] == 'V29' || arrFLDID[i] == 'V37'){
-            objinfoValue.setAttribute("disabled","disabled");
-            var objinfoValuetemp = document.createElement("INPUT");
-            objinfoValuetemp.setAttribute("id","ValueID" + (i + 1));
-            objinfoValuetemp.setAttribute("name","FLDID" + (i + 1));
-            objinfoValuetemp.setAttribute("class", "form-control FLDID" + (i + 1));
-            objinfoValuetemp.setAttribute("style","text-transform:uppercase");
-            objinfoValuetemp.setAttribute("readonly","readonly");
-            objinfoValuetemp.setAttribute("type","hidden");
-            divTxt.appendChild(objinfoValue);
-            divFrm.appendChild(objinfoValuetemp);
-            divFrm.appendChild(objValueDesc);
-          // }else if (arrFLDID[i] == 'V05' || arrFLDID[i] == 'V13'){
-          //   objinfoValue.setAttribute("onkeyup","Nospecialcharacter($(this))");
-          //   divTxt.appendChild(objinfoValue);
-          }else{
-            divTxt.appendChild(objinfoValue);
-            if (arrFLDREGEX[i] != ''){
-              divTxt.appendChild(divInvalid);
-            }
-            if (arrFLDTAB[i]){
-              divFrm.appendChild(btnPopUPDesc);
+          //Menentukan bisa di edit atau tidak object infonya
+          // if ()
+
+
+          if (arrFLDTAB[i]){
+            if (!arrFLDEDITABLEF[i]){
+              objinfoValue.setAttribute("disabled","disabled");
+              var objinfoValuetemp = document.createElement("INPUT");
+              objinfoValuetemp.setAttribute("id","ValueID" + (i + 1));
+              objinfoValuetemp.setAttribute("name","FLDID" + (i + 1));
+              objinfoValuetemp.setAttribute("class", "form-control FLDID" + (i + 1));
+              objinfoValuetemp.setAttribute("style","text-transform:uppercase");
+              objinfoValuetemp.setAttribute("readonly","readonly");
+              objinfoValuetemp.setAttribute("type","hidden");
+              divTxt.appendChild(objinfoValue);
+              divFrm.appendChild(objinfoValuetemp);
               divFrm.appendChild(objValueDesc);
+            }else{
+              divTxt.appendChild(objinfoValue);
+              if (arrFLDREGEX[i] != ''){
+                divTxt.appendChild(divInvalid);
+              }
+              if (arrFLDTAB[i]){
+                divFrm.appendChild(btnPopUPDesc);
+                divFrm.appendChild(objValueDesc);
+              } 
+            }
+          }else{
+            if (!arrFLDCHGINF[i]){
+              objinfoValue.setAttribute("disabled","disabled");
+              var objinfoValuetemp = document.createElement("INPUT");
+              objinfoValuetemp.setAttribute("id","ValueDesc" + (i + 1));
+              objinfoValuetemp.setAttribute("name","FLDID" + (i + 1));
+              objinfoValuetemp.setAttribute("class", "form-control FLDID" + (i + 1) + " ValueDesc"  + (i + 1));
+              objinfoValuetemp.setAttribute("style","text-transform:uppercase");
+              objinfoValuetemp.setAttribute("readonly","readonly");
+              objinfoValuetemp.setAttribute("type","hidden");
+              divTxt.appendChild(objinfoValue);
+              divFrm.appendChild(objinfoValuetemp);
+            }else{
+              divTxt.appendChild(objinfoValue);
+              if (arrFLDREGEX[i] != ''){
+                divTxt.appendChild(divInvalid);
+              }
+              if (arrFLDTAB[i]){
+                divFrm.appendChild(btnPopUPDesc);
+                divFrm.appendChild(objValueDesc);
+              }
             } 
           }
+          
+          // if (arrFLD)
+
+
+          // if (arrFLDID[i] == 'V29' || arrFLDID[i] == 'V37'){
+          //   objinfoValue.setAttribute("disabled","disabled");
+          //   var objinfoValuetemp = document.createElement("INPUT");
+          //   objinfoValuetemp.setAttribute("id","ValueID" + (i + 1));
+          //   objinfoValuetemp.setAttribute("name","FLDID" + (i + 1));
+          //   objinfoValuetemp.setAttribute("class", "form-control FLDID" + (i + 1));
+          //   objinfoValuetemp.setAttribute("style","text-transform:uppercase");
+          //   objinfoValuetemp.setAttribute("readonly","readonly");
+          //   objinfoValuetemp.setAttribute("type","hidden");
+          //   divTxt.appendChild(objinfoValue);
+          //   divFrm.appendChild(objinfoValuetemp);
+          //   divFrm.appendChild(objValueDesc);
+
+          // // }else if (arrFLDID[i] == 'V05' || arrFLDID[i] == 'V13'){
+          // //   objinfoValue.setAttribute("onkeyup","Nospecialcharacter($(this))");
+          // //   divTxt.appendChild(objinfoValue);
+          // }else{
+          //   divTxt.appendChild(objinfoValue);
+          //   if (arrFLDREGEX[i] != ''){
+          //     divTxt.appendChild(divInvalid);
+          //   }
+          //   if (arrFLDTAB[i]){
+          //     divFrm.appendChild(btnPopUPDesc);
+          //     divFrm.appendChild(objValueDesc);
+          //   } 
+          // }
 
           switch(arrFLDTYPE[i]){
             case 'D':
@@ -2549,6 +2785,70 @@
     arFLDREGEX[28] = faProduct[0].FLDREGEX29;
     arFLDREGEX[29] = faProduct[0].FLDREGEX30;
 
+    var arFLDCHGINF = new Array(29);
+    arFLDCHGINF[0] = faProduct[0].FLDCHGINF1;
+    arFLDCHGINF[1] = faProduct[0].FLDCHGINF2;
+    arFLDCHGINF[2] = faProduct[0].FLDCHGINF3;
+    arFLDCHGINF[3] = faProduct[0].FLDCHGINF4;
+    arFLDCHGINF[4] = faProduct[0].FLDCHGINF5;
+    arFLDCHGINF[5] = faProduct[0].FLDCHGINF6;
+    arFLDCHGINF[6] = faProduct[0].FLDCHGINF7;
+    arFLDCHGINF[7] = faProduct[0].FLDCHGINF8;
+    arFLDCHGINF[8] = faProduct[0].FLDCHGINF9;
+    arFLDCHGINF[9] = faProduct[0].FLDCHGINF10;
+    arFLDCHGINF[10] = faProduct[0].FLDCHGINF11;
+    arFLDCHGINF[11] = faProduct[0].FLDCHGINF12;
+    arFLDCHGINF[12] = faProduct[0].FLDCHGINF13;
+    arFLDCHGINF[13] = faProduct[0].FLDCHGINF14;
+    arFLDCHGINF[14] = faProduct[0].FLDCHGINF15;
+    arFLDCHGINF[15] = faProduct[0].FLDCHGINF16;
+    arFLDCHGINF[16] = faProduct[0].FLDCHGINF17;
+    arFLDCHGINF[17] = faProduct[0].FLDCHGINF18;
+    arFLDCHGINF[18] = faProduct[0].FLDCHGINF19;
+    arFLDCHGINF[19] = faProduct[0].FLDCHGINF20;
+    arFLDCHGINF[20] = faProduct[0].FLDCHGINF21;
+    arFLDCHGINF[21] = faProduct[0].FLDCHGINF22;
+    arFLDCHGINF[22] = faProduct[0].FLDCHGINF23;
+    arFLDCHGINF[23] = faProduct[0].FLDCHGINF24;
+    arFLDCHGINF[24] = faProduct[0].FLDCHGINF25;
+    arFLDCHGINF[25] = faProduct[0].FLDCHGINF26;
+    arFLDCHGINF[26] = faProduct[0].FLDCHGINF27;
+    arFLDCHGINF[27] = faProduct[0].FLDCHGINF28;
+    arFLDCHGINF[28] = faProduct[0].FLDCHGINF29;
+    arFLDCHGINF[29] = faProduct[0].FLDCHGINF30;
+
+    var arFLDEDITABLEF = new Array(29);
+    arFLDEDITABLEF[0] = faProduct[0].FLDEDITABLEF1;
+    arFLDEDITABLEF[1] = faProduct[0].FLDEDITABLEF2;
+    arFLDEDITABLEF[2] = faProduct[0].FLDEDITABLEF3;
+    arFLDEDITABLEF[3] = faProduct[0].FLDEDITABLEF4;
+    arFLDEDITABLEF[4] = faProduct[0].FLDEDITABLEF5;
+    arFLDEDITABLEF[5] = faProduct[0].FLDEDITABLEF6;
+    arFLDEDITABLEF[6] = faProduct[0].FLDEDITABLEF7;
+    arFLDEDITABLEF[7] = faProduct[0].FLDEDITABLEF8;
+    arFLDEDITABLEF[8] = faProduct[0].FLDEDITABLEF9;
+    arFLDEDITABLEF[9] = faProduct[0].FLDEDITABLEF10;
+    arFLDEDITABLEF[10] = faProduct[0].FLDEDITABLEF11;
+    arFLDEDITABLEF[11] = faProduct[0].FLDEDITABLEF12;
+    arFLDEDITABLEF[12] = faProduct[0].FLDEDITABLEF13;
+    arFLDEDITABLEF[13] = faProduct[0].FLDEDITABLEF14;
+    arFLDEDITABLEF[14] = faProduct[0].FLDEDITABLEF15;
+    arFLDEDITABLEF[15] = faProduct[0].FLDEDITABLEF16;
+    arFLDEDITABLEF[16] = faProduct[0].FLDEDITABLEF17;
+    arFLDEDITABLEF[17] = faProduct[0].FLDEDITABLEF18;
+    arFLDEDITABLEF[18] = faProduct[0].FLDEDITABLEF19;
+    arFLDEDITABLEF[19] = faProduct[0].FLDEDITABLEF20;
+    arFLDEDITABLEF[20] = faProduct[0].FLDEDITABLEF21;
+    arFLDEDITABLEF[21] = faProduct[0].FLDEDITABLEF22;
+    arFLDEDITABLEF[22] = faProduct[0].FLDEDITABLEF23;
+    arFLDEDITABLEF[23] = faProduct[0].FLDEDITABLEF24;
+    arFLDEDITABLEF[24] = faProduct[0].FLDEDITABLEF25;
+    arFLDEDITABLEF[25] = faProduct[0].FLDEDITABLEF26;
+    arFLDEDITABLEF[26] = faProduct[0].FLDEDITABLEF27;
+    arFLDEDITABLEF[27] = faProduct[0].FLDEDITABLEF28;
+    arFLDEDITABLEF[28] = faProduct[0].FLDEDITABLEF29;
+    arFLDEDITABLEF[29] = faProduct[0].FLDEDITABLEF30;
+
     return {
       arFLDTAG,
       arFLDTAB,
@@ -2556,7 +2856,9 @@
       arFLDID,
       arSLFLDID,
       arFLDTYPE,
-      arFLDREGEX
+      arFLDREGEX,
+      arFLDCHGINF,
+      arFLDEDITABLEF
     };
   }
   
@@ -2674,7 +2976,7 @@
       }).done(function( response ) {
         var statuscode = response.code;
         var statusmessage = response.message;
-        // console.log(response);
+        console.log(response);
           if (response.code == '200'){
             // console.log(response.data[0]['SPremium']);
             var premium = 0;
@@ -2700,19 +3002,29 @@
                 $('#' + response.data[i]['RATE_SOURCE']).val(response.data[i]['Rate']); 
               }
             }
+            var AdmFee = $('#ADMFee').val().replace(/\,/g,'');
+            var StampDuty = $('#StampDuty').val().replace(/\,/g,'');
+            if (AdmFee == 0){
+              AdmFee = response.data[0]['AdmFee'];
+            }
+            if (StampDuty == 0){
+              StampDuty = response.data[0]['StampDuty'];
+            }
+            console.log(parseFloat(AdmFee));
+            console.log(parseFloat(StampDuty));
+            premium = response.data[0]['TotalPremium'];
             $('#Premium').val(number_format(premium,2,',','.'));
             premium = $('#Premium').val().replace(/\,/g,'');
-            // console.log(premium); 
             if ($('#DiscPCT').val() != 0){
               var discount = (premium * $('#DiscPCT').val() / 100);
               $('#Discount').val(number_format(discount,2,',','.'));
-              var totalpremium = premium + response.data[0]['AdmFee'] + response.data[0]['StampDuty'] - discount;
+              var totalpremium = parseFloat(premium) + parseFloat(AdmFee) + parseFloat(StampDuty) - parseFloat(discount);
             }else{
-              var totalpremium = premium + response.data[0]['AdmFee'] + response.data[0]['StampDuty'];
+              var totalpremium = parseFloat(premium) + parseFloat(AdmFee) + parseFloat(StampDuty);
             }
             // console.log(totalpremium);
-            $('#AdmFee').val(number_format(response.data[0]['AdmFee'],2));
-            $('#StampDuty').val(number_format(response.data[0]['StampDuty'],2));
+            $('#ADMFee').val(number_format(AdmFee,2));
+            $('#StampDuty').val(number_format(StampDuty,2));
             $('#TxtTotalPremium').val(number_format(totalpremium,2,',','.'));
             $('#SPremium').val(spremium);
             // if (holdmessage != ''){
@@ -2742,10 +3054,12 @@
         var premium = $('#Premium').val().replace(/\,/g,'');
         var discountPCT = $('#DiscPCT').val();
         var discount = premium * discountPCT / 100;
+        var AdmFee = parseInt($('#ADMFee').val().replace(/\,/g,''));
+        var StampDuty = parseInt($('#StampDuty').val().replace(/\,/g,''));
         $('#Discount').val(number_format(discount,2,',','.'));
-        $('#TxtTotalPremium').val(number_format((parseInt(premium) - parseInt(discount)),2,',','.'));
+        $('#TxtTotalPremium').val(number_format((parseInt(premium) + AdmFee + StampDuty - parseInt(discount)),2,',','.'));
         if($('#DiscPCT').val() == '0'){
-          $('#TxtTotalPremium').val($('#Premium').val());
+          $('#TxtTotalPremium').val(number_format(parseInt(premium) + AdmFee + StampDuty),2,',',',');
         }
       }
     }
@@ -2755,6 +3069,8 @@
     if ($('#Premium').val() != '' && $('#Premium').val() != '0'){
       var premium = $('#Premium').val().replace(/\,/g,'');
       var discount = ($('#Discount').val()) == '' ? 0 : $('#Discount').val().replace(/\,/g,'');
+      var AdmFee = parseInt($('#ADMFee').val().replace(/\,/g,''));
+      var StampDuty = parseInt($('#StampDuty').val().replace(/\,/g,''));
       // console.log(premium);
       $('#DiscPCT').val(discount / premium * 100);
       if ($('#DiscPCT').val() > 100){
@@ -2763,10 +3079,10 @@
         $('#TxtTotalPremium').val($('#Premium').val());
         toastMessage('400',"Invalid discount percentage ! Discount can't be greater than 100%.");
       }else{
-        var totalpremi = $('#TxtTotalPremium').val().replace(/\,/g,'');
-        $('#TxtTotalPremium').val(number_format(parseInt(totalpremi) - parseInt(discount),2,',','.'));
+        // var totalpremi = $('#TxtTotalPremium').val().replace(/\,/g,'');
+        $('#TxtTotalPremium').val(number_format(parseInt(premium) + AdmFee + StampDuty - parseInt(discount),2,',','.'));
         if($('#Discount').val() == 0){
-          $('#TxtTotalPremium').val($('#Premium').val());
+          $('#TxtTotalPremium').val(number_format(parseInt(premium) + AdmFee + StampDuty),2,',',',');
         }
       }
     }
@@ -2797,11 +3113,12 @@
         $('#Fee_1').val(0);
         $('#FeeAmount_1').val(0);
         toastMessage('400',"Invalid commission percentage ! Commission can't be greater than 100%.");
-      }else{
-        if($('#Discount').val() == 0){
-          $('#TxtTotalPremium').val($('#Premium').val());
-        }
       }
+      // else{
+      //   if($('#Discount').val() == 0){
+      //     $('#TxtTotalPremium').val($('#Premium').val());
+      //   }
+      // }
     }
   });
 
@@ -2918,8 +3235,8 @@
         url: "{{ route('policy.savepolicy') }}", 
         data: full,
       }).done(function( response ) {
-        // console.log(response);
-        if (response.code == '200'){
+        console.log(response);
+        if (response.code == '200' || response.data.length > 0){
           // tblInquiry.clear().rows.add(response.listpolicy.Data).draw();
           removeRowTable(tblInquiry, response.data[0]['PID']);
           tblInquiry.rows.add(response.listpolicy.Data).draw();
@@ -3182,7 +3499,7 @@
             },
             }).done(function(msg) {
               if (msg.code == '200'){
-                openInNewTab(msg.Data);
+                openInNewTabPdf(msg.Data);
                 resolve({
                   msg : msg
                 });
@@ -3207,7 +3524,7 @@
     })
   })
 
-  function openInNewTab(url) {
+  function openInNewTabPdf(url) {
     // console.log(url);
     let pdfWindow = window.open("");
 
@@ -3222,6 +3539,7 @@
     arrPolicy = [];
     enableAll();
     $('#img-btn-send').attr("disabled","disabled");
+    $('#img-btn-sign').attr("disabled","disabled");
     $('#img-btn-preview').attr("disabled","disabled");
     $('#img-btn-revise').attr("disabled","disabled");
     $('#img-btn-submit').attr("disabled","disabled");
@@ -3265,6 +3583,7 @@
       // $('#BtnPayment').removeAttr("disabled");
       // $('#img-btn-preview').removeAttr("disabled");
       $('#img-btn-send').removeAttr("disabled");
+      $('#img-btn-sign').removeAttr("disabled");
       $('#img-btn-revise').removeAttr("disabled");
       $('#img-btn-submit').removeAttr("disabled");
     }else{
@@ -3273,6 +3592,7 @@
       // $('#BtnPayment').attr("disabled","disabled");
       // $('#img-btn-preview').attr("disabled","disabled");
       $('#img-btn-send').attr("disabled","disabled");
+      $('#img-btn-sign').attr("disabled","disabled");
       $('#img-btn-revise').attr("disabled","disabled");
       $('#img-btn-submit').attr("disabled","disabled");
     }
@@ -3286,6 +3606,7 @@
   async function viewDetail(data){
     enableAll();
     arrPolicy = data;
+    console.log(arrPolicy);
     // var table = $('#tblInquiryPolicy').DataTable();
     // var data = table.rows().data();
     // const arrPolFilter = data.filter(pol => pol.PID == PID);
@@ -3304,11 +3625,12 @@
     parseDataToInput(arrPolFilter);
 
     //calculate total premium
-    let Premium = parseInt(arrPolFilter[0]['Premium']);
-    let AdmFee = parseInt(arrPolFilter[0]['ADMFee']);
-    let StampDuty = parseInt(arrPolFilter[0]['StampDuty']);
-    let Discount = parseInt(arrPolFilter[0]['Discount']);
-    $('#TxtTotalPremium').val(number_format(Premium + AdmFee + StampDuty - Discount,2,',','.'));
+    let Premium = parseFloat(arrPolFilter[0]['Premium']);
+    let AdmFee = parseFloat(arrPolFilter[0]['ADMFee']);
+    let StampDuty = parseFloat(arrPolFilter[0]['StampDuty']);
+    let Discount = parseFloat(arrPolFilter[0]['Discount']);
+    var TotalPremium = (Premium + AdmFee + StampDuty - Discount);
+    $('#TxtTotalPremium').val(number_format(TotalPremium,2,',','.'));
     // $('.num-format').val(number_format($(this),2,',','.'));
 
     //Check status for button disable or not
@@ -3320,12 +3642,14 @@
       refreshButton(true);
       // enableAll();
       $('#img-btn-revise').attr("disabled","disabled");
+      // $('#img-btn-sign').attr("disabled","disabled");
       if (cbxNeedEsignF.checked == true && cbxEsignF.checked == false) {
         $('#img-btn-submit').attr("disabled","disabled");
       }else{
         // $('#img-btn-submit').removeAttr("disabled");
         DisableElement($('#img-btn-submit'));
         $('#img-btn-send').attr("disabled","disabled");
+        $('#img-btn-sign').attr("disabled","disabled");
       }
       // $('#img-btn-preview').attr('disabled','disabled');
       // if (cbxNeedEsignF.checked == true) {
@@ -3343,6 +3667,7 @@
       $('#img-btn-revise').removeAttr("disabled");
       // $('#img-btn-submit').removeAttr("disabled");
       $('#img-btn-send').removeAttr("disabled");
+      $('#img-btn-sign').removeAttr("disabled");
       $('#img-btn-preview').removeAttr('disabled');
       if (cbxNeedEsignF.checked == true && cbxEsignF.checked == false) {
         $('#img-btn-submit').attr("disabled","disabled");
@@ -3353,8 +3678,10 @@
       disableAll();
       if (cbxNeedEsignF.checked == true && cbxEsignF.checked == true) {
         $('#img-btn-send').attr("disabled","disabled");
+        $('#img-btn-sign').attr("disabled","disabled");
       }else{
         $('#img-btn-send').removeAttr("disabled"); 
+        $('#img-btn-sign').removeAttr("disabled"); 
       }
       $('#img-btn-preview').removeAttr('disabled');
       $('#img-btn-clear').removeAttr("disabled");
@@ -3379,10 +3706,14 @@
       }
     }
     $('#Payment_Tenor').trigger('change');
+    drawDataTablePolDoc(arrPolFilter[0]['PolicyDocs']);
     checkPrivilegesByPassESign();
     SubmitDateF_Checked();
     Segment_OnChange($('#Segment').val());
     checkClausulaPolicy(arrPolFilter);
+    $('#TRANSDATE').val(arrPolFilter[0]['TRANSDATE']);
+    $('#DEPARTDATE').val(arrPolFilter[0]['DEPARTDATE']);
+    $('#ARRIVALDATE').val(arrPolFilter[0]['ARRIVALDATE']);
     // $('#DisabledNeedESignF').attr('disabled','disabled');
     toastMessage('200','Data Successfully Retrivied');
   }
@@ -3482,7 +3813,6 @@
   }
 
   function parseDataToInput(polArray){
-    // console.log(polArray);
     for (var key in polArray[0]) {
       if (key == 'PStatus'){
         if (polArray[0][key] == 'R'){
@@ -3523,6 +3853,7 @@
           $('#' + key).val(number_format(polArray[0][key],2,',','.'));
         }else{
           $('#' + key).val(polArray[0][key]);
+          $('.' + key).val(polArray[0][key]);
           // console.log('key : ' + key + ', type : ' + $('#' + key).attr('type') + ' value : ' + polArray[0][key]);
         }
       }
@@ -3583,6 +3914,7 @@
         $('#img-btn-save').removeAttr("disabled");
         $('#img-btn-submit').removeAttr("disabled");
         $('#img-btn-send').removeAttr("disabled");
+        $('#img-btn-sign').removeAttr("disabled");
         $('#Bimg-btn-save').attr("disabled","disabled");
       }
       $("#loadMe").modal("hide");
@@ -3626,9 +3958,7 @@
     // toastMessage('400','This Function Not Ready');
   });
 
-  $('#img-btn-send').click(function(event){
-    event.preventDefault();
-
+  function SubmitConfirmation(emailF, directSignF){
     let _token   = $('meta[name="csrf-token"]').attr('content');
 
     $("#loadMe").modal('show');
@@ -3639,6 +3969,7 @@
       data: {
           PID: $('#PID').val(),
           RefNo: $('#RefNo').val(),
+          EmailF: emailF,
           _token: _token
         },
     }).done(function( response ) {
@@ -3652,8 +3983,28 @@
         refreshButton(false);
         $('#img-btn-save').attr('disabled','disabled');
         $('#img-btn-send').removeAttr('disabled');
+        $('#img-btn-sign').removeAttr('disabled');
         $('#img-btn-revise').removeAttr('disabled');
         // $('#img-btn-submit').removeAttr('disabled');
+        if (directSignF){
+          var param =
+            {
+              "ID":"{{ session('ID') }}",
+              "Password":"{{ session('Password') }}",
+              "RefNo": $('#RefNo').val(),
+              "PID": $('#PID').val(),
+              "name" : "",
+              "option_sengketa":"",
+              "kondisi_kendaraan":"",
+              "tempat_survey":""
+            };
+          var urlParam = [];
+          for (var i in param){
+            urlParam.push("data[" + encodeURI(i) + "]=" + encodeURI(param[i]));
+          }
+          var url = '{{ route("sppadoc") }}' + "?" + urlParam.join("&");
+          openInNewTab(url,'');
+        }
       }
       $("#loadMe").modal("hide");
       toastMessage(response.code,response.message);
@@ -3662,6 +4013,11 @@
         $("#loadMe").modal("hide");
         toastMessage('400',error);
     }); 
+  }
+
+  $('#img-btn-send').click(function(event){
+    event.preventDefault();
+    SubmitConfirmation(true, false);
   });
 
   function dropPolicy(PID){
@@ -3886,7 +4242,7 @@
 
       // console.log("{{ route('policy.modalinstallment') }}?sdate=" + sdate + "&payment_term=" + payment_term + "&payment_tenor=" + payment_tenor + 
       // "&premium=" + premium + "&tsi=" + tsi);
-      if ($('#ProductID').val() == '0114'){
+      if ($('#ProductID').val() == '0114M'){
         tsi = parseInt($('#SI_1').val() == undefined ?  0 : $('#SI_1').val().replace(/\,/g, '')) + parseInt($('#SI_2').val() == undefined ?  0 : $('#SI_2').val().replace(/\,/g, ''));
       }else{
         tsi = parseInt($('#SI_1').val() == undefined ?  0 : $('#SI_1').val().replace(/\,/g, ''));
@@ -4037,14 +4393,19 @@
 
   function checkClausulaPolicy(policydata){
     var nodeTable = tblClausula.rows().nodes();
+    console.log(nodeTable);
     $(nodeTable).find('input').each(function(){
+      // console.log(this.id);
       if (!this.hasAttribute('disabled')){
+        // console.log(this.id);
+        // console.log(this.value);
+        // console.log(policydata[0][this.id]);
         this.checked = policydata[0]['Clausulacode1'].includes(this.value);
       }
     })
   }
 
-  function detailRisk(risk,remarks,orderno){
+  async function detailRisk(risk,remarks,orderno){
     event.preventDefault();
 
     var sdate = new Date($('#InceptionDate').val()); //2022-04-19
@@ -4061,20 +4422,13 @@
     $('#modalfooter').empty();
 
     var url = "{{ route('policy.modalrisk') }}?risk=" + risk + "&remarks=" + remarks + "&orderno=" + orderno + "&policyyear=" + policyYear;
-
-    $.ajax({
-    type: "GET",
-    url: url,
-    dataType: 'html'
-    }).done(function( response ) {
-        // $('#loadMe').modal('hide');
-        $('#modalbody').html(response);
-        $('#modal-general').modal({
-          keyboard: false,
-          backdrop: 'static',
-          show: true
-        })
-    });
+    var response = await getModalView(url);
+    $('#modalbody').html(response);
+    $('#modal-general').modal({
+      keyboard: false,
+      backdrop: 'static',
+      show: true
+    })
   }
 
   $('#btn-refresh-master').on('click',function(event){
@@ -4099,29 +4453,79 @@
 
     $('#modalfooter').empty();
 
-    var url = "{{ route('policy.modaldeductible') }}?dcode=" + dcode + "&remarks=" + remarks + "&orderno=" + orderno + "&editableF=" + editableF + "&fixedmin=" + fixedmin + "&pcttsi=" + pcttsi + "&pctcl=" + pctcl + "&fixedmax=" + fixedmax;
+    var url = "{{ route('policy.modaldeductible') }}?reftopro="+ refTOPRO +"&dcode=" + dcode + "&remarks=" + remarks + "&orderno=" + orderno + "&editableF=" + editableF + "&fixedmin=" + fixedmin + "&pcttsi=" + pcttsi + "&pctcl=" + pctcl + "&fixedmax=" + fixedmax;
     var response = await getModalView(url);
-
     $('#modalbody').html(response);
-      $('#modal-general').modal({
-        keyboard: false,
-        backdrop: 'static',
-        show: true
-      })
-
-    // $.ajax({
-    // type: "GET",
-    // url: url,
-    // dataType: 'html'
-    // }).done(function( response ) {
-    //     // $('#loadMe').modal('hide');
-    //     $('#modalbody').html(response);
-    //     $('#modal-general').modal({
-    //       keyboard: false,
-    //       backdrop: 'static',
-    //       show: true
-    //     })
-    // });
+    $('#modal-general').modal({
+      keyboard: false,
+      backdrop: 'static',
+      show: true
+    })
   }
+
+  $('#AID_1').on('change',function(){
+    var BSTYPE_1 = document.getElementById("BSTYPE_1");
+    BSTYPE_1.options.length = 0;
+    if ($(this).val() != ''){
+      if (arrAgentProfile != undefined){
+        if (arrAgentProfile.length > 0){
+          var faAgentProfile = arrAgentProfile.filter(base => base.ID == $(this).val());
+          if (faAgentProfile[0]['BSTYPE'] == ''){
+            if (faAgentProfile[0]['CorporateF'] === true){
+              var faBSTYPE = arrBSTYPE.filter(base => base.BSTYPE == 'B' || base.BSTYPE == 'D' || base.BSTYPE == 'O');
+            }else{
+              var faBSTYPE = arrBSTYPE.filter(base => base.BSTYPE == 'A' || base.BSTYPE == 'D' || base.BSTYPE == 'O');
+            }
+            addOptionItem(BSTYPE_1,faBSTYPE,'BSTYPE','Description',false);
+          }else{
+            addOptionItem(BSTYPE_1,faAgentProfile,'BSTYPE','BSTYPE_DESCRIPTION',false);
+          }
+        }
+      }
+    }else{
+      addOptionItem(BSTYPE_1,arrBSTYPE,'BSTYPE','Description',true);
+    }
+    
+  });
+
+  $("#VoyageFromID").on("select2:select", function () {
+    $('#VOYAGEFROM').val(this.options[this.selectedIndex].text);
+  });
+  $("#VoyageToID").on("select2:select", function () {
+    $('#VOYAGETO').val(this.options[this.selectedIndex].text);
+  });
+  
+  $('#TRANSHIPMENT').on('click',function(){
+    var isSelected = this.checked;
+    if (isSelected){
+      $('.transhipment').removeAttr('readonly');
+      $('.btn-transdet').removeAttr('style');
+      $('.div-tblTransDet').removeAttr('style');
+    }else{
+      $('.transhipment').attr('readonly','readonly');
+      $('.btn-transdet').css('display','none');
+      $('.div-tblTransDet').css('display','none');
+    }
+  });
+
+  function shoModalTransDet(a,b,c){
+    $('#class-modal-dialog').attr('class','modal-dialog modal-md');
+    
+    $('#modaltitle').text('Transhipment Detail');
+    
+    $('#modalbody').empty();
+
+    $('#modalfooter').empty();
+    
+    $('#modal-general').modal({
+      keyboard: false,
+      backdrop: 'static',
+      show: true
+    })
+  }
+
+  $('#img-btn-sign').on('click', function(){
+    SubmitConfirmation(false, true);
+  });
 </script>
 @endsection

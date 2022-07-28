@@ -64,5 +64,6 @@ class Kernel extends HttpKernel
         'cors' => \App\Http\Middleware\Cors::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'CekLogin' => \App\Http\Middleware\CekLogin::class,
+        'RedirectResetPassword' => \App\Http\Middleware\RedirectResetPassword::class,
     ];
 }

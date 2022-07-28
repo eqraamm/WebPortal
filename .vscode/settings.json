@@ -1,5 +1,6 @@
 {
     "editor.codeActionsOnSave": {
     },
-    "workbench.colorTheme": "Dracula Soft"
+    "workbench.colorTheme": "Dracula Soft",
+    "editor.tabSize": 3
 }

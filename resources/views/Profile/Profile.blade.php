@@ -1,5 +1,8 @@
 @extends('layout/main')
-@section('title','ACA INSURANCE | Profile')
+
+@section('title')
+{{config('app.COMPANYNAME')}} INSURANCE | Client
+@endsection
 
 @section('maincontent')
   <!-- Content Wrapper. Contains page content -->
@@ -55,6 +58,15 @@
                         <input class="form-control" id="SearchMobileNo" type="text">
                       </div>
                     </div>
+                    @if (session('Role') == 'MARKETING OFFICER')
+                    <div class="form-group row">
+                      <p class="col-sm-2 col-form-label">Marketing Officer</p>
+                      <div class="col-sm-2">
+                        <select class="form-control select2bs4" id="MO" name="MO" required>
+                        </select>
+                      </div>
+                    </div>
+                    @endif
                     <div class="form-group row">
                       <p class="col-sm-2 col-form-label"></p>
                       <div class="col-sm-4">
@@ -199,7 +211,7 @@
                           </div>
                           <div class="modal-footer">
                             <button type="reset" class="btn btn-secondary">Clear All</button>
-                            <Button type="submit" class="btn btn-primary sync-profile" id="search" name="search">search </button>
+                            <Button type="submit" class="btn btn-primary sync-profile" id="search" name="search">Search</button>
                           </div>
                           <div class="card-body" id="cardbodyModalSync">
                             <table id="tblSync" class="table table-bordered table-striped" style="width:100%"></table>
@@ -217,7 +229,7 @@
                     </div>
                     <div class="form-group row">
                       <div class="col-md-2 ml-auto">
-                        <button type="delete" id="btn-sync" class="btn btn-block btn-outline-info btn-upload" disabled>Synchronize Data</button>
+                        <button type="button" id="btn-sync" class="btn btn-block btn-outline-info" disabled>Refresh Data</button>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -344,11 +356,11 @@
                         <label class="col-sm-3 col-form-label"></label>
                         <div class="col-sm-2">
                           <label for="RT">RT</label>
-                          <input class="form-control" id="SOI" name="SOI" type="text" required>
+                          <input class="form-control" id="SOI" name="SOI" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
                         </div>
                         <div class="col-sm-2">
                           <label for="RW">RW</label>
-                          <input class="form-control" id="MOO" name="MOO" type="text" required>
+                          <input class="form-control" id="MOO" name="MOO" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
                         </div>
                         <div class="col-sm-2">
                           <label for="Province">Province</label>
@@ -379,7 +391,7 @@
                     <label class="col-sm-3 col-form-label"></label>
                       
                     </div> -->
-                    <div class="form-group row" style=>
+                    <div class="form-group row">
                       <p class="col-sm-3 col-form-label">Address 2</p>
                       <div class="col-sm-6">
                         <input class="form-control" id="Address_2" name="Address2" type="text">
@@ -900,7 +912,15 @@
 @section('scriptpage')
 <script>
   let arrSCGroup;
+  let formData = '';
   $(document).ready(function() {
+    var responselistmo = @json($listmo);
+    if (responselistmo['code'] == '200'){
+      listmo = responselistmo['Data'];
+    }else{
+      listmo = [];
+    }
+    addOptionItem(MO,listmo,'ID','Name',false, false, false,'',true);
     getcountry();
     getprovince();
     getcgroup();
@@ -1201,7 +1221,10 @@
     $('.select2bs4').trigger('change');
     corporateF_chekcked();
     $('#FirstName').focus();
+    formData = '';
+    enableAll();
     $('#btn-sync').attr('disabled','disabled');
+    $('#OwnerID').val("{{session('ID')}}")
   });
 
 
@@ -1253,7 +1276,7 @@
         // console.log ('Key : ' + key + ' Value : ' + filterarray[0][key]);
       }
     }
-    $('#OwnerID').val("{{ session('ID') }}")
+    // $('#OwnerID').val("{{ session('ID') }}")
   }
 
   function GetFormattedDate(datestring) {
@@ -1294,12 +1317,16 @@
     try{
       var a_href = $(this).attr('action');
 
+      if (formData == ''){
+        formData = $(".form-save").serialize();
+      }
+
       $.ajax({
         type: "POST",
         url: a_href, // This is what I have updated
-        data: $(".form-save").serialize(),
+        data: formData,
       }).done(function(response) {
-        // console.log(response);
+        console.log(response);
         if (response.code == '200') {
           tblProfile.clear().rows.add(response.listprofile.Data).draw();
           viewDetail(response.Data[0]['ID'])
@@ -1368,11 +1395,9 @@
       },
     }).done(function(msg) {
       // $("#loadMe").modal("hide");
-      console.log(msg);
       $('#cardbodyModalSync').html(msg);
       $('#div-overlay').empty();
     }).fail(function(msg) {
-      console.log(msg);
       // $("#loadMe").modal("hide");
       $('#div-overlay').empty();
     });
@@ -1447,7 +1472,8 @@
       var email = $('#SearchEmail').val();
       var id_no = $('#SearchID_No').val();
       var mobile = $('#SearchMobileNo').val();
-      var url = "{{ route('profile.search') }}?ID=" + ID + "&name=" + name + "&email=" + email + "&id_no=" + id_no + "&mobile=" + mobile;
+      var OwnerID = $('#MO').val();
+      var url = "{{ route('profile.search') }}?ID=" + ID + "&name=" + name + "&email=" + email + "&id_no=" + id_no + "&mobile=" + mobile + '&OwnerID=' + OwnerID;
       // console.log(url);
 
       var response = await getDataNew(url);
@@ -1463,21 +1489,14 @@
   
   // document.getElementById('btn-search-profile').addEventListener("click", myFunction);  
 
-  async function drawDataTable(table,data){
-    table.clear().draw();
-    table.rows.add(data);
-    table.columns.adjust().draw();
-    // await sleep(1);
-    table.columns.adjust().draw(); 
-  }
-
   async function getDistrict(province, value = '') {
     try {
       var url = "{{ route('listDistrict') }}?province=" + province
       const res = await getData(url)
+      console.log(res);
       var listbox = document.getElementById("District");
       $('#District').empty();
-      addOptionItem(listbox,res.Data,'District','Description',true);
+      addOptionItem(listbox,res.Data,'District','Description',true, false, true, 'Description_1');
       if (value != ''){
         $('#District').val(value);
         $('#District').trigger('change');
@@ -1539,5 +1558,16 @@
   // $('#SOI').on('change', function(event){
   //   if (this.value)
   // });
+
+  function disableAll(){
+    $('.form-save').find('input,select').each(function(){
+        $(this).attr('disabled','disabled');
+    });
+  }
+  function enableAll(){
+    $('.form-save').find('input,select').each(function(){
+        $(this).removeAttr('disabled','disabled');
+    });
+  }
 </script>
 @endsection
