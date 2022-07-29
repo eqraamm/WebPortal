@@ -92,7 +92,9 @@ class ProfileController extends Controller
         
         $dataProfile = array(
             'ID' => '',
-            'OwnerID' => session('ID')
+            'OwnerID' => session('ID'),
+            'Username' => session('ID'),
+            'Password' => session('Password')
         );
 
         $responseSearchProfile = APIMiddleware($dataProfile, 'SearchProfile');
@@ -239,6 +241,8 @@ class ProfileController extends Controller
                             $dataprofile = array (
                                 'ID' => '',
                                 'OwnerID' => $OwnerID,
+                                'Username' => session('ID'),
+                                'Password' => session('Password')
                             );
                             // dd($dataprofile);
                             $responseSearchProfile = APIMiddleware($dataprofile, 'SearchProfile');
@@ -252,6 +256,8 @@ class ProfileController extends Controller
                         $data = array (
                             'ID' => '',
                             'OwnerID' => $OwnerID,
+                            'Username' => session('ID'),
+                            'Password' => session('Password')
                         );
                         $responseSearchProfile = APIMiddleware($data, 'SearchProfile');
 
@@ -274,6 +280,8 @@ class ProfileController extends Controller
                         $data = array (
                             'ID' => '',
                             'OwnerID' => $OwnerID,
+                            'Username' => session('ID'),
+                            'Password' => session('Password')
                         );
                         $responseSearchProfile = APIMiddleware($data, 'SearchProfile');
                         return response()->json(['code' => $responseSave['code'],'message'=>$responseSave['message'],'Data'=>$responseSave['Data'],'html' => '', 'listprofile' => $responseSearchProfile]);
@@ -301,6 +309,8 @@ class ProfileController extends Controller
             $data = array (
                 'ID' => '',
                 'OwnerID' => $OwnerID,
+                'Username' => session('ID'),
+                'Password' => session('Password')
             );
             $responseSearchProfile = APIMiddleware($data, 'SearchProfile');
 

@@ -24,13 +24,17 @@ class SppaController extends Controller
     }
 
     public function getlistMo(){
-        $dataMO = array(
-            'ID' => '',
-            'Role' => 'MARKETING OFFICER',
-            'UserName' => session('ID'),
-            'Password' => ''
-        );
-        $responseMO = APIMiddleware($dataMO, 'SearchSysUser');
+        if (session('Role') != 'MARKETING OFFICER'){
+            $dataMO = array(
+                'ID' => '',
+                'Role' => 'MARKETING OFFICER',
+                'UserName' => session('ID'),
+                'Password' => ''
+            );
+            $responseMO = APIMiddleware($dataMO, 'SearchSysUser');
+        }else{
+            $responseMO = [];
+        }
 
         return $responseMO;
     }

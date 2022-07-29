@@ -68,7 +68,6 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-              <a class="dropdown-item" href="{{route('faqlist')}}">FAQ</a>
               <a class="dropdown-item" href="{{route('showchangepassword')}}">Change Password</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="{{route('logout')}}">Logout</a>
@@ -140,22 +139,15 @@
               </p>
             </a>
           </li>
-          <li class="{{ Session::get('sidebar') == 'profile' ? 'nav-item menu-open' : 'nav-item' }}">
+          <!-- <li class="{{ Session::get('sidebar') == 'profile' ? 'nav-item menu-open' : 'nav-item' }}">
             <a href="{{ route('profile')}}" class="{{ Session::get('sidebar') == 'profile' ? 'nav-link active' : 'nav-link' }}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Client
               </p>
             </a>
-          </li>
-          <li class="{{ Session::get('sidebar') == 'sppa' ? 'nav-item menu-open' : 'nav-item' }}">
-            <a href="{{ route('policy.transaction')}}" class="{{ Session::get('sidebar') == 'sppa' ? 'nav-link active' : 'nav-link' }}">
-              <i class="nav-icon fas fa-copy"></i>
-              <p>
-                SPPA
-              </p>
-            </a>
-          </li>
+          </li> -->
+          <!-- <li c]i> -->
           @if (session('Role') == 'MARKETING OFFICER')
             <li class="{{ Session::get('sidebar') == 'survey' ? 'nav-item menu-open' : 'nav-item' }}">
               <a href="survey" class="{{ Session::get('sidebar') == 'survey' ? 'nav-link active' : 'nav-link' }}">
@@ -190,6 +182,16 @@
                   </a>
                 </li> -->
               </ul>
+            </li>
+          @endif
+          @if (session('Role') == 'AGENT')
+            <li class="{{ Session::get('sidebar') == 'faq' ? 'nav-item menu-open' : 'nav-item' }}">
+              <a href="{{ route('faqlist')}}" class="{{ Session::get('sidebar') == 'faq' ? 'nav-link active' : 'nav-link' }}">
+                <i class="nav-icon fas fa-question"></i>
+                <p>
+                  FAQ
+                </p>
+              </a>
             </li>
           @endif
           <!-- <li class="{{ Session::get('sidebar') == 'report' ? 'nav-link menu-open' : 'nav-link' }}">
