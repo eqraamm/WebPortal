@@ -21,11 +21,33 @@ class SurveyController extends Controller
             'ASource' => session('ASource')
         );
 
-        session(['sidebar' => 'survey']);
-
         $responseSearchPolicy = APIMiddleware($data, 'SearchPolicy');
+
+        $dataPrivileges = array(
+            'Username' => session('ID'),
+            'Password' => session('Password'),
+            'FName' => 'ALLOWALLPRODUCTIONBRANCH'
+        );  
+        $responsePrivileges = APIMiddleware($dataPrivileges, 'CheckPrivileges');
+
+        $privileges = $responsePrivileges['code'] == '200';
+        $dataMO = [];
+
+        if ($privileges){
+            $data = array(
+                'Username' => session('ID'),
+                'Password' => session('Password'),
+                'ID' => session('ID')
+            );
+            $responseListMO = APIMIddleware($data,'SearchListMOByBranchUser');
+            if ($responseListMO['code'] == '200'){
+                $dataMO = $responseListMO['Data'];
+            }
+        }
+
+        session(['sidebar' => 'survey']);
         //  dd($responseSearchPolicy);
-         return view('survey')->with('data', $responseSearchPolicy); 
+        return view('survey', array('data' => $responseSearchPolicy,'listmo' => $dataMO, 'privileges_branch_head' => $privileges));
     }
 
     public function SubmitSurvey(Request $request){

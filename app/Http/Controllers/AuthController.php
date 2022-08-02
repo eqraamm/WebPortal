@@ -95,8 +95,7 @@ class AuthController extends Controller
         return redirect()->route('login');
     }
 
-    public function ShowChangePassword()
-    {
+    public function ShowChangePassword(){
         return view('ChangePassword');
     }
 
@@ -126,5 +125,9 @@ class AuthController extends Controller
             }
             
         }
+    }
+
+    public function showForgotPassword(){
+        return view('ForgotPassword');
     }
 }

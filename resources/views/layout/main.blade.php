@@ -139,14 +139,24 @@
               </p>
             </a>
           </li>
-          <!-- <li class="{{ Session::get('sidebar') == 'profile' ? 'nav-item menu-open' : 'nav-item' }}">
+          @if (session('Role') == 'MARKETING OFFICER')
+          <li class="{{ Session::get('sidebar') == 'profile' ? 'nav-item menu-open' : 'nav-item' }}">
             <a href="{{ route('profile')}}" class="{{ Session::get('sidebar') == 'profile' ? 'nav-link active' : 'nav-link' }}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Client
               </p>
             </a>
-          </li> -->
+          </li>
+          <li class="{{ Session::get('sidebar') == 'sppa' ? 'nav-item menu-open' : 'nav-item' }}">
+            <a href="{{ route('policy.transaction')}}" class="{{ Session::get('sidebar') == 'sppa' ? 'nav-link active' : 'nav-link' }}">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                SPPA
+              </p>
+            </a>
+          </li>
+          @endif
           <!-- <li c]i> -->
           @if (session('Role') == 'MARKETING OFFICER')
             <li class="{{ Session::get('sidebar') == 'survey' ? 'nav-item menu-open' : 'nav-item' }}">

@@ -18,11 +18,16 @@ class IndexController extends Controller
             'PStatus' => '',
             'Insured' => '',
             'ASource' => session('ASource')
-        );
+        );      
 
         session(['sidebar' => 'dashboard']);
 
         $responseSearchPolicy = APIMiddleware($data, 'SearchPolicy');
+        // dd($responseSearchPolicy);
+        $dataPolicy = [];
+        if ($responseSearchPolicy['code'] == '200'){
+            $dataPolicy = $responseSearchPolicy['Data'];
+        }
         //  dd($responseSearchPolicy);
 
         if (session('Role') == 'AGENT'){
@@ -34,14 +39,29 @@ class IndexController extends Controller
             // return view('dashboard.dashboardAgent')->with(array('data_gwp' => $responseSearchStoredData_GWP,'data_lossratio' => $responseSearchStoredData_LossRatio)); 
             return view('dashboard.dashboardMitra');
         }else{
-            $data = array(
+            $dataPrivileges = array(
                 'Username' => session('ID'),
                 'Password' => session('Password'),
-                'ID' => session('ID')
-            );
-            $responseListMO = APIMIddleware($data,'SearchListMOByBranchUser');
-            // dd($responseListMO);
-            return view('dashboard',array('data'=> $responseSearchPolicy,'listmo' => $responseListMO)); 
+                'FName' => 'ALLOWALLPRODUCTIONBRANCH'
+            );  
+            $responsePrivileges = APIMiddleware($dataPrivileges, 'CheckPrivileges');
+    
+            $privileges = $responsePrivileges['code'] == '200';
+            $dataMO = [];
+    
+            if ($privileges){
+                $data = array(
+                    'Username' => session('ID'),
+                    'Password' => session('Password'),
+                    'ID' => session('ID')
+                );
+                $responseListMO = APIMIddleware($data,'SearchListMOByBranchUser');
+                if ($responseListMO['code'] == '200'){
+                    $dataMO = $responseListMO['Data'];
+                }
+            }
+
+            return view('dashboard',array('data'=> $dataPolicy,'listmo' => $dataMO, 'privileges_branch_head' => $privileges)); 
             // return view('dashboard')->with('data', $responseSearchPolicy);
         }
     }
@@ -126,6 +146,7 @@ class IndexController extends Controller
     }
 
     public function getListPolicy(Request $request){
+        // dd($request);
         $data = array(
             'ID' => $request->get('ID') == 'All' ? session('ID') : $request->get('ID'),
             'Username' => $request->get('ID') == 'All' ? session('ID') : '',

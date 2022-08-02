@@ -58,7 +58,7 @@
                         <input class="form-control" id="SearchMobileNo" type="text">
                       </div>
                     </div>
-                    @if (session('Role') == 'MARKETING OFFICER')
+                    @if (session('Role') == 'MARKETING OFFICER' and $privileges_branch_head)
                     <div class="form-group row">
                       <p class="col-sm-2 col-form-label">Marketing Officer</p>
                       <div class="col-sm-2">
@@ -914,13 +914,12 @@
   let arrSCGroup;
   let formData = '';
   $(document).ready(function() {
-    var responselistmo = @json($listmo);
-    if (responselistmo['code'] == '200'){
-      listmo = responselistmo['Data'];
-    }else{
-      listmo = [];
+    var privileges_branch_head = "{{$privileges_branch_head}}";
+    if (privileges_branch_head){
+      var listmo = @json($listmo);
+      var element_mo = document.getElementById('MO');
+      addOptionItem(element_mo,listmo,'ID','Name',false, false, false,'',true);
     }
-    addOptionItem(MO,listmo,'ID','Name',false, false, false,'',true);
     getcountry();
     getprovince();
     getcgroup();

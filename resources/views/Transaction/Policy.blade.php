@@ -83,14 +83,23 @@
                   </div>
                   <!-- /.card-header -->
                   <div class="card-body">
-                    @if (session('Role') == 'MARKETING OFFICER')
+                    @if (session('Role') == 'MARKETING OFFICER' && $privileges_branch_head)
                     <div class="form-group row">
                       <p class="col-sm-2 col-form-label">Marketing Officer</p>
                       <div class="col-sm-2">
                         <select class="form-control select2bs4" id="listMo" name="listMo" required>
                         </select>
                       </div>
+                      <div class="col-sm-4">
+                        <button type="button" id="btn-filter" class="btn btn-outline-primary">Search</button>
+                      </div>
                     </div>
+                    <!-- <div class="form-group row">
+                      <p class="col-sm-2 col-form-label"></p>
+                      <div class="col-sm-4">
+                      <button type="button" id="btn-filter" class="btn btn-outline-primary">Search</button>
+                      </div>
+                    </div> -->
                     @endif
                     <div class="table-responsive">
                       <!-- <button id="btntest">button test</button> -->
@@ -1111,7 +1120,6 @@
   let Role = '{{session("Role")}}';
   let ListBranch = @json(Session::get("ListBranch"));
   let ListSegment = @json(Session::get("ListSegment"));
-  let listMO = @json($listmo);
   let refTOPRO;
   
 
@@ -1295,7 +1303,7 @@
 
     $(".select2bs4-getapi").select2({
       theme: 'bootstrap4',
-      placeholder: "Retrieving Data..."
+      // placeholder: "Retrieving Data..."
     });
     
     $('#regdate').datetimepicker({
@@ -1389,13 +1397,12 @@
       "destroy": true,
     });
 
-    var responselistmo = @json($listmo);
-    var listmo = [];
-    if (responselistmo['code'] == '200'){
-      listmo = responselistmo['Data'];
+    var privileges_branch_head = "{{$privileges_branch_head}}";
+    if (privileges_branch_head){
+      var listmo = @json($listmo);
+      var selectMO = document.getElementById('listMo');
+      addOptionItem(selectMO,listmo,'ID','Name',false, false, false,'',true);
     }
-    addOptionItem(listMo,listmo,'ID','Name',false, false, false,'',true);
-    
   });
 
   var tblDoc = $("#tblPolDocUpload").DataTable({
@@ -4526,6 +4533,18 @@
 
   $('#img-btn-sign').on('click', function(){
     SubmitConfirmation(false, true);
+  });
+
+  $("#btn-filter").on("click", async function () {
+    var datas = [];
+    var mo = $('#listMo').val();
+    console.log(mo);
+    var url = "{{route('Dashboard.getlistpolicy')}}?ID=" + mo;
+    var response = await getDataNew(url);
+    console.log(response);
+    datas = response['Data'];
+    tblInquiry.clear().rows.add(datas).draw();;
+    tblInquiry.columns.adjust().draw();
   });
 </script>
 @endsection

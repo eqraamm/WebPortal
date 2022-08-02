@@ -51,241 +51,242 @@
   <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
-      <!-- <div class="form-group row">
-        <p class="col-sm-2 col-form-label">Marketing Officer</p>
-        <div class="col-sm-2">
-          <select class="form-control select2bs4" id="MO" name="MO" required>
-          </select>
-        </div>
-      </div> -->
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card card-primary">
-            <div class="card-header">
-              <h3 class="card-title">Transaction Perfomance</h3>
-              <div class="card-tools">
-                <a class="btn-tool"></a>
-                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                  <i class="fas fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body">
-              <canvas id="chart-transaction" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-            </div>
-          </div>
-        </div>
-        <!-- <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title premium-title">Premium Perfomance</h3>
-              <div class="card-tools">
-                <div class="btn-group">
-                  <button type="button" class="btn btn btn-sm dropdown-toggle" data-toggle="dropdown" data-offset="-52" title="Status Filter">
-                    <i class="fas fa-bars"></i>
+      <div class="overlay-wrapper">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Transaction Perfomance</h3>
+                <div class="card-tools">
+                  <a class="btn-tool"></a>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
                   </button>
-                  <div class="dropdown-menu" role="menu">
-                    <a href="#" onclick="dropDownClick('Waiting')" class="dropdown-item">Waiting</a>
-                    <a href="#" onclick="dropDownClick('Approve')" class="dropdown-item">Approve</a>
-                    <a href="#" onclick="dropDownClick('Submit')" class="dropdown-item">Submit</a>
-                    <a href="#" onclick="dropDownClick('Cancel')" class="dropdown-item">Cancel</a>
-                  </div>
                 </div>
-                <button type="button" class="btn btn btn-sm" data-card-widget="collapse">
-                  <i class="fas fa-minus"></i>
-                </button>
+              </div>
+              <div class="card-body">
+                <canvas id="chart-transaction" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
               </div>
             </div>
-            <div class="card-body">
-              <div id='myChart'></div>
-            </div>
           </div>
-        </div> -->
-      </div>
-      
-      <!-- tester -->
-      <!-- <div class="row">
-        <div class="col-md-6">
-        <div class="card card-success">
-            <div class="card-header">
-              <h3 class="card-title">Premium Perfomance</h3>
-              <div class="card-tools">
+          <!-- <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title premium-title">Premium Perfomance</h3>
+                <div class="card-tools">
                   <div class="btn-group">
-                    <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" data-offset="-52">
+                    <button type="button" class="btn btn btn-sm dropdown-toggle" data-toggle="dropdown" data-offset="-52" title="Status Filter">
                       <i class="fas fa-bars"></i>
                     </button>
                     <div class="dropdown-menu" role="menu">
-                      <a href="#" class="dropdown-item">Add new event</a>
-                      <a href="#" class="dropdown-item">Clear events</a>
-                      <div class="dropdown-divider"></div>
-                      <a href="#" class="dropdown-item">View calendar</a>
+                      <a href="#" onclick="dropDownClick('Waiting')" class="dropdown-item">Waiting</a>
+                      <a href="#" onclick="dropDownClick('Approve')" class="dropdown-item">Approve</a>
+                      <a href="#" onclick="dropDownClick('Submit')" class="dropdown-item">Submit</a>
+                      <a href="#" onclick="dropDownClick('Cancel')" class="dropdown-item">Cancel</a>
                     </div>
                   </div>
-                  <button type="button" class="btn btn-success btn-sm" data-card-widget="collapse">
+                  <button type="button" class="btn btn btn-sm" data-card-widget="collapse">
                     <i class="fas fa-minus"></i>
                   </button>
-                  <button type="button" class="btn btn-success btn-sm" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
-                  </button>
                 </div>
+              </div>
+              <div class="card-body">
+                <div id='myChart'></div>
+              </div>
             </div>
-            <div class="card-body"> -->
-              <!-- <div id="world-map" style="height: 250px; width: 100%;"></div> -->
-              <!-- <div id='myChart'></div> -->
-              <!-- <div class="chart">
-                <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+          </div> -->
+        </div>
+        
+        <!-- tester -->
+        <!-- <div class="row">
+          <div class="col-md-6">
+          <div class="card card-success">
+              <div class="card-header">
+                <h3 class="card-title">Premium Perfomance</h3>
+                <div class="card-tools">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" data-offset="-52">
+                        <i class="fas fa-bars"></i>
+                      </button>
+                      <div class="dropdown-menu" role="menu">
+                        <a href="#" class="dropdown-item">Add new event</a>
+                        <a href="#" class="dropdown-item">Clear events</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">View calendar</a>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-success btn-sm" data-card-widget="collapse">
+                      <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-success btn-sm" data-card-widget="remove">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+              </div>
+              <div class="card-body"> -->
+                <!-- <div id="world-map" style="height: 250px; width: 100%;"></div> -->
+                <!-- <div id='myChart'></div> -->
+                <!-- <div class="chart">
+                  <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div> -->
+                <!-- <div class="row">
+                  <div class="col-md-6">
+                    <div id='myChart'></div>
+                  </div>
+                  <div class="col-md-6">
+                    <div id='myChart2'></div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div id='myChart3'></div>
+                  </div>
+                  <div class="col-md-6">
+                    <div id='myChart4'></div>
+                  </div>
+                </div> -->
+              <!-- </div> -->
+              <!-- <div class="card-body">
+                <div class="row">
+                  <div class="col-6 col-md-3 text-center">
+                    <input type="text" class="knob" value="30" data-width="100" data-height="100" data-fgColor="#3c8dbc">
+
+                    <div class="knob-label">New Visitors</div>
+                  </div>
+                  <div class="col-6 col-md-3 text-center">
+                    <input type="text" class="knob" value="70" data-width="90" data-height="90" data-fgColor="#f56954">
+
+                    <div class="knob-label">Bounce Rate</div>
+                  </div>
+                  <div class="col-6 col-md-3 text-center">
+                    <input type="text" class="knob" value="-80" data-min="-150" data-max="150" data-width="90"
+                            data-height="90" data-fgColor="#00a65a">
+
+                    <div class="knob-label">Server Load</div>
+                  </div>
+                  <div class="col-6 col-md-3 text-center">
+                    <input type="text" class="knob" value="40" data-width="90" data-height="90" data-fgColor="#00c0ef">
+
+                    <div class="knob-label">Disk Space</div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 col-md-3 text-center">
+                    <input type="text" class="knob" value="90" data-width="100" data-height="100" data-fgColor="#932ab6" readonly>
+
+                    <div class="knob-label">Bandwidth</div>
+                  </div>
+                  <div class="col-md-6 col-md-3 text-center">
+                    <input type="text" class="knob" value="50" data-width="90" data-height="90" data-fgColor="#39CCCC">
+
+                    <div class="knob-label">CPU</div>
+                  </div>
+                </div>
               </div> -->
-              <!-- <div class="row">
-                <div class="col-md-6">
-                  <div id='myChart'></div>
-                </div>
-                <div class="col-md-6">
-                  <div id='myChart2'></div>
-                </div>
+            <!-- </div>
+          </div>
+        </div> -->
+        <!-- end tester -->
+        
+        <!-- bagian bawah -->
+        <!-- <div class="row">
+          <div class="col-md-3 col-sm-5 col-12">
+            <div class="info-box shadow" type="button" onclick="viewDetailWidget('waiting')">
+              <span class="info-box-icon bg-warning"><i class="fas fa-pencil-alt"></i></span>
+
+              <div class="info-box-content">
+                  <span class="info-box-text">Waiting</span>
+                  <span class="info-box-number" id="waiting"> </span>
               </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div id='myChart3'></div>
-                </div>
-                <div class="col-md-6">
-                  <div id='myChart4'></div>
-                </div>
-              </div> -->
-            <!-- </div> -->
-            <!-- <div class="card-body">
-              <div class="row">
-                <div class="col-6 col-md-3 text-center">
-                  <input type="text" class="knob" value="30" data-width="100" data-height="100" data-fgColor="#3c8dbc">
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-5 col-12">
+            <div class="info-box shadow" type="button" onclick="viewDetailWidget('approved')">
+              <span class="info-box-icon bg-success"><i class="far fa-check-circle"></i></span>
 
-                  <div class="knob-label">New Visitors</div>
-                </div>
-                <div class="col-6 col-md-3 text-center">
-                  <input type="text" class="knob" value="70" data-width="90" data-height="90" data-fgColor="#f56954">
-
-                  <div class="knob-label">Bounce Rate</div>
-                </div>
-                <div class="col-6 col-md-3 text-center">
-                  <input type="text" class="knob" value="-80" data-min="-150" data-max="150" data-width="90"
-                          data-height="90" data-fgColor="#00a65a">
-
-                  <div class="knob-label">Server Load</div>
-                </div>
-                <div class="col-6 col-md-3 text-center">
-                  <input type="text" class="knob" value="40" data-width="90" data-height="90" data-fgColor="#00c0ef">
-
-                  <div class="knob-label">Disk Space</div>
-                </div>
+              <div class="info-box-content">
+                  <span class="info-box-text">Approve</span>
+                  <span class="info-box-number" id="approve"> </span>
               </div>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-5 col-12">
+            <div class="info-box shadow" type="button" onclick="viewDetailWidget('submit')">
+              <span class="info-box-icon bg-primary"><i class="far fa-bookmark"></i></span>
 
-              <div class="row">
-                <div class="col-md-6 col-md-3 text-center">
-                  <input type="text" class="knob" value="90" data-width="100" data-height="100" data-fgColor="#932ab6" readonly>
-
-                  <div class="knob-label">Bandwidth</div>
-                </div>
-                <div class="col-md-6 col-md-3 text-center">
-                  <input type="text" class="knob" value="50" data-width="90" data-height="90" data-fgColor="#39CCCC">
-
-                  <div class="knob-label">CPU</div>
-                </div>
+              <div class="info-box-content">
+                  <span class="info-box-text">Submit</span>
+                  <span class="info-box-number" id="submit"> </span>
               </div>
-            </div> -->
-          <!-- </div>
-        </div>
-      </div> -->
-      <!-- end tester -->
-      
-      <!-- bagian bawah -->
-      <!-- <div class="row">
-        <div class="col-md-3 col-sm-5 col-12">
-          <div class="info-box shadow" type="button" onclick="viewDetailWidget('waiting')">
-            <span class="info-box-icon bg-warning"><i class="fas fa-pencil-alt"></i></span>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-5 col-12">
+            <div class="info-box shadow" type="button" onclick="viewDetailWidget('cancel')">
+              <span class="info-box-icon bg-danger"><i class="fas fa-ban"></i></span>
 
-            <div class="info-box-content">
-                <span class="info-box-text">Waiting</span>
-                <span class="info-box-number" id="waiting"> </span>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-5 col-12">
-          <div class="info-box shadow" type="button" onclick="viewDetailWidget('approved')">
-            <span class="info-box-icon bg-success"><i class="far fa-check-circle"></i></span>
-
-            <div class="info-box-content">
-                <span class="info-box-text">Approve</span>
-                <span class="info-box-number" id="approve"> </span>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-5 col-12">
-          <div class="info-box shadow" type="button" onclick="viewDetailWidget('submit')">
-            <span class="info-box-icon bg-primary"><i class="far fa-bookmark"></i></span>
-
-            <div class="info-box-content">
-                <span class="info-box-text">Submit</span>
-                <span class="info-box-number" id="submit"> </span>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-5 col-12">
-          <div class="info-box shadow" type="button" onclick="viewDetailWidget('cancel')">
-            <span class="info-box-icon bg-danger"><i class="fas fa-ban"></i></span>
-
-            <div class="info-box-content">
-                <span class="info-box-text">Cancel</span>
-                <span class="info-box-number" id="cancel"> </span>
-            </div>
-          </div>
-        </div>
-      </div> -->
-      <div class="modal fade" id="modal-widget">
-        <div class="modal-dialog modal-xl">
-          <div class="modal-content">
-            <div class="modal-header">
-              <label class="modal-title">Detail Widget</label>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body" id="body-widget"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- bagian datatable -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Dashboard Marketing</h3>
-        </div>
-        <div class="card-body">
-          @if (session('Role') == 'MARKETING OFFICER')
-          <div class="form-group row">
-            <p class="col-sm-2 col-form-label">Marketing Officer</p>
-            <div class="col-sm-2">
-              <select class="form-control select2bs4" id="MO" name="MO" required>
-              </select>
-            </div>
-          </div>
-          @endif
-          <div class="form-group row">
-            <label for="TxtName" class="col-sm-2 col-form-label">Task Due</label>
-            <div class="input-group date col-sm-2" id="sdate" data-target-input="nearest">
-              <input type="text" id="InceptionDate" name="TxtSDate" class="form-control datetimepicker-input" data-target="#sdate" required />
-              <div class="input-group-append" data-target="#sdate" data-toggle="datetimepicker">
-                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+              <div class="info-box-content">
+                  <span class="info-box-text">Cancel</span>
+                  <span class="info-box-number" id="cancel"> </span>
               </div>
-            </div>_
-            <div class="input-group date col-sm-2" id="edate" data-target-input="nearest">
-              <input type="text" id="ExpiryDate" name="TxtEDate" class="form-control datetimepicker-input" data-target="#edate" required />
-              <div class="input-group-append" data-target="#edate" data-toggle="datetimepicker">
+            </div>
+          </div>
+        </div> -->
+        <div class="modal fade" id="modal-widget">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <div class="modal-header">
+                <label class="modal-title">Detail Widget</label>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" id="body-widget"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- bagian datatable -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Dashboard Marketing</h3>
+          </div>
+          <div class="card-body">
+            @if (session('Role') == 'MARKETING OFFICER' && $privileges_branch_head)
+            <div class="form-group row">
+              <p class="col-sm-2 col-form-label">Marketing Officer</p>
+              <div class="col-sm-2">
+                <select class="form-control select2bs4" id="MO" name="MO" required>
+                </select>
+              </div>
+            </div>
+            @endif
+            <div class="form-group row">
+              <label for="TxtName" class="col-sm-2 col-form-label">Task Due</label>
+              <div class="input-group date col-sm-2" id="sdate" data-target-input="nearest">
+                <input type="text" id="InceptionDate" name="TxtSDate" class="form-control datetimepicker-input" data-target="#sdate" required />
+                <div class="input-group-append" data-target="#sdate" data-toggle="datetimepicker">
                   <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+              </div>_
+              <div class="input-group date col-sm-2" id="edate" data-target-input="nearest">
+                <input type="text" id="ExpiryDate" name="TxtEDate" class="form-control datetimepicker-input" data-target="#edate" required />
+                <div class="input-group-append" data-target="#edate" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-md-12">
-              <table id="dashboard" class="table table-bordered table-striped dt-responsive nowrap" width="100%">
-              </table>
+            <div class="form-group row">
+              <p class="col-sm-2 col-form-label"></p>
+              <div class="col-sm-4">
+              <button type="button" id="btn-filter" class="btn btn-outline-primary">Search</button>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <table id="dashboard" class="table table-bordered table-striped dt-responsive nowrap" width="100%">
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -300,20 +301,16 @@
   // refreshGaugeChart(90);
   let tblWidget;
   let status;
-  let listmo;
   
-  var reponsePolicy = @json($data['Data']);
-  var arrPolicy = [];
-  if (responsePolicy['code'] == '200'){
-    arrPolicy = responsePolicy['Data'];
+  var arrPolicy = @json($data);
+
+  var privileges_branch_head = "{{$privileges_branch_head}}";
+  if (privileges_branch_head){
+    var listmo = @json($listmo);
+    var element_mo = document.getElementById('MO');
+    addOptionItem(element_mo,listmo,'ID','Name',false, false, false,'',true);
   }
-  var responselistmo = @json($listmo);
-  if (responselistmo['code'] == '200'){
-    listmo = responselistmo['Data'];
-  }else{
-    listmo = [];
-  }
-  addOptionItem(MO,listmo,'ID','Name',false, false, false,'',true);
+
   $('.select2bs4').select2({
     theme: 'bootstrap4',
     // placeholder: "Retrive Data..."
@@ -369,39 +366,6 @@
     type: 'pie',
     data: pieDataTransaction,
     options: pieTransactionOptions
-  });
-
-  $("#MO").on("select2:select", async function () {
-    var mo = $(this).val();
-    var url = "{{route('Dashboard.getlistpolicy')}}?ID=" + mo;
-    // console.log(url);
-    var response = await getDataNew(url);
-    if (response['code'] == '200'){
-      console.log(response);
-      var datas = response['Data'];
-      var waiting = datas.filter(data => data.PStatus != 'P' && data.PStatus != 'C');
-      var approved = datas.filter(data => data.PStatus == 'P' && data.Job_PolicyNo != '');
-      var submit = datas.filter(data => data.PStatus == 'P' && data.Job_PolicyNo == '');
-      var decline = datas.filter(data => data.PStatus == 'C');
-      var dataChart = [waiting.length,approved.length,submit.length,decline.length];
-      for (i=0; i < 4; i++){
-        chartTransaction.data.datasets[0].data[i] = dataChart[i];
-      }
-      chartTransaction.update();
-      var dataTaskDue = datas.filter(data => data.NeedSurveyF && !data.SurveyF);
-      t.clear().rows.add(dataTaskDue).draw();
-      // await sleep(500);
-      t.columns.adjust().draw();
-    }else{
-      var datas = [];
-      for (i=0; i < 4; i++){
-        chartTransaction.data.datasets[0].data[i] = 0;
-      }
-      chartTransaction.update();
-      t.clear().rows.add(datas).draw();
-      // await sleep(500);
-      t.columns.adjust().draw();
-    }
   });
 
   var filter = {
@@ -514,29 +478,26 @@
   $('#sdate').datetimepicker({
       format: 'L'
   });
-  $('#sdate').on('change.datetimepicker', function (e) {
-      var dateInception = $("#InceptionDate").val();
-  });
+  // $('#sdate').on('change.datetimepicker', function (e) {
+  //     var dateInception = $("#InceptionDate").val();
+  //     console.log(dateInception);
+  // });
   $('#edate').datetimepicker({
       format: 'L'
   });
 
-  $('#edate').on('change.datetimepicker', function (e) {
-    // var dashboard = @json($data['Data']);
-    var dateExpiry = $("#ExpiryDate").val();
-    var dateInception = $("#InceptionDate").val();
-    var date = dashboard.filter(function (item) {
+  // $('#edate').on('change.datetimepicker', function (e) {
+  //   var dateExpiry = $("#ExpiryDate").val();
+  //   var dateInception = $("#InceptionDate").val();
+  //   var date = dashboard.filter(function (item) {
 
-      var stringdate = moment(item.RegDate).format('MM/DD/YYYY');
-      if ((stringdate >= (dateInception)) && (stringdate <= (dateExpiry)))
-        return true;
-    });
-    t.clear().rows.add(date).draw();
-  });
-
-  $('#test').click(function(event){
-    t.columns.adjust().draw();
-  });
+  //     var stringdate = moment(item.RegDate).format('MM/DD/YYYY');
+  //     if ((stringdate >= (dateInception)) && (stringdate <= (dateExpiry)))
+  //       return true;
+  //   });
+  //   t.clear().rows.add(date).draw();
+  //   t.columns.adjust().draw();
+  // });
 
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -684,6 +645,40 @@
       toastMessage('400','Something wrong, please contact your Administrator.');
     }
   }
+
+  $("#btn-filter").on("click", async function () {
+    var dataChart = [0,0,0,0];
+    var datas = [];
+    var mo = $('#MO').val();
+    var url = "{{route('Dashboard.getlistpolicy')}}?ID=" + mo;
+    // console.log(url);
+    var response = await getDataNew(url);
+    console.log(response);
+    if (response['code'] == '200'){
+      datas = response['Data'];
+      var waiting = datas.filter(data => data.PStatus != 'P' && data.PStatus != 'C');
+      var approved = datas.filter(data => data.PStatus == 'P' && data.Job_PolicyNo != '');
+      var submit = datas.filter(data => data.PStatus == 'P' && data.Job_PolicyNo == '');
+      var decline = datas.filter(data => data.PStatus == 'C');
+      dataChart = [waiting.length,approved.length,submit.length,decline.length];
+    }
+    for (i=0; i < 4; i++){
+      chartTransaction.data.datasets[0].data[i] = dataChart[i];
+    }
+    chartTransaction.update();
+    var dataTaskDue = [];
+    var startDate = $('#InceptionDate').val();
+    var endDate = $('#ExpiryDate').val();
+    if (startDate != '' && endDate != ''){
+      console.log('masuk')
+      dataTaskDue = datas.filter(data => (data.NeedSurveyF && !data.SurveyF) && (data.RegDate >= startDate && data.RegDate <= endDate));
+    }else{
+      console.log('kagal')
+      dataTaskDue = datas.filter(data => data.NeedSurveyF && !data.SurveyF);
+    }
+    t.clear().rows.add(dataTaskDue).draw();;
+    t.columns.adjust().draw();
+  });
 
   // function dropDownClick(status){
   //   var val = 0;
@@ -1156,7 +1151,6 @@
   //     });
 
   //     $('#edate').on('change.datetimepicker', function (e) {
-  //         // var dashboard = @json($data['Data']);
   //         var dateExpiry = $("#ExpiryDate").val();
   //         var dateInception = $("#InceptionDate").val();
   //         var date = dashboard.filter(function (item) {
@@ -1168,7 +1162,6 @@
   //         t.clear().rows.add(date).draw();
   //     });
 
-  //     // var arrPolicy = @json($data['Data']);
   //     // Waiting
   //     // var tempwait = arrPolicy.filter(dashboard => dashboard.PStatus == 'R');
 

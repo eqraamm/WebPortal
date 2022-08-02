@@ -35,12 +35,27 @@ class ProfileController extends Controller
         );
         $responseSearchProfile = APIMiddleware($data, 'SearchProfile');
 
-        $data = array(
+        $dataPrivileges = array(
             'Username' => session('ID'),
             'Password' => session('Password'),
-            'ID' => session('ID')
-        );
-        $responseListMO = APIMIddleware($data,'SearchListMOByBranchUser');
+            'FName' => 'ALLOWALLPRODUCTIONBRANCH'
+        );  
+        $responsePrivileges = APIMiddleware($dataPrivileges, 'CheckPrivileges');
+
+        $privileges = $responsePrivileges['code'] == '200';
+        $dataMO = [];
+
+        if ($privileges){
+            $data = array(
+                'Username' => session('ID'),
+                'Password' => session('Password'),
+                'ID' => session('ID')
+            );
+            $responseListMO = APIMIddleware($data,'SearchListMOByBranchUser');
+            if ($responseListMO['code'] == '200'){
+                $dataMO = $responseListMO['Data'];
+            }
+        }
 
         // dd($responseSearchProfile);
 
@@ -71,7 +86,7 @@ class ProfileController extends Controller
         session(['sidebar' => 'profile']);
 
         return view('Profile.Profile', array('data' => $responseSearchProfile, 
-        'tabname' => 'inquiry', 'responseCode' => '', 'responseMessage' => '', 'listmo' => $responseListMO));
+        'tabname' => 'inquiry', 'responseCode' => '', 'responseMessage' => '', 'listmo' => $dataMO, 'privileges_branch_head' => $privileges));
         
         // return view('Profile.Profile', array('Country' => $responseCountry, 'data' => $responseSearchProfile, 
         // 'Province' => $responseProvince, 'CGroup' => $responseCGroup, 'SCGroup' => $responseSCGroup, 
@@ -490,7 +505,7 @@ class ProfileController extends Controller
         $email = $request->get('email');
         $id_no = $request->get('id_no');
         $mobile = $request->get('mobile');
-        $ownerid = $request->get('OwnerID');
+        $ownerid = $request->get('OwnerID') == 'undefined' ? session('ID') : $request->get('OwnerID');
         
          //Data
          $data = array (
