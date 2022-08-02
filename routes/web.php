@@ -143,6 +143,9 @@ Route::group(['middleware' => 'CekLogin'], function(){
 
     //FAQ
     Route::get('/faqlist', 'FAQController@index')->name('faqlist');
+
+    //Training Class
+    Route::get('/trainingclass', 'TrainingClassController@showTrainingClass')->name('trainingclass');
 });
 
 Route::group(['middleware' => 'RedirectResetPassword'], function(){
