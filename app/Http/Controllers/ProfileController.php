@@ -35,12 +35,27 @@ class ProfileController extends Controller
         );
         $responseSearchProfile = APIMiddleware($data, 'SearchProfile');
 
-        $data = array(
+        $dataPrivileges = array(
             'Username' => session('ID'),
             'Password' => session('Password'),
-            'ID' => session('ID')
-        );
-        $responseListMO = APIMIddleware($data,'SearchListMOByBranchUser');
+            'FName' => 'ALLOWALLPRODUCTIONBRANCH'
+        );  
+        $responsePrivileges = APIMiddleware($dataPrivileges, 'CheckPrivileges');
+
+        $privileges = $responsePrivileges['code'] == '200';
+        $dataMO = [];
+
+        if ($privileges){
+            $data = array(
+                'Username' => session('ID'),
+                'Password' => session('Password'),
+                'ID' => session('ID')
+            );
+            $responseListMO = APIMIddleware($data,'SearchListMOByBranchUser');
+            if ($responseListMO['code'] == '200'){
+                $dataMO = $responseListMO['Data'];
+            }
+        }
 
         // dd($responseSearchProfile);
 
@@ -71,7 +86,7 @@ class ProfileController extends Controller
         session(['sidebar' => 'profile']);
 
         return view('Profile.Profile', array('data' => $responseSearchProfile, 
-        'tabname' => 'inquiry', 'responseCode' => '', 'responseMessage' => '', 'listmo' => $responseListMO));
+        'tabname' => 'inquiry', 'responseCode' => '', 'responseMessage' => '', 'listmo' => $dataMO, 'privileges_branch_head' => $privileges));
         
         // return view('Profile.Profile', array('Country' => $responseCountry, 'data' => $responseSearchProfile, 
         // 'Province' => $responseProvince, 'CGroup' => $responseCGroup, 'SCGroup' => $responseSCGroup, 
@@ -92,7 +107,9 @@ class ProfileController extends Controller
         
         $dataProfile = array(
             'ID' => '',
-            'OwnerID' => session('ID')
+            'OwnerID' => session('ID'),
+            'Username' => session('ID'),
+            'Password' => session('Password')
         );
 
         $responseSearchProfile = APIMiddleware($dataProfile, 'SearchProfile');
@@ -239,6 +256,8 @@ class ProfileController extends Controller
                             $dataprofile = array (
                                 'ID' => '',
                                 'OwnerID' => $OwnerID,
+                                'Username' => session('ID'),
+                                'Password' => session('Password')
                             );
                             // dd($dataprofile);
                             $responseSearchProfile = APIMiddleware($dataprofile, 'SearchProfile');
@@ -252,6 +271,8 @@ class ProfileController extends Controller
                         $data = array (
                             'ID' => '',
                             'OwnerID' => $OwnerID,
+                            'Username' => session('ID'),
+                            'Password' => session('Password')
                         );
                         $responseSearchProfile = APIMiddleware($data, 'SearchProfile');
 
@@ -274,6 +295,8 @@ class ProfileController extends Controller
                         $data = array (
                             'ID' => '',
                             'OwnerID' => $OwnerID,
+                            'Username' => session('ID'),
+                            'Password' => session('Password')
                         );
                         $responseSearchProfile = APIMiddleware($data, 'SearchProfile');
                         return response()->json(['code' => $responseSave['code'],'message'=>$responseSave['message'],'Data'=>$responseSave['Data'],'html' => '', 'listprofile' => $responseSearchProfile]);
@@ -301,6 +324,8 @@ class ProfileController extends Controller
             $data = array (
                 'ID' => '',
                 'OwnerID' => $OwnerID,
+                'Username' => session('ID'),
+                'Password' => session('Password')
             );
             $responseSearchProfile = APIMiddleware($data, 'SearchProfile');
 
@@ -480,7 +505,7 @@ class ProfileController extends Controller
         $email = $request->get('email');
         $id_no = $request->get('id_no');
         $mobile = $request->get('mobile');
-        $ownerid = $request->get('OwnerID');
+        $ownerid = $request->get('OwnerID') == 'undefined' ? session('ID') : $request->get('OwnerID');
         
          //Data
          $data = array (

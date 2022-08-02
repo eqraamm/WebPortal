@@ -14,23 +14,42 @@ class SppaController extends Controller
     public function showFormPolicy(){
         session(['sidebar' => 'sppa']);
 
-        $data = array(
+        $dataPrivileges = array(
             'Username' => session('ID'),
             'Password' => session('Password'),
-            'ID' => session('ID')
-        );
-        $responseListMO = APIMIddleware($data,'SearchListMOByBranchUser');
-        return view('Transaction.policy', array('listmo' => $responseListMO));
+            'FName' => 'ALLOWALLPRODUCTIONBRANCH'
+        );  
+        $responsePrivileges = APIMiddleware($dataPrivileges, 'CheckPrivileges');
+
+        $privileges = $responsePrivileges['code'] == '200';
+        $dataMO = [];
+
+        if ($privileges){
+            $data = array(
+                'Username' => session('ID'),
+                'Password' => session('Password'),
+                'ID' => session('ID')
+            );
+            $responseListMO = APIMIddleware($data,'SearchListMOByBranchUser');
+            if ($responseListMO['code'] == '200'){
+                $dataMO = $responseListMO['Data'];
+            }
+        }
+        return view('Transaction.policy', array('listmo' => $dataMO, 'privileges_branch_head' => $privileges));
     }
 
     public function getlistMo(){
-        $dataMO = array(
-            'ID' => '',
-            'Role' => 'MARKETING OFFICER',
-            'UserName' => session('ID'),
-            'Password' => ''
-        );
-        $responseMO = APIMiddleware($dataMO, 'SearchSysUser');
+        if (session('Role') != 'MARKETING OFFICER'){
+            $dataMO = array(
+                'ID' => '',
+                'Role' => 'MARKETING OFFICER',
+                'UserName' => session('ID'),
+                'Password' => ''
+            );
+            $responseMO = APIMiddleware($dataMO, 'SearchSysUser');
+        }else{
+            $responseMO = [];
+        }
 
         return $responseMO;
     }
@@ -314,6 +333,8 @@ class SppaController extends Controller
         $temppremium = str_replace('.','',str_replace(',','',$request->input('TxtPremium')));
         $premium = substr($temppremium,0,strlen($temppremium) - 2);
         $datapolicy = array(
+            'Username' => session('ID'),
+            'Password' => session('Password'),
             'PID' => ($request->input('TxtPID') == null) ? '' : $request->input('TxtPID'),
             'RefNo' => ($request->input('TxtRefNo') == null) ? '' : $request->input('TxtRefNo'),
             'PolicyHolder' => ($request->input('LstPHolder') == null) ? '' : $request->input('LstPHolder'),
@@ -936,7 +957,7 @@ class SppaController extends Controller
 
         $data = array (
             'ID' => $responsePolicy['Data'][0]['InsuredID'],
-            'OwnerID' => $request['ID'],
+            'OwnerID' => $responsePolicy['Data'][0]['AID'],
             // 'OwnerID' => session('ID'),
         );
         

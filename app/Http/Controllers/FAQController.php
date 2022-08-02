@@ -7,20 +7,33 @@ use Illuminate\Http\Request;
 class FAQController extends Controller
 {
     public function index(){
-        // $data =array(
-        //     'Username' => session('ID'),
-        //     'Password' => session('Password'),
-        //     'ID' => session('ID'),
-        //     'RefNo' => '',
-        //     'PStatus' => '',
-        //     'Insured' => ''
-        // );
+        $data =array(
+            'Username' => session('ID'),
+            'Password' => session('Password'),
+            'CategoryID' => '',
+        );
 
-        session(['sidebar' => 'top-nav']);
+        $SearchListCategoryFAQ = APIMiddleware($data, 'SearchListCategoryFAQ');
 
-        // $responseSearchPolicy = APIMiddleware($data, 'SearchPolicy');
+        if ($SearchListCategoryFAQ['code'] == '400'){
+            abort(403,'Something wrong, please contact your Administrator.');
+        }
 
-        return view('Master.FAQ.FaqList'); 
-        // return view('dashboard')->with('data', $responseSearchPolicy);
+        $data = array(
+            'Username' => session('ID'),
+            'Password' => session('Password'),
+            'FAQID' => '',
+            'CategoryID' => '',
+        );
+
+        $SearchListFAQ = APIMiddleware($data, 'SearchListFAQ');
+
+        if ($SearchListFAQ['code'] == '400'){
+            abort(403,'Something wrong, please contact your Administrator.');
+        }
+
+        session(['sidebar' => 'faq']);
+
+        return view('Master.FAQ.FaqList', array('dataCategory' => $SearchListCategoryFAQ['Data'], 'dataFAQ' => $SearchListFAQ['Data'])); 
     }
 }
