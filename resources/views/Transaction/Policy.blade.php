@@ -2288,7 +2288,6 @@
     setSI_RC($('#CoverageID').val());
     if (faProduct.length > 0) {
       const ObjInfo = createArrFLDTAG(faProduct);
-      // console.log(ObjInfo);
       let arrFLDTAG = ObjInfo.arFLDTAG;
       let arrFLDTAB = ObjInfo.arFLDTAB;
       let arrFLDCOM = ObjInfo.arFLDCOM;
@@ -2403,8 +2402,6 @@
           divFrm.appendChild(divTxt);
 
           //Menentukan bisa di edit atau tidak object infonya
-          // if ()
-
 
           if (arrFLDTAB[i]){
             if (!arrFLDEDITABLEF[i]){
@@ -2453,36 +2450,6 @@
             } 
           }
           
-          // if (arrFLD)
-
-
-          // if (arrFLDID[i] == 'V29' || arrFLDID[i] == 'V37'){
-          //   objinfoValue.setAttribute("disabled","disabled");
-          //   var objinfoValuetemp = document.createElement("INPUT");
-          //   objinfoValuetemp.setAttribute("id","ValueID" + (i + 1));
-          //   objinfoValuetemp.setAttribute("name","FLDID" + (i + 1));
-          //   objinfoValuetemp.setAttribute("class", "form-control FLDID" + (i + 1));
-          //   objinfoValuetemp.setAttribute("style","text-transform:uppercase");
-          //   objinfoValuetemp.setAttribute("readonly","readonly");
-          //   objinfoValuetemp.setAttribute("type","hidden");
-          //   divTxt.appendChild(objinfoValue);
-          //   divFrm.appendChild(objinfoValuetemp);
-          //   divFrm.appendChild(objValueDesc);
-
-          // // }else if (arrFLDID[i] == 'V05' || arrFLDID[i] == 'V13'){
-          // //   objinfoValue.setAttribute("onkeyup","Nospecialcharacter($(this))");
-          // //   divTxt.appendChild(objinfoValue);
-          // }else{
-          //   divTxt.appendChild(objinfoValue);
-          //   if (arrFLDREGEX[i] != ''){
-          //     divTxt.appendChild(divInvalid);
-          //   }
-          //   if (arrFLDTAB[i]){
-          //     divFrm.appendChild(btnPopUPDesc);
-          //     divFrm.appendChild(objValueDesc);
-          //   } 
-          // }
-
           switch(arrFLDTYPE[i]){
             case 'D':
               divTxt.appendChild(divInputGroup);

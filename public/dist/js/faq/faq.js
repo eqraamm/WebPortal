@@ -1,6 +1,4 @@
 $(function () {
-   console.log(dataCategory);
-   console.log(dataFAQ);
    for (i=0; i < dataFAQ.length; i++){
       createListFAQ(dataFAQ[i]['FAQID'],dataFAQ[i]['Question'],dataFAQ[i]['Answer'],dataFAQ[i]['CategoryDesc']);
    }

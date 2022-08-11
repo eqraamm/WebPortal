@@ -1472,6 +1472,9 @@
       var id_no = $('#SearchID_No').val();
       var mobile = $('#SearchMobileNo').val();
       var OwnerID = $('#MO').val();
+      if (OwnerID == '' || OwnerID == undefined) {
+        OwnerID = "{{session('ID')}}";
+      }
       var url = "{{ route('profile.search') }}?ID=" + ID + "&name=" + name + "&email=" + email + "&id_no=" + id_no + "&mobile=" + mobile + '&OwnerID=' + OwnerID;
       // console.log(url);
 

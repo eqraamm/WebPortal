@@ -650,6 +650,9 @@
     var dataChart = [0,0,0,0];
     var datas = [];
     var mo = $('#MO').val();
+    if (mo == '' || mo == undefined){
+      mo = "{{session('ID')}}";
+    }
     var url = "{{route('Dashboard.getlistpolicy')}}?ID=" + mo;
     // console.log(url);
     var response = await getDataNew(url);

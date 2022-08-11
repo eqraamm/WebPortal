@@ -137,6 +137,7 @@ Route::group(['middleware' => 'CekLogin'], function(){
     Route::get('/master/sysuser', 'SysUserController@ShowFormSysUSer')->name('master.ShowSysUser');
     Route::get('/master/addsysuser', 'SysUserController@ShowFormAddSysUSer')->name('master.ShowAddSysUser');
     Route::get('/myprofile', 'SysUserController@ShowMyProfile')->name('myprofile');
+    Route::get('/agentleveltree', 'SysUserController@showAgentLevelTree')->name('agentleveltree');
 
     //Change Password
     Route::get('/changepassword', 'AuthController@ShowChangePassword')->name('showchangepassword');
@@ -157,6 +158,9 @@ Route::group(['middleware' => 'RedirectResetPassword'], function(){
 //demo gaude chart
 Route::get('/gauge', function () {
     return view('gaugechartdemo');
+});
+Route::get('/testblank', function () {
+    return view('testblank');
 });
 Route::get('/figma', function () {
     return view('figma');

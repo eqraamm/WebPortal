@@ -329,4 +329,19 @@ function disableAll(){
        $(this).attr('disabled','disabled');
      }
    });
- }
+}
+
+$('#btn-karir').on('click',async function(){
+   $('#class-modal-dialog').attr('class','modal-dialog modal-lg');
+
+   $('#modaltitle').text('Agent Level Tree');
+
+   $('#modalbody').empty();
+
+   $('#modalfooter').empty();
+
+   var response = await getModalView(url);
+   $('#modalbody').html(response);
+
+   $("#modal-general").modal('show');
+});

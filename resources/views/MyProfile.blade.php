@@ -13,7 +13,7 @@
                My Profile
             </div>
             <div class="col-sm">
-               <button type="button" class="btn btn-primary">
+               <button id="btn-karir" type="button" class="btn btn-primary">
                   Jenjang Karir
                </button>
             </div>
@@ -510,7 +510,8 @@
 @section('scriptpage')
 <script>
    var userData = @json($userData);
-   var role = "{{session('Role')}}"
+   var role = "{{session('Role')}}";
+   var url = "{{route('agentleveltree')}}"
 </script>
 <!-- Ekko Lightbox -->
 <script src="{{asset('plugins/ekko-lightbox/ekko-lightbox.min.js')}}"></script>

@@ -35,4 +35,20 @@ class SysUserController extends Controller
 
         return view('MyProfile', array('userData' => $responseUser['Data']));
     }
+
+    public function showAgentLevelTree(){
+        // $data = array(
+        //     'ID' => session('ID')
+        // );
+
+        // $responseUser = APIMiddleware($data, 'SearchSysUserDet');
+
+        // if ($responseUser['code'] == '400'){
+        //     abort(403,'Something wrong, please contact your Administrator.');
+        // }
+
+        session(['sidebar' => 'top-nav']);
+
+        return view('Master.SysUser.AgentTree');
+    }
 }

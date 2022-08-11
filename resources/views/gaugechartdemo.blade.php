@@ -87,6 +87,23 @@
   .modal-img-content {
     width: 100%;
   }
+
+  .fade{
+      width:200px;
+      height: 200px;
+      background: red;
+      opacity:0;
+  }
+
+  .elementToFadeInAndOut {
+      animation: fadeInOut 4s linear forwards;
+  }
+
+  @keyframes fadeInOut {
+  0% { opacity:0; }
+  50% { opacity:1; } 
+  100% { opacity:0; } 
+  }
 }
   </style>
 @endsection
@@ -174,6 +191,8 @@
       </div>
       <!-- /.modal-dialog -->
     </div>
+    <button class="fadeButton">Button</button>
+    <div class="fade"></div>
     <button id="btn-sweetalert" type="button">Sweet Alert</button>
     <button id="btn-loop" type="button">btn loop get data by PID</button>
     <button id="btn-ajax" type="button">btn get data by ajax</button>
@@ -212,6 +231,15 @@
 @section('scriptpage')
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
   <script>
+    var div = document.querySelector(".fade");
+    var btn = document.querySelector(".fadeButton");
+    btn.addEventListener("click", function(){
+      console.log('haha');
+      div.classList.add("elementToFadeInAndOut");
+      // Wait until the animation is over and then remove the class, so that
+      // the next click can re-add it.
+      setTimeout(function(){div.classList.remove("elementToFadeInAndOut");}, 4000);
+    });
     $('#datemask').inputmask("hh:mm:ss", {
         placeholder: "HH:MM:SS", 
         insertMode: false, 
