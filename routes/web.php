@@ -117,8 +117,8 @@ Route::group(['middleware' => 'CekLogin'], function(){
     Route::post('/emailsurvey', 'SurveyController@SubmitSurvey')->name('survey.submitsurvey');
     Route::POST('/copylinksurvey', 'SurveyController@CopyLinkSurvey')->name('survey.copylink');
 
-    // index report
-    Route::get('/report', 'ReportController@Retrive')->name('retrive');
+    // // index report
+    // Route::get('/report', 'ReportController@Retrive')->name('retrive');
 
     //User Information
     Route::get('/userinfo', 'UserInfoController@Index');
@@ -147,6 +147,7 @@ Route::group(['middleware' => 'CekLogin'], function(){
 
     //Training Class
     Route::get('/trainingclass', 'TrainingClassController@showTrainingClass')->name('trainingclass');
+    Route::get('/modalparticipantclass', 'TrainingClassController@showModalParticipantClass')->name('modalparticipantclass');
 });
 
 Route::group(['middleware' => 'RedirectResetPassword'], function(){
