@@ -203,6 +203,14 @@
                 </p>
               </a>
             </li>
+            <li class="{{ Session::get('sidebar') == 'trainingclass' ? 'nav-item menu-open' : 'nav-item' }}">
+              <a href="{{ route('trainingclass')}}" class="{{ Session::get('sidebar') == 'trainingclass' ? 'nav-link active' : 'nav-link' }}">
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  Training Class
+                </p>
+              </a>
+            </li>
           @endif
           <!-- <li class="{{ Session::get('sidebar') == 'report' ? 'nav-link menu-open' : 'nav-link' }}">
             <a href="#" class="{{ Session::get('sidebar') == 'report' ? 'nav-link active' : 'nav-link' }}">
