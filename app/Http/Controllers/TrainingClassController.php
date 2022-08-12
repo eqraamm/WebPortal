@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class TrainingClassController extends Controller
 {
     public function showTrainingClass(){
-        session(['sidebar' => 'top-nav']);
+        session(['sidebar' => 'training_class']);
 
         return view('Training.TrainingClass');
     }

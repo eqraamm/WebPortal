@@ -24,7 +24,7 @@
     <div class="card-body login-card-body">
       <p class="login-box-msg">You forgot your password? Here you can easily retrieve a new password.</p>
 
-      <form method="post">
+      <form action="{{ route('forgotpassword') }}" method="post">
         @csrf
         @if(session('errors'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">

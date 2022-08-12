@@ -15,6 +15,10 @@ class AuthController extends Controller
     //
     public function showFormLogin()
     {
+        // $date1=date_create("03/15/2022");
+        // $date2=date_create("03/25/2022");
+        // $diff=date_diff($date1,$date2);
+        // dd($diff->days);
         if (session('login')) { // true sekalian session field di users nanti bisa dipanggil via Auth
             //Login Success
             return redirect()->route('dashboard');
@@ -63,17 +67,31 @@ class AuthController extends Controller
             );
 
             $responseUser = APIMiddleware($data, 'SearchSysUserDet');
-            // dd($responseUser);
-            // dd($responseUser['Data'][0]['ID']);
-            session(['login' => true]);
-            session(['ID' => $responseUser['Data'][0]['ID']]);
-            session(['Name' => $responseUser['Data'][0]['Name']]);
-            session(['Role' => $responseUser['Data'][0]['Role']]);
-            session(['Password' => $request->input('password')]);
-            session(['ASource' => $responseUser['Data'][0]['ASource']]);
-            // Session::push('ListBranch',$responseUser['Data'][0]['SysUserBranch']);
-            // dd(Session::get('ListBranch'));
-            return redirect()->route('dashboard');
+            if ($responseUser['code'] == '200'){
+                $todayDate = date_create(date("m/d/Y"));
+                $last_update = date_create($responseUser['Data'][0]['Last_Update']);
+                $licenseExpiry = date_create($responseUser['Data'][0]['LicenseExpiry']);
+                $diff=date_diff($last_update,$todayDate);
+                
+                if ($responseUser['Data'][0]['LicenseNo'] == '' && $diff->days > 180){
+                    Session::flash('error', 'Your Agent ID is inactive, please contact Agency!');
+                    return redirect()->route('login');
+                }else if ($licenseExpiry < $todayDate){
+                    Session::flash('error', 'Your Agent license is Expired');
+                    return redirect()->route('login');
+                }else{
+                    session(['login' => true]);
+                    session(['ID' => $responseUser['Data'][0]['ID']]);
+                    session(['Name' => $responseUser['Data'][0]['Name']]);
+                    session(['Role' => $responseUser['Data'][0]['Role']]);
+                    session(['Password' => $request->input('password')]);
+                    session(['ASource' => $responseUser['Data'][0]['ASource']]);
+                    return redirect()->route('dashboard');
+                }
+            }else{
+                Session::flash('error', 'Invalid UserID/Password');
+                return redirect()->route('login');
+            }
         }else{
             if (strpos($response['message'],'Cmd-Change Password') > 0){
                 session(['Reset_PasswordF' => true]);
@@ -129,5 +147,21 @@ class AuthController extends Controller
 
     public function showForgotPassword(){
         return view('ForgotPassword');
+    }
+
+    public function forgotPassword(Request $request){
+        $data = array (
+            'Username' => $request->input('username')
+        );
+
+        $response  = APIMiddleware($data, 'Forgot_Password');
+
+        if ($response['code'] == '200'){
+            Session::flash('success', $response['message']);
+            return redirect()->route('login');
+        }else{
+            Session::flash('error', $response['message']);
+            return redirect()->route('forgotpassword');
+        }
     }
 }

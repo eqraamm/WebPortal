@@ -22,6 +22,7 @@ Route::get('/login', 'AuthController@showFormLogin')->name('login');
 Route::post('/login', 'AuthController@login');
 Route::get('/logout', 'AuthController@logout')->name('logout');
 Route::get('/forgotpassword', 'AuthController@ShowForgotPassword')->name('forgotpassword');
+Route::post('/forgotpassword', 'AuthController@forgotPassword')->name('forgotpassword');
 
 Route::group(['middleware' => 'CekLogin'], function(){
     // view dashboard

@@ -14,7 +14,7 @@
     </section>
     <!-- Main content -->
     <section class="content">
-        <div class="container">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
@@ -53,15 +53,6 @@
                                         </select>
                                         </div>
                                     </div>
-                                    @if (session('Role') == 'MARKETING OFFICER')
-                                    <div class="form-group row">
-                                        <p class="col-sm-2 col-form-label">Marketing Officer</p>
-                                        <div class="col-sm-2">
-                                            <select class="form-control select2bs4" id="MO" name="MO" required>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    @endif
                                     <div class="form-group row">
                                         <p class="col-sm-2 col-form-label"></p>
                                         <div class="col-sm-4">
@@ -70,7 +61,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <table id="tblTrainingClass" class="table table-striped dt-responsive nowrap"
+                                        <table id="tblTrainingClass" class="table table-hover table-bordered dt-responsive nowrapc"
                                             width="100%">
                                         </table>
                                     </div>
