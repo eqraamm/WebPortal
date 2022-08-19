@@ -9,7 +9,9 @@
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <div class="container-fluid"></div>
+        <div class="container-fluid">
+        <h1>Training Class</h1>
+        </div>
         <!-- /.container-fluid -->
     </section>
     <!-- Main content -->
