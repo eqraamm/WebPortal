@@ -45,12 +45,12 @@
   @yield('head-linkrel')
 </head>
 <!-- <body class="hold-transition layout-top-nav layout-fixed text-sm"> -->
-<body class="{{ (Session::get('sidebar') == 'top-nav') ? 'hold-transition layout-top-nav layout-fixed text-s' : 'hold-transition sidebar-mini layout-fixed text-s' }}">
+<body class="{{ (Session::get('sidebar') == 'top-nav') ? 'hold-transition layout-top-nav layout-navbar-fixed layout-fixed layout-footer-fixed text-s' : 'hold-transition sidebar-mini layout-navbar-fixed layout-fixed layout-footer-fixed text-s' }}">
 <!-- Site wrapper -->
 <div class="wrapper">
 
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+  <nav class="main-header navbar navbar-expand bg-primary navbar-light">
     <div class="{{session('sidebar') == 'top-nav' ? 'container' : 'container-fluid'}}">
       @if (session('sidebar') == 'top-nav')
       <a href="#" class="navbar-brand">
@@ -84,14 +84,14 @@
   @if (Session('sidebar') != 'top-nav')
   <aside class="main-sidebar sidebar-light-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="#" class="brand-link">
+    <a href="#" class="brand-link bg-primary">
       <img src="{{asset('dist/img/company_logo.png')}}" alt="Company Logo" class="brand-image" style="opacity: .8">
       <span class="brand-text font-weight-dark">{{config('app.COMPANYNAME')}}</span>
       <!-- <span class="brand-text font-weight-dark">ACA INSURANCE</span> -->
     </a>
 
     <!-- Sidebar -->
-    <div class="sidebar" >
+    <div class="sidebar" style="overflow-y:auto;" >
       <!-- Sidebar user (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
@@ -108,7 +108,7 @@
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent nav-legacy" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           @if (session('Role') == 'MARKETING OFFICER')
@@ -207,7 +207,7 @@
           @if (session('Role') == 'AGENT')
             <li class="{{ Session::get('sidebar') == 'training_class' ? 'nav-item menu-open' : 'nav-item' }}">
               <a href="{{ route('trainingclass')}}" class="{{ Session::get('sidebar') == 'training_class' ? 'nav-link active' : 'nav-link' }}">
-                <i class="fas fa-chalkboard-teacher"></i>
+                <i class="nav-icon fas fa-chalkboard-teacher"></i>
                 <p>
                   Training Class
                 </p>
