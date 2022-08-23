@@ -195,6 +195,14 @@
             </li>
           @endif
           @if (session('Role') == 'AGENT')
+          <li class="{{ Session::get('sidebar') == 'training_class' ? 'nav-item menu-open' : 'nav-item' }}">
+              <a href="{{ route('trainingclass')}}" class="{{ Session::get('sidebar') == 'training_class' ? 'nav-link active' : 'nav-link' }}">
+                <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                <p>
+                  Training Class
+                </p>
+              </a>
+            </li>
             <li class="{{ Session::get('sidebar') == 'faq' ? 'nav-item menu-open' : 'nav-item' }}">
               <a href="{{ route('faqlist')}}" class="{{ Session::get('sidebar') == 'faq' ? 'nav-link active' : 'nav-link' }}">
                 <i class="nav-icon fas fa-question"></i>
@@ -203,13 +211,19 @@
                 </p>
               </a>
             </li>
+<<<<<<< HEAD
           @endif
           @if (session('Role') == 'AGENT')
             <li class="{{ Session::get('sidebar') == 'training_class' ? 'nav-item menu-open' : 'nav-item' }}">
               <a href="{{ route('trainingclass')}}" class="{{ Session::get('sidebar') == 'training_class' ? 'nav-link active' : 'nav-link' }}">
                 <i class="nav-icon fas fa-chalkboard-teacher"></i>
+=======
+            <li class="{{ Session::get('sidebar') == 'materi' ? 'nav-item menu-open' : 'nav-item' }}">
+              <a href="{{ route('showmateri')}}" class="{{ Session::get('sidebar') == 'materi' ? 'nav-link active' : 'nav-link' }}">
+                <i class="nav-icon fas fa-chalkboard"></i>
+>>>>>>> 3cb4e104eb03135beb1e05023fc5f881a19607a8
                 <p>
-                  Training Class
+                  Materi
                 </p>
               </a>
             </li>

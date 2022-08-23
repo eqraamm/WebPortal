@@ -150,6 +150,9 @@ Route::group(['middleware' => 'CekLogin'], function(){
     //Training Class
     Route::get('/trainingclass', 'TrainingClassController@showTrainingClass')->name('trainingclass');
     Route::get('/modalparticipantclass', 'TrainingClassController@showModalParticipantClass')->name('modalparticipantclass');
+
+    //Materi
+    Route::get('/materi', 'MateriController@ShowMateri')->name('showmateri');
 });
 
 Route::group(['middleware' => 'RedirectResetPassword'], function(){
