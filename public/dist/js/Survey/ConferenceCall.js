@@ -52,8 +52,10 @@ let table = $('#tblsurvey').DataTable({
         "defaultContent": ""
     }, {
         "defaultContent": "",
-        "data": "IMG"
-
+        "data": "IMG",
+        render : function (data, type, row, meta){
+            return '<img style="width:80px; height:80px;" src="' + row['IMG'] + '"></div>'
+        }
     }, {
         "defaultContent": "",
         "data": "TYPE",
@@ -148,6 +150,7 @@ function dropSurvey(index) {
     basedata.splice(index, 1);
     table.clear().draw();
     table.rows.add(basedata).draw();
+    // console.log(basedata);
 }
 
 function updatedataremark(index, value) {
@@ -273,13 +276,14 @@ function clearDrawScreenshot() {
 function finalScreenshot() {
     var data = canvas.toDataURL('image/jpeg');
     var arr = {
-        IMG: '<div><img style="width:80px; height:80px;" src="' + data + '" id="img-capture" name="img-capture[]" alt="The screen capture will appear in this box."></div>',
+        IMG: data,
         TYPE: '',
         REMARK: ''
     }
     basedata.push(arr);
     table.clear().draw();
     table.rows.add(basedata).draw();
+    console.log(basedata);
 }
 
 window.addEventListener("load", function () {
@@ -577,50 +581,50 @@ socket.on("answer", function (answer) {
     rtcPeerConnection.setRemoteDescription(answer);
 });
 
-function FinishSurvey() {
-    let ActualDate = date
-    let StartTimeSurvey = todaytime
-    let time = new Date();
-    let FinishTimeSurvey = ("0" + time.getHours()).slice(-2) + ":" + ("0" + time.getMinutes()).slice(-2) + ":" + ("0" + time.getSeconds()).slice(-2);
-    $.ajax({
-        type: "POST",
-        url: urlSurvey,
-        data: {
-            PID: id,
-            ActualDate: ActualDate,
-            StartTimeSurvey: StartTimeSurvey,
-            EndTimeSurvey: FinishTimeSurvey,
-            _token: _token
-        },
-        //crossDomain: true,
-    }).done(function (response) {
-        // resolve();
-        if (response.code == '200') {
-            alert('Thanks for your participant');
-            socket.emit("leave", roomName);
-            if (rtcPeerConnection) {
-                rtcPeerConnection.ontrack = null;
-                rtcPeerConnection.onicecandidate = null;
-                rtcPeerConnection.close();
-                rtcPeerConnection = null;
-            }
-            if (userVideo.srcObject) {
-                userVideo.srcObject.getTracks()[0].stop();
-                userVideo.srcObject.getTracks()[1].stop();
-            }
-            if (peerVideo.srcObject) {
-                peerVideo.srcObject.getTracks()[0].stop();
-                peerVideo.srcObject.getTracks()[1].stop();
-            }
-            window.location.href = Survey;
-        } else {
-            alert('Failed : ' + response.message);
-        }
-    }).fail(function (xhr, status, error) {
-        var message = xhr.responseJSON['message'];
-        alert('Failed : ' + message);
-    });
-}
+// function FinishSurvey() {
+//     let ActualDate = date
+//     let StartTimeSurvey = todaytime
+//     let time = new Date();
+//     let FinishTimeSurvey = ("0" + time.getHours()).slice(-2) + ":" + ("0" + time.getMinutes()).slice(-2) + ":" + ("0" + time.getSeconds()).slice(-2);
+//     $.ajax({
+//         type: "POST",
+//         url: urlSurvey,
+//         data: {
+//             PID: id,
+//             ActualDate: ActualDate,
+//             StartTimeSurvey: StartTimeSurvey,
+//             EndTimeSurvey: FinishTimeSurvey,
+//             _token: _token
+//         },
+//         //crossDomain: true,
+//     }).done(function (response) {
+//         // resolve();
+//         if (response.code == '200') {
+//             alert('Thanks for your participant');
+//             socket.emit("leave", roomName);
+//             if (rtcPeerConnection) {
+//                 rtcPeerConnection.ontrack = null;
+//                 rtcPeerConnection.onicecandidate = null;
+//                 rtcPeerConnection.close();
+//                 rtcPeerConnection = null;
+//             }
+//             if (userVideo.srcObject) {
+//                 userVideo.srcObject.getTracks()[0].stop();
+//                 userVideo.srcObject.getTracks()[1].stop();
+//             }
+//             if (peerVideo.srcObject) {
+//                 peerVideo.srcObject.getTracks()[0].stop();
+//                 peerVideo.srcObject.getTracks()[1].stop();
+//             }
+//             window.location.href = Survey;
+//         } else {
+//             alert('Failed : ' + response.message);
+//         }
+//     }).fail(function (xhr, status, error) {
+//         var message = xhr.responseJSON['message'];
+//         alert('Failed : ' + message);
+//     });
+// }
 
 function cancelSurvey() {
     if (confirm('Are you sure you want to cancel this Survey?')) {
@@ -644,57 +648,72 @@ function cancelSurvey() {
     }
 }
 
-leaveButton.addEventListener("click", function () {
+leaveButton.addEventListener("click", async function () {
     if (confirm('Are you sure you want to finish this Survey?')) {
         if (user !== null && user !== '') {
-            let img = document.getElementsByName('img-capture[]');
-            let typ = document.getElementsByName('type-capture[]');
-            let rmk = document.getElementsByName('remarks-capture[]');
             let PolPic = [];
-            for (i = 0; i < img.length; i++) {
+            let ActualDate = date
+            let StartTimeSurvey = todaytime
+            let time = new Date();
+            let FinishTimeSurvey = ("0" + time.getHours()).slice(-2) + ":" + ("0" + time.getMinutes()).slice(-2) + ":" + ("0" + time.getSeconds()).slice(-2);
+            for (i = 0; i < basedata.length; i++) {
                 try {
-                    if (typ[i].value === "") throw "Error on No" + ' ' + [i + 1] + ' ' + "Type Cannot be Null !";
-                    if (rmk[i].value === "") throw "Error on No" + ' ' + [i + 1] + ' ' + "Remark Cannot be Null !";
+                    if (basedata[i]['TYPE'] === "") throw "Error on No" + ' ' + [i + 1] + ' ' + "Type Cannot be Null !";
+                    if (basedata[i]['REMARK'] === "") throw "Error on No" + ' ' + [i + 1] + ' ' + "Remark Cannot be Null !";
                 } catch (err) {
                     alert(err);
-                    typ[i].focus();
-                    rmk[i].focus();
                     return false;
                 }
-                let a = img[i];
-                let t = typ[i];
-                let r = rmk[i];
-                let tf = a.src.replace('data:image/jpeg;base64,', '');
+                var a = basedata[i]['IMG'];
+                var t = basedata[i]['TYPE'];
+                var r = basedata[i]['REMARK'];
+                var tf = a.replace('data:image/jpeg;base64,', '');
                 PolPic[i] = {
                     ImageID: '0',
                     TmpFile: tf,
-                    Title: t.value,
-                    Remark: r.value,
+                    Title: t,
+                    Remark: r,
                     FileType: 'JPEG'
                 }
             }
-            $.ajax({
-                type: "POST",
-                url: urlDocument,
-                data: {
+            var data = {
+                PID: id,
+                PolicyPIC: PolPic,
+                _token: _token
+            }
+            var response = await PostData(urlDocument, data, true, debugF);  
+            if (response['code'] == '200'){
+                // $('#modal-general').modal('hide');
+                var data = {
                     PID: id,
-                    PolicyPIC: PolPic,
+                    ActualDate: ActualDate,
+                    StartTimeSurvey: StartTimeSurvey,
+                    EndTimeSurvey: FinishTimeSurvey,
                     _token: _token
-                },
-            }).done(function (response) {
-                console.log(response);
-                if (response.code == '200') {
-                    FinishSurvey();
-                } else {
-                    alert('Failed : ' + response.message);
                 }
-            }).fail(function (xhr, status, error) {
-                var message = xhr.responseJSON['message'];
-                alert('Failed : ' + message);
-            });
+                var response = await PostData(urlSurvey, data, true, debugF);  
+                if (response['code'] == '200'){
+                    socket.emit("leave", roomName);
+                    if (rtcPeerConnection) {
+                        rtcPeerConnection.ontrack = null;
+                        rtcPeerConnection.onicecandidate = null;
+                        rtcPeerConnection.close();
+                        rtcPeerConnection = null;
+                    }
+                    if (userVideo.srcObject) {
+                        userVideo.srcObject.getTracks()[0].stop();
+                        userVideo.srcObject.getTracks()[1].stop();
+                    }
+                    if (peerVideo.srcObject) {
+                        peerVideo.srcObject.getTracks()[0].stop();
+                        peerVideo.srcObject.getTracks()[1].stop();
+                    }
+                    toastMessage(response['code'],response['message']);
+                    window.location.href = Survey;
+                }
+            }
         }
     } else {
-        // Do nothing!
     }
 });
 

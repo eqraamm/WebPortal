@@ -117,7 +117,7 @@ function getModalView(url){
     });
 }
 
-function getDataNew(ajaxurl,modalF = false) {
+function getDataNew(ajaxurl,modalF = false, debugF = false) {
     return $.ajax({
         url: ajaxurl,
         type: 'GET',
@@ -136,6 +136,8 @@ function getDataNew(ajaxurl,modalF = false) {
                 $('#loadMe').modal('hide'); 
             }
         }
+    }).fail(function(xhr,statusError,error){
+        toastMessage('400', debugF ? xhr.responseJSON['message'] : 'Something wrong, please contact your Administrator.'); 
     });
 };
 
@@ -261,13 +263,27 @@ function addOptionItem(selectElement, data, LblValue, LblDescription, withBlankI
 
 $('.number-format').attr('oninput',"this.value = this.value.replace(/[^0-9.]/g, '');");
 
-function PostData(ajaxurl, dataPost) { 
+function PostData(ajaxurl, dataPost, modalF = false, debugF = false) { 
     return $.ajax({
         url: ajaxurl,
         type: 'POST',
         data: dataPost,
-        beforeSend: function() { $('#loadMe').modal('show'); },
-        complete: function() { $('#loadMe').modal('hide'); }
+        beforeSend: function() { 
+            if (modalF){
+                $('#div-overlay-modal').removeAttr('style');
+            }else{
+                $('#loadMe').modal('show'); 
+            }
+        },
+        complete: function() { 
+            if (modalF){
+                $('#div-overlay-modal').css('display','none');
+            }else{
+                $('#loadMe').modal('hide'); 
+            }
+        }
+    }).fail(function(xhr,statusError,error){
+        toastMessage('400', debugF ? xhr.responseJSON['message'] : 'Something wrong, please contact your Administrator.'); 
     });
 };
 
@@ -282,4 +298,18 @@ async function drawDataTable(table,data){
 function openInNewTab(url, target) {
     // console.log(url);
     window.open(url, target);
+}
+
+function openModalView(modalSize, title, bodyHTML, footerHTML = '', staticF = false){
+    $('#class-modal-dialog').attr('class','modal-dialog ' + modalSize);
+    $('#modaltitle').text(title);
+    $('#modalbody').empty();
+    $('#modalfooter').empty();
+    $('#modalbody').html(bodyHTML);
+    $('#modalfooter').html(footerHTML);
+    $('#modal-general').modal({
+        keyboard: !staticF,
+        backdrop: staticF ? 'static' : true,
+        show: true
+    })
 }

@@ -30,7 +30,7 @@ class IndexController extends Controller
         }
         //  dd($responseSearchPolicy);
 
-        if (session('Role') == 'AGENT'){
+        if (session('Role') == 'AGENT' || session('Role') == 'PRODUCT OWNER' || session('Role') == 'BRANCH'){
             // $data = array(
             //     'ID' => session('ID')
             // );

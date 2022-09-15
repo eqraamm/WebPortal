@@ -6,6 +6,8 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SppaController;
 use App\Http\Controllers\SurveyController;
+use Illuminate\Routing\Route as RoutingRoute;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -150,9 +152,17 @@ Route::group(['middleware' => 'CekLogin'], function(){
     //Training Class
     Route::get('/trainingclass', 'TrainingClassController@showTrainingClass')->name('trainingclass');
     Route::get('/modalparticipantclass', 'TrainingClassController@showModalParticipantClass')->name('modalparticipantclass');
+    Route::get('/modalopenclass', 'TrainingClassController@showOpenClass')->name('modalopenclass');
+    Route::get('/modaladdparticipateclass', 'TrainingClassController@showAddParticipateClass')->name('modaladdparticipateclass');
 
     //Materi
-    Route::get('/materi', 'MateriController@ShowMateri')->name('showmateri');
+    Route::get('/materi', 'MateriController@ShowMateri')->name('learningobject');
+    Route::get('/modallearning', 'MateriController@ShowModalLearning')->name('modallearning');
+
+    //ApprovalSPPA
+    Route::get('/approval', 'SppaController@showApprovalList')->name('approvalListSPPA');
+    Route::get('/historyapproval', 'SppaController@showHistoryApproval')->name('historyapproval');
+    Route::get('/actionapproval', 'SppaController@ActionApproval')->name('modalactionapproval');
 });
 
 Route::group(['middleware' => 'RedirectResetPassword'], function(){
