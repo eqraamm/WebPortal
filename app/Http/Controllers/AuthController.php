@@ -73,10 +73,10 @@ class AuthController extends Controller
                 $licenseExpiry = date_create($responseUser['Data'][0]['LicenseExpiry']);
                 $diff=date_diff($last_update,$todayDate);
                 
-                if ($responseUser['Data'][0]['LicenseNo'] == '' && $diff->days > 180){
+                if ($responseUser['Data'][0]['Role'] == 'AGENT' && $responseUser['Data'][0]['LicenseNo'] == '' && $diff->days > 180){
                     Session::flash('error', 'Your Agent ID is inactive, please contact Agency!');
                     return redirect()->route('login');
-                }else if ($licenseExpiry < $todayDate){
+                }else if ($responseUser['Data'][0]['Role'] == 'AGENT' && $licenseExpiry < $todayDate){
                     Session::flash('error', 'Your Agent license is Expired');
                     return redirect()->route('login');
                 }else{
