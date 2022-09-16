@@ -332,7 +332,7 @@ function disableAll(){
 }
 
 $('#btn-karir').on('click',async function(){
-   $('#class-modal-dialog').attr('class','modal-dialog modal-lg');
+   $('#class-modal-dialog').attr('class','modal-dialog modal-xl');
 
    $('#modaltitle').text('Agent Level Tree');
 

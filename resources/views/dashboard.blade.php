@@ -655,7 +655,7 @@
     }
     var url = "{{route('Dashboard.getlistpolicy')}}?ID=" + mo;
     // console.log(url);
-    var response = await getDataNew(url);
+    var response = await getDataNew(url,false, debugF);
     console.log(response);
     if (response['code'] == '200'){
       datas = response['Data'];

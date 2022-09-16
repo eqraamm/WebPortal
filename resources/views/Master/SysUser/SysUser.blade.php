@@ -10,7 +10,7 @@
     <div class="container-fluid">
        <div class="row mb-2">
          <div class="col-sm-6">
-            <h1>Add {{ session('Role') != 'ADMIN' ? 'Business Source' : 'User Maintenance' }}</h1>
+            <h1>{{ session('Role') != 'ADMIN' ? 'Business Source' : 'User Maintenance' }}</h1>
          </div>
          <!-- <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -34,14 +34,43 @@
                      </button>
                   </div> -->
                   <div class="card-body">
-                     <div class="form-group">
+                     <div class="form-group row">
+                        <p class="col-sm-2 col-form-label">User ID / Name</p>
+                        <div class="col-sm-3">
+                           <input class="form-control" id="SearchKey" type="text">
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <p class="col-sm-2 col-form-label">Role</p>
+                        <div class="col-sm-3">
+                           <select class="form-control select2bs4" id="Role" name="Role"> 
+                              <option value="" selected></option>
+                              <option value="ADMIN">ADMIN</option>
+                              <option value="AGENT">AGENT</option>
+                              <option value="CLIENT">CLIENT</option>
+                              <option value="USER">USER</option>
+                              <option value="MARKETING OFFICER">MARKETING OFFICER</option>
+                           </select>
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <p class="col-sm-2 col-form-label"></p>
+                        <div class="col-sm-4">
+                           <button type="button" id="btn-search" class="btn btn-outline-primary">Search</button>
+                        </div>
+                    </div>
+                     <!-- <div class="form-group">
                         <a class="btn btn-block btn-outline-primary float-right btn-addNew" href="{{route('master.ShowAddSysUser')}}">
                            <i class="fas fa-plus"></i>
                            Add New
                         </a>
-                     </div>
+                     </div> -->
                      <div class="form-group">
-                        <table id="tbl-list-sysuser" class="table table-striped dt-responsive nowrap" width="100%">
+                        <a type="button" class="btn btn-outline-primary float-right" href="{{route('master.ShowAddSysUser')}}">
+                           <i class="fas fa-plus"></i>
+                           Add New
+                        </a>
+                        <table id="tbl-list-sysuser" class="table table-bordered table-hover dt-responsive nowrap" width="100%">
                         </table>
                      </div>
                   </div>
@@ -55,6 +84,9 @@
 @section('scriptpage')
 <script>
    var Role = "{{ session('Role') }}";
+   var url = "{{route('getlistuser')}}";
+   var URLEditIcon = '{{asset("dist/img/edit.svg")}}';
+   var urlModal = '{{route("user.resetpassword")}}';
 </script>
-<script src="{{asset('dist/js/Master/SysUser/SysUser.js?')}}"></script>
+<script src="{{asset('dist/js/Master/SysUser/SysUser.js?3')}}"></script>
 @endsection

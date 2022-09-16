@@ -57,3 +57,15 @@ function tgl_indo($tanggal){
     // dd($pecahkan[1] . ' ' . $bulan[ (int)$pecahkan[0] ] . ' ' . $pecahkan[2]);
     return $pecahkan[1] . ' ' . $bulan[ (int)$pecahkan[0] ] . ' ' . $pecahkan[2];
 }
+
+function checkPrivileges($FName){
+    $dataPrivileges = array(
+        'Username' => session('ID'),
+        'Password' => session('Password'),
+        'FName' => $FName
+    );  
+    $privileges = APIMiddleware($dataPrivileges, 'CheckPrivileges');
+    if ($privileges['code'] == '400'){
+        abort('403','No Access Privileges.');
+    }
+}

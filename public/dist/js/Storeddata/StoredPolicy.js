@@ -14,7 +14,7 @@ var tblStoredPolicy;
       RefNo: $('#RefNo').val(),
       _token: _token
     };
-    var response = await PostData(URLStoredPolicy,data);
+    var response = await PostData(URLStoredPolicy,data, false, debugF);
     if (response.code == '200'){
       if (tblStoredPolicy === undefined){
         tblStoredPolicy = $("#tbl-stored-policy").DataTable({

@@ -10,6 +10,9 @@ class IndexController extends Controller
 {
 
     public function index(){
+
+        checkPrivileges('ALLOWDASHBOARDMENU');
+
         $data =array(
             'Username' => session('ID'),
             'Password' => session('Password'),

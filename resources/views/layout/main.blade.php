@@ -84,7 +84,7 @@
   @if (Session('sidebar') != 'top-nav')
   <aside class="main-sidebar sidebar-light-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="#" class="brand-link bg-primary">
+    <a href="#" class="brand-link">
       <img src="{{asset('dist/img/company_logo.png')}}" alt="Company Logo" class="brand-image" style="opacity: .8">
       <span class="brand-text font-weight-dark">{{config('app.COMPANYNAME')}}</span>
       <!-- <span class="brand-text font-weight-dark">ACA INSURANCE</span> -->
@@ -108,10 +108,20 @@
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent nav-legacy" data-widget="treeview" role="menu" data-accordion="false">
+        <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent " data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          @if (session('Role') == 'MARKETING OFFICER')
+          @if (session('Role') == 'ADMIN')
+          <li class="{{ Session::get('sidebar') == 'sysuser' ? 'nav-item menu-open' : 'nav-item' }}">
+            <a href="{{ route('master.ShowSysUser')}}" class="{{ Session::get('sidebar') == 'sysuser' ? 'nav-link active' : 'nav-link' }}">
+              <i class="fas fa-users nav-icon"></i>
+              <p>
+                User
+              </p>
+            </a>
+          </li>
+          @endif
+          <!-- @if (session('Role') == 'MARKETING OFFICER')
             <li class="{{ (Session::get('sidebar') == 'master') ? 'nav-item menu-is-opening menu-open' : 'nav-item' }}">
               <a href="#" class="{{ (Session::get('sidebar') == 'master') ? 'nav-link active' : 'nav-link' }}">
                 <i class="nav-icon fas fa-cog"></i>
@@ -129,7 +139,8 @@
                 </li>
               </ul>
             </li>
-          @endif
+          @endif -->
+          @if (session('Role') != 'ADMIN')
           <li class="{{ Session::get('sidebar') == 'dashboard' ? 'nav-item menu-open' : 'nav-item' }}">
             <a href="{{ route('dashboard')}}" class="{{ Session::get('sidebar') == 'dashboard' ? 'nav-link active' : 'nav-link' }}">
             <!-- <a href="{{ route('dashboard')}}" class="{{ Session::get('sidebar') == 'dashboard' ? 'nav-link active' : 'nav-link' }}"> -->
@@ -139,7 +150,8 @@
               </p>
             </a>
           </li>
-          @if (session('Role') == 'MARKETING OFFICER')
+          @endif
+          @if (session('Role') != 'ADMIN')
           <li class="{{ Session::get('sidebar') == 'profile' ? 'nav-item menu-open' : 'nav-item' }}">
             <a href="{{ route('profile')}}" class="{{ Session::get('sidebar') == 'profile' ? 'nav-link active' : 'nav-link' }}">
               <i class="nav-icon fas fa-th"></i>
@@ -149,7 +161,7 @@
             </a>
           </li>
           <li class="{{ Session::get('sidebar') == 'sppa' ? 'nav-item menu-open' : 'nav-item' }}">
-            <a href="{{ route('policy.transaction')}}" class="{{ Session::get('sidebar') == 'sppa' ? 'nav-link active' : 'nav-link' }}">
+            <a href="{{ route('policy.list')}}" class="{{ Session::get('sidebar') == 'sppa' ? 'nav-link active' : 'nav-link' }}">
               <i class="nav-icon fas fa-copy"></i>
               <p>
                 SPPA
@@ -195,14 +207,6 @@
             </li>
           @endif
           @if (session('Role') == 'AGENT')
-          <li class="{{ Session::get('sidebar') == 'training_class' ? 'nav-item menu-open' : 'nav-item' }}">
-              <a href="{{ route('trainingclass')}}" class="{{ Session::get('sidebar') == 'training_class' ? 'nav-link active' : 'nav-link' }}">
-                <i class="nav-icon fas fa-chalkboard-teacher"></i>
-                <p>
-                  Training Class
-                </p>
-              </a>
-            </li>
             <li class="{{ Session::get('sidebar') == 'faq' ? 'nav-item menu-open' : 'nav-item' }}">
               <a href="{{ route('faqlist')}}" class="{{ Session::get('sidebar') == 'faq' ? 'nav-link active' : 'nav-link' }}">
                 <i class="nav-icon fas fa-question"></i>
@@ -211,23 +215,24 @@
                 </p>
               </a>
             </li>
-<<<<<<< HEAD
-          @endif
-          @if (session('Role') == 'AGENT')
             <li class="{{ Session::get('sidebar') == 'training_class' ? 'nav-item menu-open' : 'nav-item' }}">
               <a href="{{ route('trainingclass')}}" class="{{ Session::get('sidebar') == 'training_class' ? 'nav-link active' : 'nav-link' }}">
                 <i class="nav-icon fas fa-chalkboard-teacher"></i>
-=======
+                <p>
+                  Training Class
+                </p>
+              </a>
+            </li>
             <li class="{{ Session::get('sidebar') == 'materi' ? 'nav-item menu-open' : 'nav-item' }}">
               <a href="{{ route('showmateri')}}" class="{{ Session::get('sidebar') == 'materi' ? 'nav-link active' : 'nav-link' }}">
                 <i class="nav-icon fas fa-chalkboard"></i>
->>>>>>> 3cb4e104eb03135beb1e05023fc5f881a19607a8
                 <p>
                   Materi
                 </p>
               </a>
             </li>
           @endif
+        </ul>
       </nav>
       <!-- /.sidebar-menu -->
     </div>
@@ -252,7 +257,7 @@
     <div id="class-modal-dialog" class="modal-dialog">
       <div class="modal-content">
         <div id="div-overlay-modal" style="display:none">
-          <div style="position:absolute; top:0.1%; left:0.1%;" class="overlay"><i style="position:absolute; left:50%; top:50%; margin-top:-25px; margin-left:-25px;" class="fas fa-2x fa-sync fa-spin"></i></div>
+          <div style="position:absolute; top:0.1%; left:0%;" class="overlay"><i style="position:absolute; left:50%; top:50%; margin-top:-25px; margin-left:-25px;" class="fas fa-2x fa-sync fa-spin"></i></div>
         </div>
         <div class="modal-header">
           <h4 class="modal-title" id="modaltitle"></h4>
@@ -341,6 +346,9 @@
 <script src="{{asset('plugins/chart.js/Chart.min.js')}}"></script>
 <!-- jQuery Knob -->
 <script src="{{asset('plugins/jquery-knob/jquery.knob.min.js')}}"></script>
+<script>
+  var debugF = '{{config("app.debug")}}';
+</script>
 
 <!-- General For Web Portal MW -->
 <script src="{{asset('dist/js/pages/webportal.js')}}?1"></script>

@@ -69,7 +69,7 @@ $('document').ready(async function(){
 
 async function DownloadPrintLogDocument(ANO, Description){
    var URL = BaseURL + '?ANO=' + ANO + '&Description=' + Description;
-   var response = await getDataNew(URL,true);
+   var response = await getDataNew(URL,true, debugF);
    if (response.code == '200'){
       downloadPDF(response.Data[0]['Base64_Image'],Description);
    }

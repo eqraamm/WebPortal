@@ -35,7 +35,7 @@ $('.btn-save').on('click',async function(){
     var url = urlGetDeductibleRemarks + "?topro=" + data['reftopro'] + "&dcode=" + data['dcode'] + "&fixedmin=" + fixedmin + "&pcttsi=" + pcttsi + "&pctcl=" + pctcl + "&fixedmax=" + fixedmax;
     // console.log(url);
     
-    var response = await getDataNew(url,true);
+    var response = await getDataNew(url,true, debugF);
     // console.log(response);
     if (response.code == '200'){
         $('#deductible-remarks').val(response.Data[0]['Deductibles']);

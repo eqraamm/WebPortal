@@ -8,7 +8,8 @@ class MateriController extends Controller
 {
     public function ShowMateri()
     {
-        session(['sidebar' => 'Materi']);
+        checkPrivileges('ALLOWMATERIMENU');
+        session(['sidebar' => 'materi']);
         return view('Materi.Materi');
     }
 }

@@ -216,7 +216,8 @@
       </div>
       <!-- /.input group -->
     </div>
-    
+    <input type="text" id="testinput" value="testvalue" />
+    <p id="ptest">djskaldjslkajdlasjdskl</p>
   </section>
 </div>
 
@@ -231,6 +232,8 @@
 @section('scriptpage')
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
   <script>
+    // document.getElementById('testinput').value = 'testinput';
+    // document.getElementById('ptest').innerHTML = 'testP';
     var div = document.querySelector(".fade");
     var btn = document.querySelector(".fadeButton");
     btn.addEventListener("click", function(){

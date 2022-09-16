@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 class TrainingClassController extends Controller
 {
     public function showTrainingClass(){
+        checkPrivileges('ALLOWTRAININGMENU');
         session(['sidebar' => 'training_class']);
 
         return view('Training.TrainingClass');

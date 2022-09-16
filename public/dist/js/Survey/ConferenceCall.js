@@ -105,7 +105,15 @@ let table = $('#tblsurvey').DataTable({
             var fn = "dropSurvey('" + meta.row + "')"
             return '<i class="fas fa-trash fa-lg btnDelete" type="button" style="color: red" onClick ="' + fn + '"></i>';
         }
-    }],
+    },
+    {
+        "defaultContent": "",
+        render: function (data, type, row, meta) {
+            var fn = "dropSurvey('" + meta.row + "')"
+            return '<div><img style="width:80px; height:80px;" src="' + row['IMG'] + '" id="img-capture" name="img-capture[]" alt="The screen capture will appear in this box."></div>';
+        }
+    },
+],
     "responsive": true,
     "autoWidth": false,
     "scrollX": false,

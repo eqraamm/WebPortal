@@ -86,7 +86,11 @@ class AuthController extends Controller
                     session(['Role' => $responseUser['Data'][0]['Role']]);
                     session(['Password' => $request->input('password')]);
                     session(['ASource' => $responseUser['Data'][0]['ASource']]);
-                    return redirect()->route('dashboard');
+                    if ($responseUser['Data'][0]['Role'] == 'ADMIN'){
+                        return redirect()->route('master.ShowSysUser');
+                    }else{
+                        return redirect()->route('dashboard');
+                    }
                 }
             }else{
                 Session::flash('error', 'Invalid UserID/Password');

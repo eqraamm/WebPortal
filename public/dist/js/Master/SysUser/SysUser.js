@@ -1,71 +1,93 @@
-var data = [];
-var tblStoredDocument = $("#tbl-list-sysuser").DataTable({
-   "data": data,
+
+$(document).ready(function(){
+    $('.select2bs4').select2({
+      theme: 'bootstrap4',
+	  });
+});
+var tblListUser = $("#tbl-list-sysuser").DataTable({
+  processing: true,
+  serverSide: true,
+  ajax: {
+    'url' : url,
+    'data' : function(data){
+      data.SearchKey = $('#SearchKey').val();
+      data.Role = $('#Role').val();
+    }
+  },
+  "language": {
+    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '},
+  //  "data": userData,
    "columns": [
      {
-       "title": "ANO",
-       "defaultContent": 0,
-       "data": "ANO"
+       "title": "User Id",
+       "defaultContent": '',
+       "width": "15%",
+       "data": "ID"
      },
      {
-       "title":"Doc No",
-       "defaultContent": "",
-       "data":"DocNo",
-     }
-   //   ,
-   //   {
-   //     "title":"Description",
-   //     "defaultContent": "",
-   //     "data":"Description"
-   //   },
-   //   {
-   //     "title":"User ID",
-   //     "defaultContent": "",
-   //     "data":"UserID"
-   //   },
-   //   {
-   //     "title":"Date",
-   //     "defaultContent": "",
-   //     "data":"Last_Date"
-   //   },
-   //   {
-   //     "title":"Time",
-   //     "defaultContent": "",
-   //     "data":"Time"
-   //   },
-   //   {
-   //     "title":"Log ID",
-   //     "defaultContent": "",
-   //     "data":"LogID"
-   //   },
-   //   {
-   //     "title":"Version",
-   //     "defaultContent": "",
-   //     "data":"Version"
-   //   },
-   //   {
-   //     "title":"Image ID",
-   //     "defaultContent": 0,
-   //     "data":"ImageID"
-   //   },
-   //   {
-   //     "title":"File Type",
-   //     "defaultContent": "",
-   //     "data":"FileType"
-   //   },
-   //   {
-   //     "defaultContent":"",
-   //     render: function(data,type,row){
-   //       var fn_doclog = "DownloadPrintLogDocument('"+ row['ANO'] +"','"+ row['Description'] +"')"
-   //       return '<img src="' + URLDownloadIcon + '" width="30" height="30" type="button" value="detail" onclick="'+ fn_doclog +'">'
-   //     }
-   //   },
+      "title": "User Name",
+      "defaultContent": '',
+      "data": "Name"
+    },
+    {
+      "title": "Type / Role",
+      "defaultContent": "-",
+      "width": "10%",
+      render: function(data, type, row) {
+          return row['Type'] + '<br>' + row['Role'];
+      }
+    },
+    {
+      "title": "Status",
+      "defaultContent": "-",
+      "width": "10%",
+      render: function(data, type, row) {
+          if (row['AllowedF']){
+            return '<i class="fas fa-check" style="color:green"> Actived</i>';
+          }else{
+            return '<i class="far fa-times-circle" style="color:red"> Not Active</i>';
+          }
+      }
+    },
+    {
+      "title":"Last Update",
+      "defaultContent":"",
+      "width":"20%",
+      render: function(data, type, row) {
+          return row['Last_Update'] + '<br>' + row['Last_Time'];
+      }
+    },
+    {
+      "defaultContent":"",
+      "width": "4%",
+      render: function(data,type,row){
+        return '<div class="dropdown dropleft">' +
+        '<a href="#" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></a>' +
+        '<div class="dropdown-menu">'+
+           '<a class="dropdown-item" href="#">'+
+              '<i class="far fa-eye"></i>' +
+              '&nbsp' +
+              'View User' +
+           '</a>' +
+           '<a class="dropdown-item reset-password btn" data-user="'+ row['ID'] +'">' +
+              '<i class="fas fa-lock"></i>' +
+              '&nbsp' +
+              'Reset Password' +
+           '</a>' + 
+        '</div>' +
+     '</div>'
+      }
+    },
    ],
-   "responsive": true,
-   "autoWidth": false,
-   "searching": false,
+   "fnDrawCallback": function( oSettings ) {
+    $('.reset-password').on('click',resetPasswordClicked);
+    $('#btn-search').removeAttr('disabled');
+  },
+   responsive: true,
+   autoWidth: false,
+   searching: false,
+   ordering: false
 });
-console.log(Role);
 if (Role != 'ADMIN'){
   disableAll();
 }
@@ -101,7 +123,6 @@ $(".form-sync").submit(function(event) {
   let BirthDate = $("input[name=ModalBirthDate]").val();
   let _token = $('meta[name="csrf-token"]').attr('content');
   var a_href = $(this).attr('action');
-  console.log(_token);
 
   $.ajax({
     type: "POST",
@@ -276,45 +297,18 @@ function CGroup_OnChange(CGroup) {
   }
 }
 
-$(".form-save").submit(function(event) {
+async function resetPasswordClicked(event){
   event.preventDefault();
-  $("#loadMe").modal('show');
-  try{
-    var a_href = $(this).attr('action');
+  var ID = $(this).attr('data-user');
 
-    if (formData == ''){
-      formData = $(".form-save").serialize();
-    }
+  var response = await getModalView(urlModal + '?ID=' + ID);
+  openModalView('','Reset Password',response,'',true);
 
-    $.ajax({
-      type: "POST",
-      url: a_href, // This is what I have updated
-      data: formData,
-    }).done(function(response) {
-      console.log(response);
-      if (response.code == '200') {
-        tblProfile.clear().rows.add(response.listprofile.Data).draw();
-        viewDetail(response.Data[0]['ID'])
-      }
-      // $("#loadMe").modal("hide");
-      toastMessage(response.code, response.message);
-      if (response.code == '402') {
-        $('#modal-sync').modal('show');
-        setTimeout(() => {
-          $('#cardbodyModalSync').html(response.html);
-        }, 1000);
-      }
-      $("#loadMe").modal("hide");
-    }).fail(function(xhr, status, error){
-      console.log(xhr);
-      throw error;
-    });
-  }catch(err){
-    toastMessage('400',err);
-    $("#loadMe").modal("hide");
-    console.log('catch');
-  }finally{
-    // $("#loadMe").modal("hide");
-    // console.log('finally');
-  }
+}
+
+$('#btn-search').on('click', function(event){
+  event.preventDefault();
+  $(this).attr('disabled','disabled');
+
+  tblListUser.draw();
 });

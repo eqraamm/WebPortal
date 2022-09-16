@@ -4510,8 +4510,7 @@
     var mo = $('#listMo').val();
     console.log(mo);
     var url = "{{route('Dashboard.getlistpolicy')}}?ID=" + mo;
-    var response = await getDataNew(url);
-    console.log(response);
+    var response = await getDataNew(url, false, debugF);
     datas = response['Data'];
     tblInquiry.clear().rows.add(datas).draw();;
     tblInquiry.columns.adjust().draw();

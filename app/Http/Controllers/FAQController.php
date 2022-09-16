@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 class FAQController extends Controller
 {
     public function index(){
+        checkPrivileges('ALLOWFAQMENU');
         $data =array(
             'Username' => session('ID'),
             'Password' => session('Password'),

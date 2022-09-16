@@ -37,12 +37,16 @@ Route::group(['middleware' => 'CekLogin'], function(){
 
     // Index Profile
     Route::get('/profile', 'ProfileController@index')->name('profile');
+    // Create Profile
+    Route::get('/profile/create', 'ProfileController@showCreateProfile')->name('createprofile');
     //Drop Profile
     Route::get('/profile/drop/{id}', 'ProfileController@dropProfile')->name('profile.drop');
     //Save Profile
-    Route::post('/profile', 'ProfileController@SaveProfile')->name('profile.save');
+    Route::post('/profilebyagent', 'ProfileController@SaveProfile')->name('profile.save');
+    //Save Profile By Agent (TEMPORARY)
+    Route::post('/profile', 'ProfileController@SaveProfileByAgent')->name('profile.saveagent');
     //History Profile
-    Route::get('/profile/history/{id}', 'ProfileController@historyProfile')->name('profile.history');
+    Route::get('/profile/history', 'ProfileController@historyProfile')->name('profile.history');
     //List Ref Profile For Sync
     Route::post('/profile/sync', 'ProfileController@listRefProfile')->name('profile.sync');
     //Upload Profile document    
@@ -65,7 +69,6 @@ Route::group(['middleware' => 'CekLogin'], function(){
     Route::get('/getlistDistrict', 'ProfileController@getlistDistrict')->name('listDistrict');
     Route::get('/getlistSubDistrict', 'ProfileController@getlistSubDistrict')->name('listSubDistrict');
     Route::get('/getlistVillage', 'ProfileController@getlistVillage')->name('listVillage');
-
     Route::post('/profile/uploadDocument', 'ProfileController@uploadProfileDocument')->name('profile.uploadDocumentPost');
 
     // Search Profile
@@ -73,8 +76,8 @@ Route::group(['middleware' => 'CekLogin'], function(){
     Route::get('/profile/getprofilebyid', 'ProfileController@getProfileByID')->name('profile.getprofile');
 
      // Index Transaction
-    Route::get('/transaction', 'SppaController@showFormPolicy')->name('policy.transaction');
-    Route::get('/Inquiry', 'InquiryController@inquiry');
+    Route::get('/sppalist', 'SppaController@showFormPolicy')->name('policy.list');
+    Route::get('/createsppa', 'SppaController@showCreateSPPA')->name('policy.transaction');
     Route::POST('/premiumsimulation', 'SppaController@PremiumSimulation')->name('policy.premiumSimulation');
     Route::POST('/getnewpolicyno', 'SppaController@GetNewPolicyNo')->name('policy.getnewpolicyno');
     Route::POST('/savepolicydocument', 'SppaController@SavePolicyDocument')->name('policy.savepolicydocument');
@@ -84,8 +87,6 @@ Route::group(['middleware' => 'CekLogin'], function(){
     Route::POST('/droppolicy', 'SppaController@DropPolicy')->name('policy.drop');
     Route::get('/listpolicy', 'SppaController@showListPolicy')->name('policy.listPolicy');
     // qRoute::get('/transaction', 'SppaController@sppa')->name('inquiry.transaction');
-    Route::get('/transaction', 'SppaController@showFormPolicy')->name('policy.transaction');
-    Route::get('/Inquiry', 'InquiryController@inquiry');
     Route::POST('/tempsubmitpolicy', 'SppaController@TempSubmitPolicy')->name('policy.tempsubmitpolicy');
     Route::POST('/revisepolicy', 'SppaController@RevisePolicy')->name('policy.revisepolicy');
     Route::POST('/submitpolicyconfirmation', 'SppaController@SubmitPolicyConfirmation')->name('policy.submitpolicyconfirmation');
@@ -139,6 +140,9 @@ Route::group(['middleware' => 'CekLogin'], function(){
     Route::get('/master/addsysuser', 'SysUserController@ShowFormAddSysUSer')->name('master.ShowAddSysUser');
     Route::get('/myprofile', 'SysUserController@ShowMyProfile')->name('myprofile');
     Route::get('/agentleveltree', 'SysUserController@showAgentLevelTree')->name('agentleveltree');
+    Route::get('master/sysuser/getlistuser','SysUserController@getDataUser')->name('getlistuser');
+    Route::get('master/sysuser/resetpassword','SysUserController@showResetPassword')->name('user.resetpassword');
+    Route::post('master/sysuser/resetpassword','SysUserController@resetPassword')->name('user.resetpassword');
 
     //Change Password
     Route::get('/changepassword', 'AuthController@ShowChangePassword')->name('showchangepassword');

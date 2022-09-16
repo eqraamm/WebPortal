@@ -88,27 +88,6 @@
                             <th>Action</th>
                           </tr>
                         </thead>
-                        <!-- <tbody> 
-                          @if($data['code'] == '200') 
-                          @foreach($data['Data'] as $datas) 
-                          <tr>
-                            <td>{{ $datas['RefID'] }}</td>
-                            <td>{{ $datas['Name'] }}</td>
-                            <td>{{ $datas['Email'] }}</td>
-                            <td>{{ $datas['Mobile'] }}</td>
-                            <td>{{ $datas['ID_No'] }}</td>
-                            <td>{{ $datas['BirthDate'] }}</td>
-                            <td>
-                              <img src="{{asset('dist/img/edit.svg')}}" width="25" height="25" type="button" value="detail" onclick="viewDetail('{{ $datas['ID'] }}')">
-                              <img src="{{asset('dist/img/file.svg')}}" width="25" height="25" a href="{{ route('profile.history', ['id' =>$datas['ID']]) }}" type="button" id="btn-history" class="history-profile">
-                              </a>
-                              <img src="{{asset('dist/img/trash.svg')}}" width="25" height="25" a href="{{ route('profile.drop', ['id' =>$datas['ID']]) }}" type="delete" class="btn-del-row-profile">
-                              </a>
-                            </td>
-                          </tr> 
-                          @endforeach 
-                          @endif 
-                        </tbody> -->
                       </table>
                     </div>
                     <!-- Modal History -->
@@ -1040,7 +1019,7 @@
     }
   }
 
-  var basedata = @json($data['Data']);
+  var basedata = @json($data);
   // var tblProfile = $("#example1").DataTable({
   //   "processing": true,
   //   "serverSide": false,
@@ -1234,7 +1213,6 @@
 
   async function viewDetail(ID) {
       var data = tblProfile.rows().data();
-      // var basedata = @json($data['Data']);
       // console.log(data);
       const filterarray = data.filter(asd => asd.ID == ID);
       // console.log('filterarray');
@@ -1316,9 +1294,9 @@
     try{
       var a_href = $(this).attr('action');
 
-      if (formData == ''){
+      // if (formData == ''){
         formData = $(".form-save").serialize();
-      }
+      // }
 
       $.ajax({
         type: "POST",
@@ -1478,14 +1456,17 @@
       var url = "{{ route('profile.search') }}?ID=" + ID + "&name=" + name + "&email=" + email + "&id_no=" + id_no + "&mobile=" + mobile + '&OwnerID=' + OwnerID;
       // console.log(url);
 
-      var response = await getDataNew(url);
+      try {
+        var response = await getDataNew(url, false, debugF); 
+      } catch (error) {
+      }
       // console.log(response);
       if (response.code == '200'){
         drawDataTable(tblProfile,response.Data);
       }
       toastMessage(response.code,response.message);
     }catch(err){
-      toastMessage('400','Whoops, Something Went Wrong, please contact your Administrator.');
+      toastMessage('400',debugF ? err : 'Whoops, Something Went Wrong, please contact your Administrator.');
     }
   });
   

@@ -12,6 +12,8 @@ use Exception;
 class SppaController extends Controller
 {
     public function showFormPolicy(){
+        checkPrivileges('ALLOWSPPAMENU');
+            
         session(['sidebar' => 'sppa']);
 
         $dataPrivileges = array(
@@ -35,7 +37,8 @@ class SppaController extends Controller
                 $dataMO = $responseListMO['Data'];
             }
         }
-        return view('Transaction.policy', array('listmo' => $dataMO, 'privileges_branch_head' => $privileges));
+        // return view('Transaction.policy', array('listmo' => $dataMO, 'privileges_branch_head' => $privileges));
+        return view('Transaction.ListSPPA', array('listmo' => $dataMO, 'privileges_branch_head' => $privileges));
     }
 
     public function getlistMo(){
@@ -599,19 +602,36 @@ class SppaController extends Controller
         }
     }
 
-    public function showListPolicy(){
+    // public function showListPolicy(){
+    //     $dataPolicy = array(
+    //         'Username' => session('ID'),
+    //         'Password' => session('Password'),
+    //         'ID' => session('ID'),
+    //         'RefNo' => '',
+    //         'PStatus' => '',
+    //         'Insured' => '',
+    //         'ASource' => session('ASource')
+    //     );  
+
+    //     $responsePolicy = APIMiddleware($dataPolicy, 'SearchPolicy');
+    //     return response()->json(['data' => $responsePolicy['Data']]);
+    // }
+
+    public function showListPolicy(Request $request){
         $dataPolicy = array(
             'Username' => session('ID'),
             'Password' => session('Password'),
             'ID' => session('ID'),
-            'RefNo' => '',
-            'PStatus' => '',
-            'Insured' => '',
-            'ASource' => session('ASource')
-        );  
+            'RefNo' => $request->get('RefNo'),
+            'PStatus' => $request->get('PStatus'),
+            'Insured' => $request->get('InsuredName'),
+            'ASource' => session('ASource'),
+            'StartRow' => $request->get('start'),
+            'LengthRow' => $request->get('length'),
+            'draw' => $request->get('draw')
+        );
 
-        $responsePolicy = APIMiddleware($dataPolicy, 'SearchPolicy');
-        return response()->json(['data' => $responsePolicy['Data']]);
+        return APIMiddleware($dataPolicy,'SearchListPolicyPerPage');
     }
 
     public function getDetailPolicy(Request $request){
@@ -1253,6 +1273,10 @@ class SppaController extends Controller
         // $encryptParam= Crypt::encrypt($parameters);
         $url = route('sppadoc', ['data' => $parameters]);
         return $url;
+    }
+
+    public function showCreateSPPA(){
+        return view('Transaction.CreateSPPA');
     }
 
 }

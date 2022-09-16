@@ -180,7 +180,7 @@
                 "title": "Start Survey",
                 "defaultContent": "-",
                 render: function(data, type, row) {
-                return row['ActualDate'] + '<br>' + row['StartTimeSurvey'];
+                    return row['ActualDate'] + '<br>' + row['StartTimeSurvey'];
                 }
             },
             {
@@ -371,7 +371,7 @@
         var mo = $('#listMo').val();
         console.log(mo);
         var url = "{{route('Dashboard.getlistpolicy')}}?ID=" + mo;
-        var response = await getDataNew(url);
+        var response = await getDataNew(url, false, debugF);
         console.log(response);
         datas = response['Data'];
         var arrPolicySurvey = datas.filter(data =>data.NeedSurveyF == true && data.PStatus != 'C');
