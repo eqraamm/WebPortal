@@ -2,6 +2,14 @@ $('#datetraining').datetimepicker({
     format: 'L'
 });
 
+$('#SDateTraining').datetimepicker({
+    format: 'L'
+});
+
+$('#EDateTraining').datetimepicker({
+    format: 'L'
+});
+
 var dataTrainingClass = [{
     "TrainingID": "TD001",
     "Date": "15 Jul 2022",
@@ -9,7 +17,7 @@ var dataTrainingClass = [{
     "EndTime": "16:00",
     "Status": "Cancel Class",
     "Location": "ACA Cabang Bekasi Jalan Ir H Juanda no 151, Bekasi Timur",
-    "Subjects": "Agent - Motorcar",
+    "Subjects": "Motorcar",
     "AgentLVL_1F": true, // Partner
     "AgentLVL_2F": true, // Senior Partner
     "AgentLVL_3F": false, // Executive Partner
@@ -25,7 +33,7 @@ var dataTrainingClass = [{
     "EndTime": "17:00",
     "Status": "Rescheduled",
     "Location": "ACA Cabang Latumenten Jl. Prof. Dr. Latumenten No. 28 A-B-C, Angke, Tambora, RT.2/RW.8, Angke, Kec. Tambora, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11460",
-    "Subjects": "Agent - ASRI",
+    "Subjects": "ASRI",
     "AgentLVL_1F": false, // Partner
     "AgentLVL_2F": false, // Senior Partner
     "AgentLVL_3F": true, // Executive Partner
@@ -41,7 +49,7 @@ var dataTrainingClass = [{
     "EndTime": "16:00",
     "Status": "On Scheduled",
     "Location": "MITRACA PUSAT HERMINA OFFICE BUILDING TOWER I Lantai.3, Jl. HBR Motik No.4, RW.10, Gn. Sahari Sel., Kec. Kemayoran, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10610",
-    "Subjects": "Agent - Business Presentation Skill",
+    "Subjects": "Business Presentation Skill",
     "AgentLVL_1F": true, // Partner
     "AgentLVL_2F": true, // Senior Partner
     "AgentLVL_3F": true, // Executive Partner
@@ -138,8 +146,14 @@ var tblTrainingClass = $('#tblTrainingClass').DataTable({
         "defaultContent": "",
         "title": "Action",
         render: function (data, type, row, meta) {
-            var fn = "viewParticipant('" + row.TrainingID + "')"
-            return '<div>Trainer : ' + row.Trainer + '<br>Participation : ' + row.Participation + '</div><div align="center"><button class="btn btn-primary btn-sm" id="participationClass" name="participationClass" onclick="' + fn + '">Participation</button></div>';
+            var fn;
+            if (session == 'AGENT'){
+                fn = "viewParticipant('" + row.TrainingID + "')"
+                return '<div>Trainer : ' + row.Trainer + '<br>Participation : ' + row.Participation + '</div><div align="center"><button class="btn btn-primary btn-sm" id="participationClass" name="participationClass" onclick="' + fn + '">Participation</button></div>';
+            } else {
+                fn = "viewOpenClass('" + row.TrainingID + "')"
+                return '<div>Trainer : ' + row.Trainer + '<br></div><div align="center"><button class="btn btn-primary btn-sm" id="participationClass" name="participationClass" onclick="' + fn + '">Open Class</button></div>'
+            }
         }
     }],
     "autoWidth": true,
@@ -160,6 +174,36 @@ function format_date(date_string) {
     var year = fomatedDate.getFullYear();
 
     return month + "/" + day + "/" + year;
+}
+
+async function viewOpenClass(ID){
+    $('#class-modal-dialog').attr('class', 'modal-dialog modal-lg');
+    $('#modaltitle').text('Open Class Training');
+    $('#modalbody').empty();
+    $('#modalfooter').empty();
+    const filterarray = dataTrainingClass.filter(asd => asd.TrainingID == ID);
+
+    var trainingid = filterarray[0].TrainingID;
+    var date = filterarray[0].Date;
+    var starttime = filterarray[0].StartTime;
+    var endtime = filterarray[0].EndTime;
+    var location = filterarray[0].Location;
+    var subjects = filterarray[0].Subjects;
+    let agentlvl1f = filterarray[0].AgentLVL_1F;
+    let agentlvl2f = filterarray[0].AgentLVL_2F;
+    let agentlvl3f = filterarray[0].AgentLVL_3F;
+    let agentlvl4f = filterarray[0].AgentLVL_4F;
+    var trainer = filterarray[0].Trainer;
+
+    const res = await getModalView(modalOpenClass + "?trainingid=" + trainingid + "&date=" + date + "&starttime=" + starttime + "&endtime=" + endtime + "&location=" + location + "&subjects=" + subjects + "&agentlvl1f=" + agentlvl1f + "&agentlvl2f=" + agentlvl2f + "&agentlvl3f=" + agentlvl3f + "&agentlvl4f=" + agentlvl4f + "&trainer=" + trainer);
+
+    $('#modalbody').html(res);
+
+    $('#modal-general').modal({
+        keyboard: true,
+        backdrop: 'static',
+        show: true
+    });
 }
 
 async function viewParticipant(ID) {

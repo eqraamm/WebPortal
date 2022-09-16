@@ -1279,5 +1279,19 @@ class SppaController extends Controller
         return view('Transaction.CreateSPPA');
     }
 
+    public function showApprovalList(){
+        session(['sidebar' => 'approvalListSPPA']);
+
+        return view('Approval.approvalSPPA');
+    }
+
+    public function ActionApproval(){
+        return view('Approval.modalApproval');
+    }
+
+    public function HistoryApproval(){
+        return view('Approval.ModalHistoryApproval');
+    }
+
 }
 

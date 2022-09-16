@@ -1,8 +1,17 @@
 @extends('layout/main')
+@if (session('Role') == 'AGENT')
 @section('title')
-   {{config('app.COMPANYNAME')}} INSURANCE | Dashboard
+   {{config('app.COMPANYNAME')}} INSURANCE | Agent Dashboard
 @endsection
-
+@elseif (session('Role') == 'PRODUCT OWNER')
+@section('title')
+   {{config('app.COMPANYNAME')}} INSURANCE | Product Owner Dashboard
+@endsection
+@elseif (session('Role') == 'BRANCH')
+@section('title')
+   {{config('app.COMPANYNAME')}} INSURANCE | Branch Dashboard
+@endsection
+@endif
 @section('head-linkrel')
 <style>
    #carouselExampleControls .carousel-item img {  
@@ -60,6 +69,7 @@
                </div>
             </div>
             <!-- End Carousel -->
+            @if (session('Role') == 'AGENT')
             <!-- Indicative Offer List -->
             <div class="row">
                <div class="col-sm-12">
@@ -131,6 +141,27 @@
                </div>
             </div>
             <!-- End Birthday List -->
+            @elseif (session('Role') == 'PRODUCT OWNER' || session('Role') == 'BRANCH')
+               <!-- Approval List List -->
+            <div class="row">
+               <div class="col-sm-12">
+                  <div class="card">
+                     <div class="card-header">
+                        <div class="row align-middle">
+                           <div class="col-sm-6">
+                              Approval List
+                           </div>
+                        </div>
+                     </div>
+                     <div class="card-body">
+                        <table id="tblApprovalList" class="table table-hover table-bordered dt-responsive nowrap" width="100%">
+                        </table>
+                     </div> 
+                  </div>
+               </div>
+            </div>
+            <!-- End Indicative Offer List -->
+            @endif
          </div>
       </div>
    </section>
@@ -138,5 +169,5 @@
 @endsection
 
 @section('scriptpage')
-<script src="{{asset('dist/js/Dashboard/dashboardAgent.js')}}"></script>
+<script src="{{asset('dist/js/Dashboard/dashboardAgent.js?')}}"></script>
 @endsection

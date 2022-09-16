@@ -247,3 +247,39 @@ var tblBirthdays = $("#tblBirthdays").DataTable({
    "lengthChange": false,
    "searching": false,
 });
+
+var tblApprovalList = $("#tblApprovalList").DataTable({
+   "data": dataSPPA,
+   "columns": [
+      {
+         "title": "No SPPA",
+         "data": "SppaNo"
+      },
+      {
+         "title": "Product",
+         "data": "Product"
+      },
+      {
+         "title": "Nama Pemegang Polis",
+         "data": "Nama"
+      },
+      {
+         "title": "TSI",
+         "data": "TSI"
+      },
+      {
+         "title": "Premi",
+         "data": "Premi"
+      },
+   ],
+   "select": {
+      "style": "multi"
+   },
+   "order": [
+      [0, 'asc']
+   ],
+   "autoWidth": false,
+   "responsive": true,
+   "lengthChange": false,
+   "searching": false,
+});

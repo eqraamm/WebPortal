@@ -32,6 +32,7 @@
                                     </div>
                                     <div class="form-group row">
                                         <p class="col-sm-2 col-form-label">Date</p>
+                                        @if (session('Role') == 'AGENT')
                                         <div class="input-group date col-sm-4" id="datetraining"
                                             data-target-input="nearest">
                                             <input type="text" id="DateTraining" name="TxtDateTraining"
@@ -42,6 +43,28 @@
                                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
+                                        @elseif (session('Role') == 'BRANCH' || session('Role') == 'PRODUCT OWNER')
+                                        <div class="input-group date col-sm-2" id="SDateTraining"
+                                            data-target-input="nearest">
+                                            <input type="text" id="SDateTraining" name="TxtStartDateTraining"
+                                                class="form-control datetimepicker-input" data-target="#SDateTraining"
+                                                placeholder="mm/dd/yyyy" required />
+                                            <div class="input-group-append" data-target="#SDateTraining"
+                                                data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>_
+                                        <div class="input-group date col-sm-2" id="EDateTraining"
+                                            data-target-input="nearest">
+                                            <input type="text" id="EDateTraining" name="TxtEndTraining"
+                                                class="form-control datetimepicker-input" data-target="#EDateTraining"
+                                                placeholder="mm/dd/yyyy" required />
+                                            <div class="input-group-append" data-target="#EDateTraining"
+                                                data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                        @endif
                                     </div>
                                     <div class="form-group row">
                                         <p class="col-sm-2 col-form-label">Training Status</p>
@@ -79,9 +102,12 @@
 @endsection
 
 @section('scriptpage')
-<script src="{{asset('dist/js/TrainingClass/TrainingClass.js?')}}"></script>
-<script src="{{asset('dist/js/pages/webportal.js?')}}"></script>
 <script>
     var modalParticipantClass = "{{route('modalparticipantclass')}}";
+    var modalOpenClass = "{{route('modalopenclass')}}";
+    var session = "{{session('Role')}}";
+    var modalAddAgent = "{{route('modaladdparticipateclass')}}";
 </script>
+<script src="{{asset('dist/js/TrainingClass/TrainingClass.js?')}}"></script>
+<script src="{{asset('dist/js/pages/webportal.js?')}}"></script>
 @endsection

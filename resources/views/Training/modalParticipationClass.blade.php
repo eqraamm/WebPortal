@@ -134,7 +134,6 @@
 </body>
 <script>
     var data = @json([$data]);
-    console.log(data);
 </script>
 <script src=" {{asset('dist/js/TrainingClass/modalParticipantClass.js?')}}"></script>
 <!-- General For Web Portal MW -->
